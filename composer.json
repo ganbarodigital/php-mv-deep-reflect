@@ -9,6 +9,18 @@
         {
             "type": "vcs",
             "url": "https://github.com/stuartherbert/Couscous"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/ganbarodigital/ReflectionCommon"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/ganbarodigital/ReflectionDocBlock"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/ganbarodigital/TypeResolver"
         }
     ],
     "require-dev": {
@@ -23,6 +35,9 @@
         }
     },
     "require": {
-        "ganbarodigital/php-the-missing-bits": "^1.9"
+        "ganbarodigital/php-the-missing-bits": "^1.9",
+        "phpdocumentor/reflection-docblock": "dev-master",
+        "phpdocumentor/reflection-common": "dev-master as 1.0",
+        "phpdocumentor/type-resolver": "dev-master as 0.4.0"
     }
 }
