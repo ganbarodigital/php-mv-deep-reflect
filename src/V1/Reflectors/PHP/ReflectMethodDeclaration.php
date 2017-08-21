@@ -41,44 +41,56 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
 use GanbaroDigital\DeepReflection\V1\Checks;
 use GanbaroDigital\DeepReflection\V1\Contexts;
 use GanbaroDigital\DeepReflection\V1\Helpers;
 use GanbaroDigital\DeepReflection\V1\Scope;
-use Microsoft\PhpParser\Node\FunctionDeclaration;
+use Microsoft\PhpParser\Node\MethodDeclaration;
 use Microsoft\PhpParser\Node\Statement as Statements;
 use Microsoft\PhpParser\Node as Nodes;
 
 /**
- * understand a function declaration
+ * understand a method declaration
  */
-class ReflectFunctionDeclaration
+class ReflectMethodDeclaration
 {
     /**
-     * understand a function declaration
+     * understand a method declaration
      *
-     * @param  Nodes\FunctionDefintion $node
-     *         the AST that declares the function
+     * @param  Nodes\MethodDefintion $node
+     *         the AST that declares the method
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
      * @return Contexts\ClassContext
      *         our understanding about the class
      */
-    public static function from(Statements\FunctionDeclaration $node, Scope $activeScope) : Contexts\FunctionContext
+    public static function from(Nodes\MethodDeclaration $node, Scope $activeScope) : Contexts\MethodContext
     {
-        // what is this function called?
-        $functionName = Helpers\GetTokenText::from($node, $node->name);
+        // what is this method called?
+        $methodName = $node->getName();
 
         // what is its return type?
         $returnType = Helpers\GetTokenText::from($node, $node->returnType, null);
 
-        // build the function
-        $retval = new Contexts\FunctionContext($functionName, $returnType);
+        // let's find out what kind of modifiers it has
+        $modifiers = ReflectNodeModifiers::from($node, $node->modifiers);
+
+        // what security scope?
+        $securityScope = ReflectSecurityScope::from($modifiers);
+
+        // static?
+        $isStaticMethod = isset($modifiers['static']) ? true : false;
+
+        // abstract?
+        $isAbstractMethod = isset($modifiers['abstract']) ? true : false;
+
+        // build the method
+        $retval = new Contexts\MethodContext($isAbstractMethod, $securityScope, $isStaticMethod, $methodName, $returnType);
 
         // the scope has now changed!
-        $activeScope = $activeScope->withFunction($retval);
+        $activeScope = $activeScope->withMethod($retval);
 
         // does it have a docblock?
         Helpers\AttachLeadingComment::using($node, $retval, $activeScope);

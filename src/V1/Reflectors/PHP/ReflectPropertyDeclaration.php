@@ -41,7 +41,7 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
 use GanbaroDigital\DeepReflection\V1\Checks;
 use GanbaroDigital\DeepReflection\V1\Contexts;
@@ -52,63 +52,34 @@ use Microsoft\PhpParser\Node\Statement as Statements;
 use Microsoft\PhpParser\Node as Nodes;
 
 /**
- * understand a constant declaration in a class-like context
+ * understand a property declaration
  */
-class ReflectClassConstantDeclaration
+class ReflectPropertyDeclaration
 {
     /**
-     * understand a constant declaration in a class-like context
+     * understand a property declaration
      *
-     * @param  Nodes\ClassConstDeclaration $node
-     *         the AST that declares the constant
+     * @param  Nodes\PropertyDeclaration $node
+     *         the AST that declares the property
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
-     * @return Contexts\ClassLikeConstantContext
+     * @return Contexts\PropertyContext
      *         our understanding about the property
      */
-    public static function from(Nodes\ClassConstDeclaration $node, Scope $activeScope) : Contexts\ClassLikeConstantContext
+    public static function from(Nodes\PropertyDeclaration $node, Scope $activeScope) : Contexts\PropertyContext
     {
-        foreach ($node->getChildNodes() as $childNode) {
-            switch (true) {
-                case $childNode instanceof Nodes\DelimitedList\ConstElementList:
-                    return self::inspectElementList($node, $childNode, $activeScope);
-            }
-        }
-    }
+        // a PHP property declaration is treated as an expression
+        // by the parser we are using
+        //
+        // to find the property's name and default value (if any), we must
+        // understand the expression first
+        $exprCtxs = ReflectExpressionList::from($node->propertyElements, $activeScope);
 
-    /**
-     * make sense of a list of const elements
-     *
-     * @param  Nodes\ClassConstDeclaration $node
-     * @param  Nodes\DelimitedList\ConstElementList $list
-     * @param  Scope $activeScope
-     * @return Contexts\ClassLikeConstantContext
-     */
-    protected static function inspectElementList(Nodes\ClassConstDeclaration $node, Nodes\DelimitedList\ConstElementList $list, Scope $activeScope) : Contexts\ClassLikeConstantContext
-    {
-        foreach ($list->getChildNodes() as $childNode) {
-            switch (true) {
-                case $childNode instanceof Nodes\ConstElement:
-                    return self::inspectElement($node, $childNode, $activeScope);
-            }
-        }
-    }
-
-    /**
-     * make sense of a single const element
-     *
-     * @param  Nodes\ClassConstDeclaration $node
-     * @param  Nodes\ConstElement $list
-     * @param  Scope $activeScope
-     * @return Contexts\ClassLikeConstantContext
-     */
-    protected static function inspectElement(Nodes\ClassConstDeclaration $node, Nodes\ConstElement $element, Scope $activeScope) : Contexts\ClassLikeConstantContext
-    {
         // what is this property called?
-        $constName = Helpers\GetTokenText::from($element, $element->name);
+        $propertyName = $exprCtxs[0]->getLHS();
 
         // do we have a default value?
-        $defaultValue = Helpers\GetTokenText::from($element, $element->assignment);
+        $defaultValue = $exprCtxs[0]->getRHS();
 
         // let's find out what kind of modifiers it has
         $modifiers = ReflectNodeModifiers::from($node, $node->modifiers);
@@ -116,8 +87,11 @@ class ReflectClassConstantDeclaration
         // what security scope?
         $securityScope = ReflectSecurityScope::from($modifiers);
 
+        // static?
+        $isStaticProp = isset($modifiers['static']) ? true : false;
+
         // we can now build the property!
-        $retval = new Contexts\ClassLikeConstantContext($securityScope, $constName, $defaultValue);
+        $retval = new Contexts\PropertyContext($securityScope, $isStaticProp, $propertyName, $defaultValue);
 
         // does it have a docblock?
         Helpers\AttachLeadingComment::using($node, $retval, $activeScope);

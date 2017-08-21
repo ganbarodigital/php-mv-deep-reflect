@@ -41,97 +41,82 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
 use GanbaroDigital\DeepReflection\V1\Contexts;
 use GanbaroDigital\DeepReflection\V1\Helpers;
 use GanbaroDigital\DeepReflection\V1\Scope;
-
-use phpDocumentor\Reflection\DocBlockFactory;
-use phpDocumentor\Reflection\DocBlock\Tags;
+use Microsoft\PhpParser\Node\Statement\NamespaceUseDeclaration;
+use Microsoft\PhpParser\Node\Statement as Statements;
+use Microsoft\PhpParser\Node as Nodes;
 
 /**
- * understand a docblock
+ * understand something imported via a namespace
  */
-class ReflectDocblock
+class ReflectNamespacedImport
 {
     /**
-     * understand a docblock
+     * understand something imported via a namespace
      *
-     * @param  string $comment
-     *         the docblock that we need to parse
+     * @param  NamespaceUseDeclaration $node
+     *         the AST that does the import
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
-     * @return DocblockContext
-     *         what we learned from the docblock
+     * @return Contexts\NamespacedImportContext[]
+     *         our understanding about what has been imported
      */
-    public static function from(string $comment, Scope $activeScope) : Contexts\DocblockContext
+    public static function from(NamespaceUseDeclaration $node, Scope $activeScope) : array
     {
-        // what does Mike's parser make of it?
-        //
-        // we have our own factory, as we need to override some
-        // of it's in-built behaviour
-        $dbFactory = Helpers\BuildDocblockParser::now();
-        $db = $dbFactory->create($comment);
+        $retval=[];
 
-        // what do we have?
-        $summ = $db->getSummary();
-        $desc = $db->getDescription();
-
-        $tags = $db->getTags();
-
-        // var_dump($tags);
-
-        $params = [];
-        $retType = [
-            'type' => null,
-            'description' => null
-        ];
-        $type = null;
-        $others = [];
-
-        foreach ($tags as $tag) {
+        foreach ($node->getDescendantNodes() as $childNode)
+        {
+            // echo "- " . get_class($childNode) . PHP_EOL;
             switch(true) {
-                case $tag instanceof Tags\Param:
-                    $paramName = $tag->getVariableName();
-                    $params[$paramName] = [
-                        'name' => $paramName,
-                        'type' => (string)$tag->getType(),
-                        'isVariadic' => $tag->isVariadic(),
-                        'description' => $tag->getDescription(),
-                    ];
-                    break;
+                case $childNode instanceof Nodes\DelimitedList\NamespaceUseClauseList:
+                    $newImports = self::inspectUseClauseList($childNode, $activeScope);
 
-                case $tag instanceof Tags\Return_:
-                    $retType = [
-                        'type' => (string)$tag->getType(),
-                        'description' => $tag->getDescription()
-                    ];
-                    break;
+                    foreach($newImports as $newImport) {
+                        // does it have a docblock?
+                        Helpers\AttachLeadingComment::using($childNode, $newImport, $activeScope);
 
-                case $tag instanceof Tags\Var_:
-                    $type = (string)$tag->getType();
+                        $retval[] = $newImport;
+                    }
                     break;
-
-                default:
-                    $others[] = [
-                        'type' => $tag->getName(),
-                        'tag' => $tag
-                    ];
             }
         }
 
-        $retval = new Contexts\DocblockContext(
-            $comment,
-            $summ,
-            $desc,
-            $params,
-            $retType,
-            $type,
-            $others
-        );
+        // at this point, we have a list of import or imports
+        // but we don't understand what has been imported
 
         // all done
+        return $retval;
+    }
+
+    /**
+     * extract a list of imports from the AST of a use clause
+     *
+     * @param  Nodes\DelimitedList\NamespaceUseClauseList $nodes
+     *         the AST to inspect
+     * @return array
+     *         a list of imports discovered
+     */
+    protected static function inspectUseClauseList(Nodes\DelimitedList\NamespaceUseClauseList $nodes, Scope $activeScope) : array
+    {
+        // our return list
+        $retval = [];
+
+        foreach ($nodes->getDescendantNodes() as $node)
+        {
+            // echo "-- " . get_class($node) . PHP_EOL;
+            switch(true) {
+                case $node instanceof Nodes\NamespaceUseClause:
+                    $aliasName = $node->namespaceAliasingClause ? trim(substr($node->namespaceAliasingClause->getText(), 3)) : null;
+                    $retval[] = new Contexts\NamespacedImportContext($node->namespaceName, $aliasName);
+                    break;
+            }
+        }
+
         return $retval;
     }
 }

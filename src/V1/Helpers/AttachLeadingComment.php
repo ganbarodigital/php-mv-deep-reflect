@@ -93,7 +93,7 @@ class AttachLeadingComment
     private static function reflectComment($comment, Scope $activeScope)
     {
         if (Checks\IsDocblock::check($comment)) {
-            return Reflectors\ReflectDocblock::from($comment, $activeScope);
+            return Reflectors\PHP\ReflectDocblock::from($comment, $activeScope);
         }
         else if (Checks\IsComment::check($comment)) {
             return new Contexts\CommentContext($comment);

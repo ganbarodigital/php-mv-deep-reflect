@@ -41,7 +41,7 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
 use GanbaroDigital\DeepReflection\V1\Checks;
 use GanbaroDigital\DeepReflection\V1\Contexts;
@@ -52,27 +52,63 @@ use Microsoft\PhpParser\Node\Statement as Statements;
 use Microsoft\PhpParser\Node as Nodes;
 
 /**
- * understand a method declaration
+ * understand a constant declaration in a class-like context
  */
-class ReflectMethodDeclaration
+class ReflectClassConstantDeclaration
 {
     /**
-     * understand a method declaration
+     * understand a constant declaration in a class-like context
      *
-     * @param  Nodes\MethodDefintion $node
-     *         the AST that declares the method
+     * @param  Nodes\ClassConstDeclaration $node
+     *         the AST that declares the constant
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
-     * @return Contexts\ClassContext
-     *         our understanding about the class
+     * @return Contexts\ClassLikeConstantContext
+     *         our understanding about the property
      */
-    public static function from(Nodes\MethodDeclaration $node, Scope $activeScope) : Contexts\MethodContext
+    public static function from(Nodes\ClassConstDeclaration $node, Scope $activeScope) : Contexts\ClassLikeConstantContext
     {
-        // what is this method called?
-        $methodName = $node->getName();
+        foreach ($node->getChildNodes() as $childNode) {
+            switch (true) {
+                case $childNode instanceof Nodes\DelimitedList\ConstElementList:
+                    return self::inspectElementList($node, $childNode, $activeScope);
+            }
+        }
+    }
 
-        // what is its return type?
-        $returnType = Helpers\GetTokenText::from($node, $node->returnType, null);
+    /**
+     * make sense of a list of const elements
+     *
+     * @param  Nodes\ClassConstDeclaration $node
+     * @param  Nodes\DelimitedList\ConstElementList $list
+     * @param  Scope $activeScope
+     * @return Contexts\ClassLikeConstantContext
+     */
+    protected static function inspectElementList(Nodes\ClassConstDeclaration $node, Nodes\DelimitedList\ConstElementList $list, Scope $activeScope) : Contexts\ClassLikeConstantContext
+    {
+        foreach ($list->getChildNodes() as $childNode) {
+            switch (true) {
+                case $childNode instanceof Nodes\ConstElement:
+                    return self::inspectElement($node, $childNode, $activeScope);
+            }
+        }
+    }
+
+    /**
+     * make sense of a single const element
+     *
+     * @param  Nodes\ClassConstDeclaration $node
+     * @param  Nodes\ConstElement $list
+     * @param  Scope $activeScope
+     * @return Contexts\ClassLikeConstantContext
+     */
+    protected static function inspectElement(Nodes\ClassConstDeclaration $node, Nodes\ConstElement $element, Scope $activeScope) : Contexts\ClassLikeConstantContext
+    {
+        // what is this property called?
+        $constName = Helpers\GetTokenText::from($element, $element->name);
+
+        // do we have a default value?
+        $defaultValue = Helpers\GetTokenText::from($element, $element->assignment);
 
         // let's find out what kind of modifiers it has
         $modifiers = ReflectNodeModifiers::from($node, $node->modifiers);
@@ -80,38 +116,11 @@ class ReflectMethodDeclaration
         // what security scope?
         $securityScope = ReflectSecurityScope::from($modifiers);
 
-        // static?
-        $isStaticMethod = isset($modifiers['static']) ? true : false;
-
-        // abstract?
-        $isAbstractMethod = isset($modifiers['abstract']) ? true : false;
-
-        // build the method
-        $retval = new Contexts\MethodContext($isAbstractMethod, $securityScope, $isStaticMethod, $methodName, $returnType);
-
-        // the scope has now changed!
-        $activeScope = $activeScope->withMethod($retval);
+        // we can now build the property!
+        $retval = new Contexts\ClassLikeConstantContext($securityScope, $constName, $defaultValue);
 
         // does it have a docblock?
         Helpers\AttachLeadingComment::using($node, $retval, $activeScope);
-
-        // find its parameters
-        $params = [];
-        foreach ($node->getChildNodes() as $childNode)
-        {
-            // echo '-- ' . get_class($childNode) . PHP_EOL;
-            switch (true) {
-                case $childNode instanceof Nodes\DelimitedList\ParameterDeclarationList:
-                    $params[] = ReflectParameterDeclarationList::from($childNode, $activeScope);
-                    break;
-            }
-        }
-
-        // attach the parameters
-        foreach($params as $param) {
-            $retval->attachChildContext($param);
-            $param->attachParentContext($retval);
-        }
 
         // all done
         return $retval;

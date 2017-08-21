@@ -41,87 +41,65 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
 use GanbaroDigital\DeepReflection\V1\Checks;
 use GanbaroDigital\DeepReflection\V1\Contexts;
 use GanbaroDigital\DeepReflection\V1\Helpers;
 use GanbaroDigital\DeepReflection\V1\Scope;
-use Microsoft\PhpParser\Node\MethodDeclaration;
+use Microsoft\PhpParser\Node\FunctionDeclaration;
 use Microsoft\PhpParser\Node\Statement as Statements;
 use Microsoft\PhpParser\Node as Nodes;
 
 /**
- * understand a method declaration
+ * understand a function declaration
  */
-class ReflectParameterDeclarationList
+class ReflectFunctionDeclaration
 {
     /**
-     * understand a method declaration
+     * understand a function declaration
      *
-     * @param  Nodes\MethodDefintion $node
-     *         the AST that declares the method
+     * @param  Nodes\FunctionDefintion $node
+     *         the AST that declares the function
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
      * @return Contexts\ClassContext
      *         our understanding about the class
      */
-    public static function from(Nodes\DelimitedList\ParameterDeclarationList $node, Scope $activeScope) : Contexts\FunctionLikeParameterContext
+    public static function from(Statements\FunctionDeclaration $node, Scope $activeScope) : Contexts\FunctionContext
     {
-        // what's hiding inside?
+        // what is this function called?
+        $functionName = Helpers\GetTokenText::from($node, $node->name);
+
+        // what is its return type?
+        $returnType = Helpers\GetTokenText::from($node, $node->returnType, null);
+
+        // build the function
+        $retval = new Contexts\FunctionContext($functionName, $returnType);
+
+        // the scope has now changed!
+        $activeScope = $activeScope->withFunction($retval);
+
+        // does it have a docblock?
+        Helpers\AttachLeadingComment::using($node, $retval, $activeScope);
+
+        // find its parameters
+        $params = [];
         foreach ($node->getChildNodes() as $childNode)
         {
-            // echo '--- ' . get_class($childNode) . PHP_EOL;
+            // echo '-- ' . get_class($childNode) . PHP_EOL;
             switch (true) {
-                case $childNode instanceof Nodes\Parameter:
-                    return self::inspectParameterNode($childNode, $activeScope);
+                case $childNode instanceof Nodes\DelimitedList\ParameterDeclarationList:
+                    $params[] = ReflectParameterDeclarationList::from($childNode, $activeScope);
+                    break;
             }
         }
 
-        // all done
-        // return $retval;
-    }
-
-    /**
-     * find all the things that our class contains
-     *
-     * @param  Nodes\ClassMembersNode $node
-     *         the container to examine
-     * @param  Scope $activeScope
-     *         keeping track of where we are as we inspect things
-     * @return void
-     */
-    public static function inspectParameterNode(Nodes\Parameter $node, Scope $activeScope)
-    {
-        // what is the parameter called?
-        $name = Helpers\GetTokenText::from($node, $node->variableName);
-
-        // does it have a type-hint at all?
-        $typeHint = Helpers\GetTokenText::from($node, $node->typeDeclaration);
-
-        // is it passed by reference?
-        $passByReference = Helpers\GetTokenText::from($node, $node->byRefToken, false) ? true : false;
-
-        // does it have a default value?
-        $hasDefaultValue = false;
-        $defaultValue = null;
-        if ($node->equalsToken) {
-            $defaultValue = Helpers\GetTokenText::from($node, $node->default);
-            $hasDefaultValue = true;
+        // attach the parameters
+        foreach($params as $param) {
+            $retval->attachChildContext($param);
+            $param->attachParentContext($retval);
         }
-
-        // is the parameter variadic?
-        $isVariadic = $node->dotDotDotToken ? true : false;
-
-        // putting it all together
-        $retval = new Contexts\FunctionLikeParameterContext(
-            $typeHint,
-            $passByReference,
-            $isVariadic,
-            $name,
-            $hasDefaultValue,
-            $defaultValue
-        );
 
         // all done
         return $retval;

@@ -41,41 +41,38 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
 use GanbaroDigital\DeepReflection\V1\Checks;
 use GanbaroDigital\DeepReflection\V1\Contexts;
 use GanbaroDigital\DeepReflection\V1\Helpers;
 use GanbaroDigital\DeepReflection\V1\Scope;
-use Microsoft\PhpParser\Node;
+use Microsoft\PhpParser\Node\MethodDeclaration;
+use Microsoft\PhpParser\Node\Statement as Statements;
+use Microsoft\PhpParser\Node as Nodes;
 
 /**
- * extract the list of modifiers for a class or function or similar
+ * understand a PHP assignment expression
  */
-class ReflectNodeModifiers
+class ReflectAssignmentExpression
 {
     /**
-     * extract the list of modifiers for a class or function or similar
+     * understand a PHP assignment expression
      *
-     * @param  Node $node
-     *         the AST where the modifiers are
-     * @param  array $modifierTokens
-     *         a list of the modifier tokens to understand
-     * @return array
-     *         a list of modifiers found
+     * @param  Nodes\Expression\AssignmentExpression $node
+     *         the AST that declares the expression
+     * @param  Scope $activeScope
+     *         keeping track of where we are as we inspect things
+     * @return Contexts\ExpressionContext
+     *         our understanding about the assignment
      */
-    public static function from(Node $node, array $modifiers) : array
+    public static function from(Nodes\Expression\AssignmentExpression $node, Scope $activeScope) : Contexts\ExpressionContext
     {
-        // our return value
-        $retval = [];
+        // what do we have?
+        $lhs = Helpers\GetTokenText::from($node, $node->leftOperand);
+        $rhs = Helpers\GetTokenText::from($node, $node->rightOperand);
 
-        // let's find out what kind of modifiers it has
-        foreach ($modifiers as $modifierToken) {
-            $modifier = Helpers\GetTokenText::from($node, $modifierToken);
-            $retval[$modifier] = $modifier;
-        }
-
-        // all done
+        $retval = new Contexts\ExpressionContext($lhs, '=', $rhs);
         return $retval;
     }
 }

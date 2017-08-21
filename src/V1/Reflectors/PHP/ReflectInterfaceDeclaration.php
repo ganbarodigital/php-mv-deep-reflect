@@ -41,7 +41,7 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
 use GanbaroDigital\DeepReflection\V1\Checks;
 use GanbaroDigital\DeepReflection\V1\Contexts;
@@ -52,26 +52,26 @@ use Microsoft\PhpParser\Node\Statement as Statements;
 use Microsoft\PhpParser\Node as Nodes;
 
 /**
- * understand a class declaration
+ * understand an interface declaration
  */
-class ReflectClassDeclaration
+class ReflectInterfaceDeclaration
 {
     /**
-     * understand a class declaration
+     * understand an interface declaration
      *
-     * @param  Statements\ClassDefintion $node
-     *         the AST that declares the class
+     * @param  Statements\InterfaceDefintion $node
+     *         the AST that declares the interface
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
-     * @return Contexts\ClassContext
-     *         our understanding about the class
+     * @return Contexts\InterfaceContext
+     *         our understanding about the interface
      */
-    public static function from(Statements\ClassDeclaration $node, Scope $activeScope) : Contexts\ClassContext
+    public static function from(Statements\InterfaceDeclaration $node, Scope $activeScope) : Contexts\InterfaceContext
     {
         // what is our parent's namespace?
         $namespace = $activeScope->getNamespace()->getContainingNamespace();
 
-        // what is this class called?
+        // what is this interface called?
         $classname = $node->name->getText($node->parent->fileContents);
 
         // put the two together
@@ -83,19 +83,19 @@ class ReflectClassDeclaration
         }
 
         // now we can create the class itself
-        $retval = new Contexts\ClassContext($fqcn);
+        $retval = new Contexts\InterfaceContext($fqcn);
 
         // does it have a docblock?
         Helpers\AttachLeadingComment::using($node, $retval, $activeScope);
 
         // now that we have a class, our active scope has changed!
-        $activeScope = $activeScope->withClass($retval);
+        $activeScope = $activeScope->withInterface($retval);
 
         foreach ($node->getChildNodes() as $childNode)
         {
-            // echo get_class($childNode) . PHP_EOL;
+            echo get_class($childNode) . PHP_EOL;
             switch (true) {
-                case $childNode instanceof Nodes\ClassMembersNode:
+                case $childNode instanceof Nodes\InterfaceMembers:
                     self::inspectMembersNode($childNode, $activeScope, $retval);
             }
         }
@@ -115,22 +115,12 @@ class ReflectClassDeclaration
      *         the class we are learning about
      * @return void
      */
-    protected static function inspectMembersNode(Nodes\ClassMembersNode $node, Scope $activeScope, Contexts\ClassContext $retval)
+    protected static function inspectMembersNode(Nodes\InterfaceMembers $node, Scope $activeScope, Contexts\InterfaceContext $retval)
     {
         foreach ($node->getChildNodes() as $childNode)
         {
-            // echo "- " . get_class($childNode) . PHP_EOL;
+            echo "- " . get_class($childNode) . PHP_EOL;
             switch (true) {
-                case $childNode instanceof Nodes\ClassConstDeclaration:
-                    $constCtx = ReflectClassConstantDeclaration::from($childNode, $activeScope);
-                    Helpers\AttachToParents::using($constCtx, $activeScope);
-                    break;
-
-                case $childNode instanceof Nodes\PropertyDeclaration:
-                    $propCtx = ReflectPropertyDeclaration::from($childNode, $activeScope);
-                    Helpers\AttachToParents::using($propCtx, $activeScope);
-                    break;
-
                 case $childNode instanceof Nodes\MethodDeclaration:
                     $methodCtx = ReflectMethodDeclaration::from($childNode, $activeScope);
                     Helpers\AttachToParents::using($methodCtx, $activeScope);

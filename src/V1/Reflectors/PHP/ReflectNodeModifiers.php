@@ -41,39 +41,38 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
 use GanbaroDigital\DeepReflection\V1\Checks;
 use GanbaroDigital\DeepReflection\V1\Contexts;
 use GanbaroDigital\DeepReflection\V1\Helpers;
 use GanbaroDigital\DeepReflection\V1\Scope;
-use Microsoft\PhpParser\Node\MethodDeclaration;
-use Microsoft\PhpParser\Node\Statement as Statements;
-use Microsoft\PhpParser\Node as Nodes;
+use Microsoft\PhpParser\Node;
 
 /**
- * understand an expression list
+ * extract the list of modifiers for a class or function or similar
  */
-class ReflectExpressionList
+class ReflectNodeModifiers
 {
     /**
-     * understand an expression list
+     * extract the list of modifiers for a class or function or similar
      *
-     * @param  Nodes\DelimitedList\ExpressionList $node
-     *         the AST that declares the list of expressions
-     * @param  Scope $activeScope
-     *         keeping track of where we are as we inspect things
+     * @param  Node $node
+     *         the AST where the modifiers are
+     * @param  array $modifierTokens
+     *         a list of the modifier tokens to understand
      * @return array
-     *         the expression(s) that we found
+     *         a list of modifiers found
      */
-    public static function from(Nodes\DelimitedList\ExpressionList $node, Scope $activeScope) : array
+    public static function from(Node $node, array $modifiers) : array
     {
-        // this will hold all the expressions that we find
+        // our return value
         $retval = [];
 
-        // what do we have?
-        foreach($node->getChildNodes() as $childNode) {
-            $retval[] = ReflectExpression::from($childNode, $activeScope);
+        // let's find out what kind of modifiers it has
+        foreach ($modifiers as $modifierToken) {
+            $modifier = Helpers\GetTokenText::from($node, $modifierToken);
+            $retval[$modifier] = $modifier;
         }
 
         // all done

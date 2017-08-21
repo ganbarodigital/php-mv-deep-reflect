@@ -41,7 +41,7 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
 use GanbaroDigital\DeepReflection\V1\Checks;
 use GanbaroDigital\DeepReflection\V1\Contexts;
@@ -52,26 +52,26 @@ use Microsoft\PhpParser\Node\Statement as Statements;
 use Microsoft\PhpParser\Node as Nodes;
 
 /**
- * understand an interface declaration
+ * understand a trait declaration
  */
-class ReflectInterfaceDeclaration
+class ReflectTraitDeclaration
 {
     /**
-     * understand an interface declaration
+     * understand a trait declaration
      *
-     * @param  Statements\InterfaceDefintion $node
-     *         the AST that declares the interface
+     * @param  Statements\TraitDefintion $node
+     *         the AST that declares the trait
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
-     * @return Contexts\InterfaceContext
-     *         our understanding about the interface
+     * @return Contexts\TraitContext
+     *         our understanding about the trait
      */
-    public static function from(Statements\InterfaceDeclaration $node, Scope $activeScope) : Contexts\InterfaceContext
+    public static function from(Statements\TraitDeclaration $node, Scope $activeScope) : Contexts\TraitContext
     {
         // what is our parent's namespace?
         $namespace = $activeScope->getNamespace()->getContainingNamespace();
 
-        // what is this interface called?
+        // what is this trait called?
         $classname = $node->name->getText($node->parent->fileContents);
 
         // put the two together
@@ -82,21 +82,22 @@ class ReflectInterfaceDeclaration
             $fqcn = $classname;
         }
 
-        // now we can create the class itself
-        $retval = new Contexts\InterfaceContext($fqcn);
+        // now we can create the trait itself
+        $retval = new Contexts\TraitContext($fqcn);
 
         // does it have a docblock?
         Helpers\AttachLeadingComment::using($node, $retval, $activeScope);
 
-        // now that we have a class, our active scope has changed!
-        $activeScope = $activeScope->withInterface($retval);
+        // now that we have a trait, our active scope has changed!
+        $activeScope = $activeScope->withTrait($retval);
 
         foreach ($node->getChildNodes() as $childNode)
         {
-            echo get_class($childNode) . PHP_EOL;
+            // echo get_class($childNode) . PHP_EOL;
             switch (true) {
-                case $childNode instanceof Nodes\InterfaceMembers:
+                case $childNode instanceof Nodes\TraitMembers:
                     self::inspectMembersNode($childNode, $activeScope, $retval);
+                    break;
             }
         }
 
@@ -115,12 +116,22 @@ class ReflectInterfaceDeclaration
      *         the class we are learning about
      * @return void
      */
-    protected static function inspectMembersNode(Nodes\InterfaceMembers $node, Scope $activeScope, Contexts\InterfaceContext $retval)
+    protected static function inspectMembersNode(Nodes\TraitMembers $node, Scope $activeScope, Contexts\TraitContext $retval)
     {
         foreach ($node->getChildNodes() as $childNode)
         {
-            echo "- " . get_class($childNode) . PHP_EOL;
+            // echo "- " . get_class($childNode) . PHP_EOL;
             switch (true) {
+                case $childNode instanceof Nodes\ClassConstDeclaration:
+                    $constCtx = ReflectClassConstantDeclaration::from($childNode, $activeScope);
+                    Helpers\AttachToParents::using($constCtx, $activeScope);
+                    break;
+
+                case $childNode instanceof Nodes\PropertyDeclaration:
+                    $propCtx = ReflectPropertyDeclaration::from($childNode, $activeScope);
+                    Helpers\AttachToParents::using($propCtx, $activeScope);
+                    break;
+
                 case $childNode instanceof Nodes\MethodDeclaration:
                     $methodCtx = ReflectMethodDeclaration::from($childNode, $activeScope);
                     Helpers\AttachToParents::using($methodCtx, $activeScope);

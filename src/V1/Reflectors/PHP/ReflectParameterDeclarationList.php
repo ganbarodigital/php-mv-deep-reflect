@@ -41,54 +41,87 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
+use GanbaroDigital\DeepReflection\V1\Checks;
 use GanbaroDigital\DeepReflection\V1\Contexts;
 use GanbaroDigital\DeepReflection\V1\Helpers;
 use GanbaroDigital\DeepReflection\V1\Scope;
-use Microsoft\PhpParser\Node\Statement\NamespaceDefinition;
+use Microsoft\PhpParser\Node\MethodDeclaration;
 use Microsoft\PhpParser\Node\Statement as Statements;
 use Microsoft\PhpParser\Node as Nodes;
 
 /**
- * understand a namespace declaration
+ * understand a method declaration
  */
-class ReflectNamespaceDeclaration
+class ReflectParameterDeclarationList
 {
     /**
-     * understand a namespace declaration
+     * understand a method declaration
      *
-     * @param  NamespaceDefintion $node
-     *         the AST that declares the namespace
+     * @param  Nodes\MethodDefintion $node
+     *         the AST that declares the method
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
-     * @return NamespaceContext
-     *         our understanding about the namespace
+     * @return Contexts\ClassContext
+     *         our understanding about the class
      */
-    public static function from(NamespaceDefinition $node, Scope $activeScope) : Contexts\NamespaceContext
+    public static function from(Nodes\DelimitedList\ParameterDeclarationList $node, Scope $activeScope) : Contexts\FunctionLikeParameterContext
     {
-        // we cannot create our return value until we know which namespace
-        // we are looking at
-
-        // find the namespace
-        $namespaceName = null;
+        // what's hiding inside?
         foreach ($node->getChildNodes() as $childNode)
         {
-            switch(true) {
-                case $childNode instanceof Nodes\QualifiedName:
-                    $namespaceName = $childNode->getText();
-                    break;
+            // echo '--- ' . get_class($childNode) . PHP_EOL;
+            switch (true) {
+                case $childNode instanceof Nodes\Parameter:
+                    return self::inspectParameterNode($childNode, $activeScope);
             }
         }
 
-        // at this point, we should have the namespace
-        //
-        // we don't create it ourselves - we let our global context
-        // handle that
-        //
-        // it acts as the ultimate container of everything we have
-        // seen so far
-        $retval = $activeScope->getGlobalContext()->getNamespace($namespaceName);
+        // all done
+        // return $retval;
+    }
+
+    /**
+     * find all the things that our class contains
+     *
+     * @param  Nodes\ClassMembersNode $node
+     *         the container to examine
+     * @param  Scope $activeScope
+     *         keeping track of where we are as we inspect things
+     * @return void
+     */
+    public static function inspectParameterNode(Nodes\Parameter $node, Scope $activeScope)
+    {
+        // what is the parameter called?
+        $name = Helpers\GetTokenText::from($node, $node->variableName);
+
+        // does it have a type-hint at all?
+        $typeHint = Helpers\GetTokenText::from($node, $node->typeDeclaration);
+
+        // is it passed by reference?
+        $passByReference = Helpers\GetTokenText::from($node, $node->byRefToken, false) ? true : false;
+
+        // does it have a default value?
+        $hasDefaultValue = false;
+        $defaultValue = null;
+        if ($node->equalsToken) {
+            $defaultValue = Helpers\GetTokenText::from($node, $node->default);
+            $hasDefaultValue = true;
+        }
+
+        // is the parameter variadic?
+        $isVariadic = $node->dotDotDotToken ? true : false;
+
+        // putting it all together
+        $retval = new Contexts\FunctionLikeParameterContext(
+            $typeHint,
+            $passByReference,
+            $isVariadic,
+            $name,
+            $hasDefaultValue,
+            $defaultValue
+        );
 
         // all done
         return $retval;

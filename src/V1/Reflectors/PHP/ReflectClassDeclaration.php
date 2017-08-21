@@ -41,7 +41,7 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
 use GanbaroDigital\DeepReflection\V1\Checks;
 use GanbaroDigital\DeepReflection\V1\Contexts;
@@ -52,26 +52,26 @@ use Microsoft\PhpParser\Node\Statement as Statements;
 use Microsoft\PhpParser\Node as Nodes;
 
 /**
- * understand a trait declaration
+ * understand a class declaration
  */
-class ReflectTraitDeclaration
+class ReflectClassDeclaration
 {
     /**
-     * understand a trait declaration
+     * understand a class declaration
      *
-     * @param  Statements\TraitDefintion $node
-     *         the AST that declares the trait
+     * @param  Statements\ClassDefintion $node
+     *         the AST that declares the class
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
-     * @return Contexts\TraitContext
-     *         our understanding about the trait
+     * @return Contexts\ClassContext
+     *         our understanding about the class
      */
-    public static function from(Statements\TraitDeclaration $node, Scope $activeScope) : Contexts\TraitContext
+    public static function from(Statements\ClassDeclaration $node, Scope $activeScope) : Contexts\ClassContext
     {
         // what is our parent's namespace?
         $namespace = $activeScope->getNamespace()->getContainingNamespace();
 
-        // what is this trait called?
+        // what is this class called?
         $classname = $node->name->getText($node->parent->fileContents);
 
         // put the two together
@@ -82,22 +82,21 @@ class ReflectTraitDeclaration
             $fqcn = $classname;
         }
 
-        // now we can create the trait itself
-        $retval = new Contexts\TraitContext($fqcn);
+        // now we can create the class itself
+        $retval = new Contexts\ClassContext($fqcn);
 
         // does it have a docblock?
         Helpers\AttachLeadingComment::using($node, $retval, $activeScope);
 
-        // now that we have a trait, our active scope has changed!
-        $activeScope = $activeScope->withTrait($retval);
+        // now that we have a class, our active scope has changed!
+        $activeScope = $activeScope->withClass($retval);
 
         foreach ($node->getChildNodes() as $childNode)
         {
             // echo get_class($childNode) . PHP_EOL;
             switch (true) {
-                case $childNode instanceof Nodes\TraitMembers:
+                case $childNode instanceof Nodes\ClassMembersNode:
                     self::inspectMembersNode($childNode, $activeScope, $retval);
-                    break;
             }
         }
 
@@ -116,7 +115,7 @@ class ReflectTraitDeclaration
      *         the class we are learning about
      * @return void
      */
-    protected static function inspectMembersNode(Nodes\TraitMembers $node, Scope $activeScope, Contexts\TraitContext $retval)
+    protected static function inspectMembersNode(Nodes\ClassMembersNode $node, Scope $activeScope, Contexts\ClassContext $retval)
     {
         foreach ($node->getChildNodes() as $childNode)
         {

@@ -41,38 +41,37 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
-
-use GanbaroDigital\DeepReflection\V1\Checks;
-use GanbaroDigital\DeepReflection\V1\Contexts;
-use GanbaroDigital\DeepReflection\V1\Helpers;
-use GanbaroDigital\DeepReflection\V1\Scope;
-use Microsoft\PhpParser\Node\MethodDeclaration;
-use Microsoft\PhpParser\Node\Statement as Statements;
-use Microsoft\PhpParser\Node as Nodes;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
 /**
- * understand a PHP assignment expression
+ * understand a security scope
  */
-class ReflectAssignmentExpression
+class ReflectSecurityScope
 {
     /**
-     * understand a PHP assignment expression
+     * understand a security scope
      *
-     * @param  Nodes\Expression\AssignmentExpression $node
-     *         the AST that declares the expression
-     * @param  Scope $activeScope
-     *         keeping track of where we are as we inspect things
-     * @return Contexts\ExpressionContext
-     *         our understanding about the assignment
+     * @param  array $modifiers
+     *         a list of modifiers extracted by ReflectNodeModifiers
+     * @return string
+     *         one of 'public', 'protected', 'private', or ''
      */
-    public static function from(Nodes\Expression\AssignmentExpression $node, Scope $activeScope) : Contexts\ExpressionContext
+    public static function from(array $modifiers) : string
     {
-        // what do we have?
-        $lhs = Helpers\GetTokenText::from($node, $node->leftOperand);
-        $rhs = Helpers\GetTokenText::from($node, $node->rightOperand);
+        $searchOrder = [ 'private', 'protected', 'public' ];
+        foreach ($searchOrder as $searchItem) {
+            if (isset($modifiers[$searchItem])) {
+                return $modifiers[$searchItem];
+            }
+        }
 
-        $retval = new Contexts\ExpressionContext($lhs, '=', $rhs);
-        return $retval;
+        // if we get there, then there is *no* security scope set
+        //
+        // we could return 'public' here (which is the default behaviour)
+        // but we're not trying to parse *behaviour*, but *explicit*
+        // declarations
+        //
+        // an empty string seems the most appropriate
+        return '';
     }
 }

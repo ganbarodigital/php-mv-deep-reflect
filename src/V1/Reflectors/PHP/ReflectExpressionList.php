@@ -41,7 +41,7 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
 use GanbaroDigital\DeepReflection\V1\Checks;
 use GanbaroDigital\DeepReflection\V1\Contexts;
@@ -52,49 +52,29 @@ use Microsoft\PhpParser\Node\Statement as Statements;
 use Microsoft\PhpParser\Node as Nodes;
 
 /**
- * understand a property declaration
+ * understand an expression list
  */
-class ReflectPropertyDeclaration
+class ReflectExpressionList
 {
     /**
-     * understand a property declaration
+     * understand an expression list
      *
-     * @param  Nodes\PropertyDeclaration $node
-     *         the AST that declares the property
+     * @param  Nodes\DelimitedList\ExpressionList $node
+     *         the AST that declares the list of expressions
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
-     * @return Contexts\PropertyContext
-     *         our understanding about the property
+     * @return array
+     *         the expression(s) that we found
      */
-    public static function from(Nodes\PropertyDeclaration $node, Scope $activeScope) : Contexts\PropertyContext
+    public static function from(Nodes\DelimitedList\ExpressionList $node, Scope $activeScope) : array
     {
-        // a PHP property declaration is treated as an expression
-        // by the parser we are using
-        //
-        // to find the property's name and default value (if any), we must
-        // understand the expression first
-        $exprCtxs = ReflectExpressionList::from($node->propertyElements, $activeScope);
+        // this will hold all the expressions that we find
+        $retval = [];
 
-        // what is this property called?
-        $propertyName = $exprCtxs[0]->getLHS();
-
-        // do we have a default value?
-        $defaultValue = $exprCtxs[0]->getRHS();
-
-        // let's find out what kind of modifiers it has
-        $modifiers = ReflectNodeModifiers::from($node, $node->modifiers);
-
-        // what security scope?
-        $securityScope = ReflectSecurityScope::from($modifiers);
-
-        // static?
-        $isStaticProp = isset($modifiers['static']) ? true : false;
-
-        // we can now build the property!
-        $retval = new Contexts\PropertyContext($securityScope, $isStaticProp, $propertyName, $defaultValue);
-
-        // does it have a docblock?
-        Helpers\AttachLeadingComment::using($node, $retval, $activeScope);
+        // what do we have?
+        foreach($node->getChildNodes() as $childNode) {
+            $retval[] = ReflectExpression::from($childNode, $activeScope);
+        }
 
         // all done
         return $retval;

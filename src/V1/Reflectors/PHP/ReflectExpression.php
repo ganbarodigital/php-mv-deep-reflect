@@ -41,37 +41,39 @@
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Reflectors;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
+
+use GanbaroDigital\DeepReflection\V1\Checks;
+use GanbaroDigital\DeepReflection\V1\Contexts;
+use GanbaroDigital\DeepReflection\V1\Helpers;
+use GanbaroDigital\DeepReflection\V1\Scope;
+use Microsoft\PhpParser\Node\MethodDeclaration;
+use Microsoft\PhpParser\Node\Statement as Statements;
+use Microsoft\PhpParser\Node as Nodes;
 
 /**
- * understand a security scope
+ * understand a PHP expression
  */
-class ReflectSecurityScope
+class ReflectExpression
 {
     /**
-     * understand a security scope
+     * understand a PHP expression
      *
-     * @param  array $modifiers
-     *         a list of modifiers extracted by ReflectNodeModifiers
-     * @return string
-     *         one of 'public', 'protected', 'private', or ''
+     * @param  Nodes\Expression $node
+     *         the AST that declares the expression
+     * @param  Scope $activeScope
+     *         keeping track of where we are as we inspect things
+     * @return Contexts\ExpressionContext
+     *         our understanding about the assignment
      */
-    public static function from(array $modifiers) : string
+    public static function from(Nodes\Expression $node, Scope $activeScope) : Contexts\ExpressionContext
     {
-        $searchOrder = [ 'private', 'protected', 'public' ];
-        foreach ($searchOrder as $searchItem) {
-            if (isset($modifiers[$searchItem])) {
-                return $modifiers[$searchItem];
-            }
-        }
+        switch(true) {
+            case $node instanceof Nodes\Expression\AssignmentExpression:
+                return ReflectAssignmentExpression::from($node, $activeScope);
 
-        // if we get there, then there is *no* security scope set
-        //
-        // we could return 'public' here (which is the default behaviour)
-        // but we're not trying to parse *behaviour*, but *explicit*
-        // declarations
-        //
-        // an empty string seems the most appropriate
-        return '';
+            default:
+                return null;
+        }
     }
 }
