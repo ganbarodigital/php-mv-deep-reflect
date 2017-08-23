@@ -72,7 +72,14 @@ class ReflectDocblock
         // we have our own factory, as we need to override some
         // of it's in-built behaviour
         $dbFactory = Helpers\BuildDocblockParser::now();
-        $db = $dbFactory->create($comment);
+        try {
+            $db = $dbFactory->create($comment);
+        }
+        catch (\Exception $e) {
+            // parsing failed, and there's nothing we can do about it
+            // right now
+            return new Contexts\DocblockContext('', '', '', [], [], '', []);
+        }
 
         // what do we have?
         $summ = $db->getSummary();

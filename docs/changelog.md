@@ -27,3 +27,11 @@ Initial support for understanding what's in a PHP source file
 - functions
   - function params
   - function return type
+
+Initial support for understanding what's in a Composer project
+- composer project
+- installed composer components
+- autoloaded PSR0 classes
+- autoloaded PSR4 classes
+- autoloaded files
+- autoloaded classmaps

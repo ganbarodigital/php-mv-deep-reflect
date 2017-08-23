@@ -50,57 +50,31 @@ use GanbaroDigital\DeepReflection\V1\Scope;
 use Microsoft\PhpParser\Node;
 
 /**
- * extract a docbloc or other leading comment, and attach it to
- * our context object
+ * remove all trailing whitespace from a string
  */
-class AttachLeadingComment
+class StripTrailingWhitespace
 {
     /**
-     * extract a docblock or other leading comment, and attach it to
-     * our context object
+     * remove all trailing whitespace from a string
      *
-     * @param  Node $node
-     *         the parser node to inspect
-     * @param  Contexts\Context $context
-     *         the thing that might have been commented upon
-     * @return void
+     * this *will* convert the string to use the same PHP_EOL as the
+     * system you are running the code on
+     *
+     * i.e. a dos2unix or unix2dos conversion could take place
+     *
+     * @param  string $input
+     *         the text that needs sorting out
+     * @return string
+     *         $input, with trailing whitespace removed
      */
-    public static function using(Node $node, Contexts\Context $context, Scope $activeScope)
+    public static function from(string $input) : string
     {
-        // does it have a leading comment?
-        $text = ltrim($node->getLeadingCommentAndWhitespaceText());
-        if (empty($text)) {
-            return;
+        $oldLines = explode("\n", $input);
+        $newLines = [];
+        foreach ($oldLines as $line) {
+            $newLines[] = rtrim($line);
         }
 
-        // there may be multiple comments here
-        $comments = SeparateComments::using($text);
-
-        // we only want the last one
-        $comment = end($comments);
-
-        // and only if there isn't a blank line after it
-        if (substr(StripTrailingWhitespace::from($comment), -2) == PHP_EOL . PHP_EOL) {
-            return;
-        }
-
-        // if we get here, we have a docblock or other comment
-        // that is immediately before $node
-        $commentCtx = self::reflectComment($comment, $activeScope);
-        $context->attachChildContext($commentCtx);
-    }
-
-    private static function reflectComment($comment, Scope $activeScope)
-    {
-        if (Checks\IsDocblock::check($comment)) {
-            return Reflectors\PHP\ReflectDocblock::from($comment, $activeScope);
-        }
-        else if (Checks\IsComment::check($comment)) {
-            return new Contexts\CommentContext($comment);
-        }
-
-        // if we get here, something has gone badly wrong!
-        var_dump($comment);
-        throw new \RuntimeException("unreachable code ... has been reached (:scream:)");
+        return implode(PHP_EOL, $newLines);
     }
 }

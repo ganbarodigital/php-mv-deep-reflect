@@ -34,73 +34,36 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   DeepReflection/Helpers
+ * @package   DeepReflection/Reflectors
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Helpers;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\PHP;
 
-use GanbaroDigital\DeepReflection\V1\Checks;
 use GanbaroDigital\DeepReflection\V1\Contexts;
-use GanbaroDigital\DeepReflection\V1\Reflectors;
+use GanbaroDigital\DeepReflection\V1\Checks;
+use GanbaroDigital\DeepReflection\V1\Helpers;
 use GanbaroDigital\DeepReflection\V1\Scope;
-use Microsoft\PhpParser\Node;
 
 /**
- * extract a docbloc or other leading comment, and attach it to
- * our context object
+ * find source files, and look inside them
  */
-class AttachLeadingComment
+class ReflectSourceFiles
 {
-    /**
-     * extract a docblock or other leading comment, and attach it to
-     * our context object
-     *
-     * @param  Node $node
-     *         the parser node to inspect
-     * @param  Contexts\Context $context
-     *         the thing that might have been commented upon
-     * @return void
-     */
-    public static function using(Node $node, Contexts\Context $context, Scope $activeScope)
+    public static function from(string $path, array $fileExts, Scope $activeScope) : array
     {
-        // does it have a leading comment?
-        $text = ltrim($node->getLeadingCommentAndWhitespaceText());
-        if (empty($text)) {
-            return;
+        // this will hold everything we find
+        $retval = [];
+
+        // okay, find the files we want
+        foreach (Helpers\FindFiles::from($path, $fileExts) as $filename) {
+            $retval[$path] = ReflectSourceFile::from($filename, $activeScope);
         }
 
-        // there may be multiple comments here
-        $comments = SeparateComments::using($text);
-
-        // we only want the last one
-        $comment = end($comments);
-
-        // and only if there isn't a blank line after it
-        if (substr(StripTrailingWhitespace::from($comment), -2) == PHP_EOL . PHP_EOL) {
-            return;
-        }
-
-        // if we get here, we have a docblock or other comment
-        // that is immediately before $node
-        $commentCtx = self::reflectComment($comment, $activeScope);
-        $context->attachChildContext($commentCtx);
-    }
-
-    private static function reflectComment($comment, Scope $activeScope)
-    {
-        if (Checks\IsDocblock::check($comment)) {
-            return Reflectors\PHP\ReflectDocblock::from($comment, $activeScope);
-        }
-        else if (Checks\IsComment::check($comment)) {
-            return new Contexts\CommentContext($comment);
-        }
-
-        // if we get here, something has gone badly wrong!
-        var_dump($comment);
-        throw new \RuntimeException("unreachable code ... has been reached (:scream:)");
+        // all done
+        return $retval;
     }
 }

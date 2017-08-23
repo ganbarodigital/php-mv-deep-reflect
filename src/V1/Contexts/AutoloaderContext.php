@@ -46,26 +46,33 @@ namespace GanbaroDigital\DeepReflection\V1\Contexts;
 use GanbaroDigital\DeepReflection\V1\Exceptions\UnsupportedContext;
 
 /**
- * represents an expression in PHP
- *
- * an expression typically has three elements:
- *
- * - left hand side (LHS)
- * - right hand side (RHS)
- * - the operator that connects them
+ * container for every autoloader instruction we come across
  */
-class ExpressionContext
+class AutoloaderContext implements Context
 {
-    protected $lhs;
-    protected $rhs;
-    protected $operator;
+    /**
+     * what PSR0 autoloading do we need to do?
+     * @var array
+     */
+    protected $autoloadPsr0 = [];
 
-    public function __construct($lhs, $operator, $rhs)
-    {
-        $this->lhs = $lhs;
-        $this->operator = $operator;
-        $this->rhs = $rhs;
-    }
+    /**
+     * what PSR4 autoloading do we need to do?
+     * @var array
+     */
+    protected $autoloadPsr4 = [];
+
+    /**
+     * which files would we be autoloading?
+     * @var array
+     */
+    protected $autoloadFiles = [];
+
+    /**
+     * where will we be looking for .php and .inc files?
+     * @var array
+     */
+    protected $autoloadClassmaps = [];
 
     /**
      * add something to our scope
@@ -77,7 +84,21 @@ class ExpressionContext
     public function attachChildContext(Context $context)
     {
         switch(true) {
-            // do nothing
+            case $context instanceof AutoloadPsr0Context:
+                $this->autoloadPsr0[$context->getAutoloadNamespace()][] = $context;
+                break;
+
+            case $context instanceof AutoloadPsr4Context:
+                $this->autoloadPsr4[$context->getAutoloadNamespace()][] = $context;
+                break;
+
+            case $context instanceof AutoloadFileContext:
+                $this->autoloadFiles[] = $context;
+                break;
+
+            case $context instanceof AutoloadClassmapContext:
+                $this->autoloadClassmaps[] = $context;
+                break;
         }
     }
 
@@ -104,13 +125,13 @@ class ExpressionContext
     /**
      * return the PHP namespace for this context
      *
-     * @return string|null
+     * @return string | null
      *         - string is empty if this is part of the global scope
      *         - NULL if there is no namespace context available
      */
     public function getContainingNamespace()
     {
-
+        return null;
     }
 
     /**
@@ -120,22 +141,7 @@ class ExpressionContext
      */
     public function getDocblock()
     {
-
-    }
-
-    public function getLHS()
-    {
-        return $this->lhs;
-    }
-
-    public function getOperator()
-    {
-        return $this->operator;
-    }
-
-    public function getRHS()
-    {
-        return $this->rhs;
+        return null;
     }
 
     /**
@@ -145,6 +151,6 @@ class ExpressionContext
      */
     public function getSourceFile() : SourceFileContext
     {
-
+        return $this->definedIn;
     }
 }

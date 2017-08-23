@@ -70,10 +70,14 @@ class Scope
      *
      * @param Contexts\GlobalContext $globalCtx
      *        the global scope for the code we are parsing
+     * @param Contexts\AutoloaderContext $autoloaderCtx
+     *        keep track of the autoloader instructions we come across
      */
-    public function __construct(Contexts\GlobalContext $globalCtx)
+    public function __construct(Contexts\GlobalContext $globalCtx, Contexts\AutoloaderContext $autoloaderCtx)
     {
         $this->contexts['globalCtx'] = $globalCtx;
+        $this->contexts['autoloaderCtx'] = $autoloaderCtx;
+
         $this->parentContexts = $this->contexts;
     }
 
@@ -120,9 +124,22 @@ class Scope
 
         // set up the parent contexts
         $retval->parentContexts = $retval->contexts;
+        unset($retval->parentContexts['autoloaderCtx']);
         unset($retval->parentContexts['globalCtx']);
         unset($retval->parentContexts['namespaceCtx']);
 
+        return $retval;
+    }
+
+    public function withComposerComponent(Contexts\ComposerComponentContext $composerCtx) : Scope
+    {
+        $retval = clone $this;
+        $retval->contexts['composerCtx'] = $composerCtx;
+
+        // setup the parent contexts
+        $retval->parentContexts = $retval->contexts;
+
+        // all done
         return $retval;
     }
 
@@ -149,6 +166,7 @@ class Scope
 
         // set up the parent contexts
         $retval->parentContexts = $retval->contexts;
+        unset($retval->parentContexts['autoloaderCtx']);
         unset($retval->parentContexts['globalCtx']);
 
         return $retval;
@@ -177,6 +195,7 @@ class Scope
 
         // set up the parent contexts
         $retval->parentContexts = $retval->contexts;
+        unset($retval->parentContexts['autoloaderCtx']);
         unset($retval->parentContexts['globalCtx']);
         unset($retval->parentContexts['namespaceCtx']);
 
@@ -206,6 +225,7 @@ class Scope
 
         // set up the parent contexts
         $retval->parentContexts = $retval->contexts;
+        unset($retval->parentContexts['autoloaderCtx']);
         unset($retval->parentContexts['globalCtx']);
 
         // all done
@@ -235,6 +255,7 @@ class Scope
 
         // set up the parent contexts
         $retval->parentContexts = $retval->contexts;
+        unset($retval->parentContexts['autoloaderCtx']);
         unset($retval->parentContexts['globalCtx']);
         unset($retval->parentContexts['classCtx']);
 
@@ -291,6 +312,7 @@ class Scope
 
         // set up the parent contexts
         $retval->parentContexts = $retval->contexts;
+        unset($retval->parentContexts['autoloaderCtx']);
         unset($retval->parentContexts['globalCtx']);
         unset($retval->parentContexts['namespaceCtx']);
 

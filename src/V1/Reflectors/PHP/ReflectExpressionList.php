@@ -73,7 +73,15 @@ class ReflectExpressionList
 
         // what do we have?
         foreach($node->getChildNodes() as $childNode) {
-            $retval[] = ReflectExpression::from($childNode, $activeScope);
+            switch(true) {
+                case $childNode instanceof Nodes\Expression\AssignmentExpression:
+                    $retval[] = ReflectExpression::from($childNode, $activeScope);
+                    break;
+
+                case $childNode instanceof Nodes\Expression\Variable:
+                    $retval[] = new Contexts\ExpressionContext(Helpers\GetTokenText::from($childNode, $childNode->name), null, null);
+                    break;
+            }
         }
 
         // all done

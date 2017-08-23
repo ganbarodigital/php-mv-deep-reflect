@@ -46,105 +46,19 @@ namespace GanbaroDigital\DeepReflection\V1\Contexts;
 use GanbaroDigital\DeepReflection\V1\Exceptions\UnsupportedContext;
 
 /**
- * represents an expression in PHP
- *
- * an expression typically has three elements:
- *
- * - left hand side (LHS)
- * - right hand side (RHS)
- * - the operator that connects them
+ * container for a classmap (as found in a composer project)
  */
-class ExpressionContext
+class AutoloadClassmapContext extends AutoloadContext
 {
-    protected $lhs;
-    protected $rhs;
-    protected $operator;
-
-    public function __construct($lhs, $operator, $rhs)
-    {
-        $this->lhs = $lhs;
-        $this->operator = $operator;
-        $this->rhs = $rhs;
-    }
-
-    /**
-     * add something to our scope
-     *
-     * @param  Context $context
-     *         the context that we want to add
-     * @return void
-     */
-    public function attachChildContext(Context $context)
-    {
-        switch(true) {
-            // do nothing
-        }
-    }
-
-    /**
-     * add a context that we belong to
-     *
-     * @param  Context $context
-     *         our parent's context
-     * @return void
-     */
-    public function attachParentContext(Context $context)
-    {
-        switch(true) {
-            // do nothing
-        }
-    }
-
     // ==================================================================
     //
     // GET INFORMATION ABOUT THIS CONTEXT
     //
     // ------------------------------------------------------------------
 
-    /**
-     * return the PHP namespace for this context
-     *
-     * @return string|null
-     *         - string is empty if this is part of the global scope
-     *         - NULL if there is no namespace context available
-     */
-    public function getContainingNamespace()
+    public function getAutoloadNamespace()
     {
-
+        return $this->namespace;
     }
 
-    /**
-     * return the docblock for a context - if there is one!
-     *
-     * @return DocblockContext|null
-     */
-    public function getDocblock()
-    {
-
-    }
-
-    public function getLHS()
-    {
-        return $this->lhs;
-    }
-
-    public function getOperator()
-    {
-        return $this->operator;
-    }
-
-    public function getRHS()
-    {
-        return $this->rhs;
-    }
-
-    /**
-     * return the source file where we were defined
-     *
-     * @return SourceFileContext
-     */
-    public function getSourceFile() : SourceFileContext
-    {
-
-    }
 }

@@ -144,9 +144,6 @@ class ClassLikeContext implements Context
             case $context instanceof PropertyContext:
                 $this->properties[$context->getName()] = $context;
                 break;
-
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
         }
     }
 
@@ -160,21 +157,10 @@ class ClassLikeContext implements Context
     public function attachParentContext(Context $context)
     {
         switch (true) {
-            case $context instanceof GlobalContext:
-                // we are a global class, with no namespace
-                break;
-
-            case $context instanceof NamespaceContext:
-                // we are a namespaced class
-                break;
-
             case $context instanceof SourceFileContext:
                 // which file were we defined in?
                 $this->definedIn = $context;
                 break;
-
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
         }
     }
 

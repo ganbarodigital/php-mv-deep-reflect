@@ -71,9 +71,6 @@ class ReflectExpression
         switch(true) {
             case $node instanceof Nodes\Expression\AssignmentExpression:
                 return ReflectAssignmentExpression::from($node, $activeScope);
-
-            default:
-                return null;
         }
     }
 }

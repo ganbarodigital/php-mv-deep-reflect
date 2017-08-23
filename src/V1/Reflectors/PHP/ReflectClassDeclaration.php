@@ -69,7 +69,8 @@ class ReflectClassDeclaration
     public static function from(Statements\ClassDeclaration $node, Scope $activeScope) : Contexts\ClassContext
     {
         // what is our parent's namespace?
-        $namespace = $activeScope->getNamespace()->getContainingNamespace();
+        $namespaceCtx = $activeScope->getNamespace();
+        $namespace = $namespaceCtx ? $namespaceCtx->getContainingNamespace() : null;
 
         // what is this class called?
         $classname = $node->name->getText($node->parent->fileContents);

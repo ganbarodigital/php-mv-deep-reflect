@@ -83,16 +83,9 @@ class GlobalContext extends NamespaceContext
                 }
                 break;
 
-            case $context instanceof NamespacedImportContext:
-                // do nothing
-                break;
-
             case $context instanceof FunctionContext:
                 $this->functions[$context->getName()] = $context;
                 break;
-
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
         }
     }
 
@@ -106,8 +99,7 @@ class GlobalContext extends NamespaceContext
     public function attachParentContext(Context $context)
     {
         switch(true) {
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
+            // do nothing
         }
     }
 
@@ -144,7 +136,7 @@ class GlobalContext extends NamespaceContext
     {
         // have we already seen this?
         if (isset($this->namespaces[$namespace])) {
-            return $this->namespace;
+            return $this->namespaces[$namespace];
         }
 
         // no, so we're going to need to make a new one

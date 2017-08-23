@@ -131,14 +131,6 @@ class NamespaceContext implements Context
             case $context instanceof TraitContext:
                 $this->traits[$context->getName()] = $context;
                 break;
-
-            case $context instanceof FunctionLikeParameterContext:
-            case $context instanceof NamespacedImportContext:
-                // do nothing
-                break;
-
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
         }
     }
 
@@ -152,17 +144,10 @@ class NamespaceContext implements Context
     public function attachParentContext(Context $context)
     {
         switch(true) {
-            case $context instanceof GlobalContext:
-                // do nothing
-                break;
-
             case $context instanceof SourceFileContext:
                 // which file were we defined in?
                 $this->definedIn = $context;
                 break;
-
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
         }
     }
 

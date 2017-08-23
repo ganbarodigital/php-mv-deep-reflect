@@ -158,9 +158,6 @@ class FunctionLikeContext implements Context
             case $context instanceof FunctionLikeParameterContext:
                 $this->params[$context->getName()] = $context;
                 break;
-
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
         }
     }
 
@@ -179,9 +176,6 @@ class FunctionLikeContext implements Context
                 $this->definedIn = $context;
                 $context->attachChildContext($this);
                 break;
-
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
         }
     }
 

@@ -135,8 +135,6 @@ class PropertyContext implements Context
             case $context instanceof CommentContext:
                 $this->comment = $context;
                 break;
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
         }
     }
 
@@ -158,9 +156,6 @@ class PropertyContext implements Context
                 // which file were we defined in?
                 $this->definedIn = $context;
                 break;
-
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
         }
     }
 

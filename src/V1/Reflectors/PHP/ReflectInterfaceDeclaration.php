@@ -69,7 +69,8 @@ class ReflectInterfaceDeclaration
     public static function from(Statements\InterfaceDeclaration $node, Scope $activeScope) : Contexts\InterfaceContext
     {
         // what is our parent's namespace?
-        $namespace = $activeScope->getNamespace()->getContainingNamespace();
+        $namespaceCtx = $activeScope->getNamespace();
+        $namespace = $namespaceCtx ? $namespaceCtx->getContainingNamespace() : null;
 
         // what is this interface called?
         $classname = $node->name->getText($node->parent->fileContents);
@@ -93,7 +94,7 @@ class ReflectInterfaceDeclaration
 
         foreach ($node->getChildNodes() as $childNode)
         {
-            echo get_class($childNode) . PHP_EOL;
+            // echo get_class($childNode) . PHP_EOL;
             switch (true) {
                 case $childNode instanceof Nodes\InterfaceMembers:
                     self::inspectMembersNode($childNode, $activeScope, $retval);
@@ -119,7 +120,7 @@ class ReflectInterfaceDeclaration
     {
         foreach ($node->getChildNodes() as $childNode)
         {
-            echo "- " . get_class($childNode) . PHP_EOL;
+            // echo "- " . get_class($childNode) . PHP_EOL;
             switch (true) {
                 case $childNode instanceof Nodes\MethodDeclaration:
                     $methodCtx = ReflectMethodDeclaration::from($childNode, $activeScope);

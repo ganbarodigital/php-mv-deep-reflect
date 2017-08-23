@@ -85,8 +85,7 @@ class CommentContext implements Context
     public function attachChildContext(Context $context)
     {
         switch(true) {
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
+            // do nothing
         }
     }
 
@@ -104,9 +103,6 @@ class CommentContext implements Context
                 // which file were we defined in?
                 $this->definedIn = $context;
                 break;
-
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
         }
     }
 

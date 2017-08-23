@@ -43,64 +43,32 @@
 
 namespace GanbaroDigital\DeepReflection\V1\Helpers;
 
-use GanbaroDigital\DeepReflection\V1\Checks;
-use GanbaroDigital\DeepReflection\V1\Contexts;
-use GanbaroDigital\DeepReflection\V1\Reflectors;
-use GanbaroDigital\DeepReflection\V1\Scope;
-use Microsoft\PhpParser\Node;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 
 /**
- * extract a docbloc or other leading comment, and attach it to
- * our context object
+ * find the files in a folder
  */
-class AttachLeadingComment
+class FindFiles
 {
-    /**
-     * extract a docblock or other leading comment, and attach it to
-     * our context object
-     *
-     * @param  Node $node
-     *         the parser node to inspect
-     * @param  Contexts\Context $context
-     *         the thing that might have been commented upon
-     * @return void
-     */
-    public static function using(Node $node, Contexts\Context $context, Scope $activeScope)
+    public static function from(string $path, array $fileExts)
     {
-        // does it have a leading comment?
-        $text = ltrim($node->getLeadingCommentAndWhitespaceText());
-        if (empty($text)) {
-            return;
+        $matches = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
+
+        foreach ($matches as $file) {
+            $filename = $file->getFilename();
+            // skip over these two classics
+            if ($filename == '.' || $filename == '..') {
+                continue;
+            }
+
+            // skip over anything that doesn't have the
+            // requested file extension
+            if (!in_array($file->getExtension(), $fileExts)) {
+                continue;
+            }
+
+            yield $file->getPathname();
         }
-
-        // there may be multiple comments here
-        $comments = SeparateComments::using($text);
-
-        // we only want the last one
-        $comment = end($comments);
-
-        // and only if there isn't a blank line after it
-        if (substr(StripTrailingWhitespace::from($comment), -2) == PHP_EOL . PHP_EOL) {
-            return;
-        }
-
-        // if we get here, we have a docblock or other comment
-        // that is immediately before $node
-        $commentCtx = self::reflectComment($comment, $activeScope);
-        $context->attachChildContext($commentCtx);
-    }
-
-    private static function reflectComment($comment, Scope $activeScope)
-    {
-        if (Checks\IsDocblock::check($comment)) {
-            return Reflectors\PHP\ReflectDocblock::from($comment, $activeScope);
-        }
-        else if (Checks\IsComment::check($comment)) {
-            return new Contexts\CommentContext($comment);
-        }
-
-        // if we get here, something has gone badly wrong!
-        var_dump($comment);
-        throw new \RuntimeException("unreachable code ... has been reached (:scream:)");
     }
 }

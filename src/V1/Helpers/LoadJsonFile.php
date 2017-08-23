@@ -43,64 +43,30 @@
 
 namespace GanbaroDigital\DeepReflection\V1\Helpers;
 
-use GanbaroDigital\DeepReflection\V1\Checks;
-use GanbaroDigital\DeepReflection\V1\Contexts;
-use GanbaroDigital\DeepReflection\V1\Reflectors;
-use GanbaroDigital\DeepReflection\V1\Scope;
-use Microsoft\PhpParser\Node;
-
 /**
- * extract a docbloc or other leading comment, and attach it to
- * our context object
+ * load a JSON file, decode its contents
  */
-class AttachLeadingComment
+class LoadJsonFile
 {
     /**
-     * extract a docblock or other leading comment, and attach it to
-     * our context object
+     * load a JSON file, decode its contents
      *
-     * @param  Node $node
-     *         the parser node to inspect
-     * @param  Contexts\Context $context
-     *         the thing that might have been commented upon
-     * @return void
+     * @param  string ...$parts
+     *         the path to the JSON file
+     * @return array|object
+     *         the contents of the JSON file
      */
-    public static function using(Node $node, Contexts\Context $context, Scope $activeScope)
+    public static function from(...$parts)
     {
-        // does it have a leading comment?
-        $text = ltrim($node->getLeadingCommentAndWhitespaceText());
-        if (empty($text)) {
-            return;
+        $filename = BuildFilePath::using(...$parts);
+
+        if (!file_exists($filename)) {
+            throw new \Exception('no such file ' . $filename);
         }
 
-        // there may be multiple comments here
-        $comments = SeparateComments::using($text);
+        $rawJson = file_get_contents($filename);
+        $retval = json_decode($rawJson);
 
-        // we only want the last one
-        $comment = end($comments);
-
-        // and only if there isn't a blank line after it
-        if (substr(StripTrailingWhitespace::from($comment), -2) == PHP_EOL . PHP_EOL) {
-            return;
-        }
-
-        // if we get here, we have a docblock or other comment
-        // that is immediately before $node
-        $commentCtx = self::reflectComment($comment, $activeScope);
-        $context->attachChildContext($commentCtx);
-    }
-
-    private static function reflectComment($comment, Scope $activeScope)
-    {
-        if (Checks\IsDocblock::check($comment)) {
-            return Reflectors\PHP\ReflectDocblock::from($comment, $activeScope);
-        }
-        else if (Checks\IsComment::check($comment)) {
-            return new Contexts\CommentContext($comment);
-        }
-
-        // if we get here, something has gone badly wrong!
-        var_dump($comment);
-        throw new \RuntimeException("unreachable code ... has been reached (:scream:)");
+        return $retval;
     }
 }

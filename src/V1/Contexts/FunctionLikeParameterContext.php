@@ -143,8 +143,7 @@ class FunctionLikeParameterContext implements Context
     public function attachChildContext(Context $context)
     {
         switch(true) {
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
+            // do nothing
         }
     }
 
@@ -158,10 +157,6 @@ class FunctionLikeParameterContext implements Context
     public function attachParentContext(Context $context)
     {
         switch(true) {
-            case $context instanceof ClassLikeContext:
-                // do nothing
-                break;
-
             case $context instanceof FunctionLikeContext:
                 $this->parentFunction = $context;
                 break;
@@ -170,9 +165,6 @@ class FunctionLikeParameterContext implements Context
                 // which file were we defined in?
                 $this->definedIn = $context;
                 break;
-
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
         }
     }
 

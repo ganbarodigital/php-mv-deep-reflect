@@ -51,6 +51,12 @@ use GanbaroDigital\DeepReflection\V1\Exceptions\UnsupportedContext;
 class SourceFileContext implements Context
 {
     /**
+     * which file do we represent?
+     * @var string
+     */
+    protected $filename;
+
+    /**
      * which namespace is this file part of?
      *
      * @var NamespaceContext | null
@@ -102,6 +108,11 @@ class SourceFileContext implements Context
      */
     protected $comment;
 
+    public function __construct($filename)
+    {
+        $this->filename = $filename;
+    }
+
     /**
      * add something to our scope
      *
@@ -128,13 +139,6 @@ class SourceFileContext implements Context
                 $this->traits[$context->getName()] = $context;
                 break;
 
-            case $context instanceof ClassLikeConstantContext:
-            case $context instanceOf FunctionLikeParameterContext:
-            case $context instanceof MethodContext:
-            case $context instanceof PropertyContext:
-                // do nothing
-                break;
-
             case $context instanceof NamespaceContext:
                 $this->namespace = $context;
                 break;
@@ -153,9 +157,6 @@ class SourceFileContext implements Context
             case $context instanceof DocblockContext:
                 $this->comment = $context;
                 break;
-
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
         }
     }
 
@@ -169,8 +170,7 @@ class SourceFileContext implements Context
     public function attachParentContext(Context $context)
     {
         switch(true) {
-            default:
-                throw new UnsupportedContext($context, __FUNCTION__);
+            // do nothing
         }
     }
 
@@ -204,6 +204,16 @@ class SourceFileContext implements Context
         }
 
         return null;
+    }
+
+    /**
+     * which file do we represent?
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->filename;
     }
 
     /**

@@ -49,6 +49,7 @@ use GanbaroDigital\DeepReflection\V1\Helpers;
 use GanbaroDigital\DeepReflection\V1\Scope;
 use Microsoft\PhpParser\Node;
 use Microsoft\PhpParser\Node\Statement as Statements;
+use Microsoft\PhpParser\Parser;
 
 /**
  * what's in the source file?
@@ -60,26 +61,34 @@ class ReflectSourceFile
      *
      * @param  string $filename
      *         path to this file
-     * @param  Node $node
-     *         the AST of the file
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
      * @return SourceFileContext
      *         what we've found about this file
      */
-    public static function from(string $filename, Node $node, Scope $activeScope) : Contexts\SourceFileContext
+    public static function from(string $filename, Scope $activeScope) : Contexts\SourceFileContext
     {
+        echo "->> {$filename}" . PHP_EOL;
+
         // our return value
         $retval = new Contexts\SourceFileContext($filename);
 
         // update our active scope
         $activeScope = $activeScope->withSourceFile($retval);
 
+        // let's get the file parsed
+        $parser = new Parser;
+        $astNode = $parser->parseSourceFile(file_get_contents($filename));
+
+        // foreach ($astNode->getDescendantNodes() as $childNode) {
+        //     echo "    - " . get_class($childNode) . PHP_EOL;
+        // }
+
         // do we have a docblock for the source file?
         //
         // we may have comments, but how do we tell which one is the
         // docblock for the whole file?
-        $comments = Helpers\SeparateComments::using($node->getFileContents());
+        $comments = Helpers\SeparateComments::using($astNode->getFileContents());
         $sfDocblockCtx = null;
         if (Checks\IsDocblock::check($comments[0])) {
             // we assume the first one is, *until* one of our children
@@ -87,7 +96,7 @@ class ReflectSourceFile
             $sfDocblockCtx = ReflectDocblock::from($comments[0], $activeScope);
         }
 
-        foreach ($node->getChildNodes() as $childNode)
+        foreach ($astNode->getChildNodes() as $childNode)
         {
             // echo get_class($childNode) . PHP_EOL;
 

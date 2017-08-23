@@ -34,73 +34,83 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   DeepReflection/Helpers
+ * @package   DeepReflection/Reflectors
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Helpers;
+namespace GanbaroDigital\DeepReflection\V1\Reflectors\Composer;
 
-use GanbaroDigital\DeepReflection\V1\Checks;
 use GanbaroDigital\DeepReflection\V1\Contexts;
-use GanbaroDigital\DeepReflection\V1\Reflectors;
+use GanbaroDigital\DeepReflection\V1\Checks;
+use GanbaroDigital\DeepReflection\V1\Helpers;
 use GanbaroDigital\DeepReflection\V1\Scope;
 use Microsoft\PhpParser\Node;
+use Microsoft\PhpParser\Node\Statement as Statements;
 
 /**
- * extract a docbloc or other leading comment, and attach it to
- * our context object
+ * understand the autoloaded details
  */
-class AttachLeadingComment
+class ReflectComposerAutoload
 {
-    /**
-     * extract a docblock or other leading comment, and attach it to
-     * our context object
-     *
-     * @param  Node $node
-     *         the parser node to inspect
-     * @param  Contexts\Context $context
-     *         the thing that might have been commented upon
-     * @return void
-     */
-    public static function using(Node $node, Contexts\Context $context, Scope $activeScope)
+    public static function from($autoloadSection, Scope $activeScope)
     {
-        // does it have a leading comment?
-        $text = ltrim($node->getLeadingCommentAndWhitespaceText());
-        if (empty($text)) {
-            return;
+        $retval = [];
+
+        if (isset($autoloadSection->{'psr-0'})) {
+            $retval = array_append_values($retval, self::analysePsr($autoloadSection->{'psr-0'}, Contexts\AutoloadPsr0Context::class));
+        }
+        if (isset($autoloadSection->{'psr-4'})) {
+            $retval = array_append_values($retval, self::analysePsr($autoloadSection->{'psr-4'}, Contexts\AutoloadPsr4Context::class));
+        }
+        if (isset($autoloadSection->files)) {
+            $retval = array_append_values($retval, self::analyseFiles($autoloadSection->files, Contexts\AutoloadFileContext::class));
+        }
+        if (isset($autoloadSection->classmap)) {
+            $retval = array_append_values($retval, self::analyseClassmap($autoloadSection->classmap, Contexts\AutoloadClassmapContext::class));
         }
 
-        // there may be multiple comments here
-        $comments = SeparateComments::using($text);
-
-        // we only want the last one
-        $comment = end($comments);
-
-        // and only if there isn't a blank line after it
-        if (substr(StripTrailingWhitespace::from($comment), -2) == PHP_EOL . PHP_EOL) {
-            return;
-        }
-
-        // if we get here, we have a docblock or other comment
-        // that is immediately before $node
-        $commentCtx = self::reflectComment($comment, $activeScope);
-        $context->attachChildContext($commentCtx);
+        // all done
+        return $retval;
     }
 
-    private static function reflectComment($comment, Scope $activeScope)
+    protected static function analysePsr($psrSection, $contextClassname)
     {
-        if (Checks\IsDocblock::check($comment)) {
-            return Reflectors\PHP\ReflectDocblock::from($comment, $activeScope);
-        }
-        else if (Checks\IsComment::check($comment)) {
-            return new Contexts\CommentContext($comment);
+        $retval = [];
+
+        foreach ($psrSection as $namespace => $paths) {
+            if (!is_array($paths)) {
+                $paths = [ $paths ];
+            }
+            foreach ($paths as $path) {
+                $retval[] = new $contextClassname($namespace, $path);
+            }
         }
 
-        // if we get here, something has gone badly wrong!
-        var_dump($comment);
-        throw new \RuntimeException("unreachable code ... has been reached (:scream:)");
+        return $retval;
+    }
+
+    protected static function analyseFiles($filesSection)
+    {
+        $retval = [];
+
+        foreach ($filesSection as $filename) {
+            $retval[] = new Contexts\AutoloadFileContext('', $filename);
+        }
+
+        return $retval;
+    }
+
+    protected static function analyseClassmap($classmapSection)
+    {
+        $retval = [];
+
+        foreach ($classmapSection as $path) {
+            $retval[] = new Contexts\AutoloadClassmapContext('', $path);
+        }
+
+        return $retval;
     }
 }

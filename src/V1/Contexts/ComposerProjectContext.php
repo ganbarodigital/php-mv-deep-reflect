@@ -46,25 +46,26 @@ namespace GanbaroDigital\DeepReflection\V1\Contexts;
 use GanbaroDigital\DeepReflection\V1\Exceptions\UnsupportedContext;
 
 /**
- * represents an expression in PHP
- *
- * an expression typically has three elements:
- *
- * - left hand side (LHS)
- * - right hand side (RHS)
- * - the operator that connects them
+ * container for everything we learn about a composer project
  */
-class ExpressionContext
+class ComposerProjectContext extends ComposerComponentContext
 {
-    protected $lhs;
-    protected $rhs;
-    protected $operator;
+    /**
+     * where is this project's root folder?
+     * @var string
+     */
+    protected $path;
 
-    public function __construct($lhs, $operator, $rhs)
+    /**
+     * which components are installed in the vendor folder?
+     * @var array
+     */
+    protected $vendorComponents = [];
+
+    public function __construct($componentName, $path)
     {
-        $this->lhs = $lhs;
-        $this->operator = $operator;
-        $this->rhs = $rhs;
+        parent::__construct($componentName);
+        $this->path = $path;
     }
 
     /**
@@ -77,7 +78,12 @@ class ExpressionContext
     public function attachChildContext(Context $context)
     {
         switch(true) {
-            // do nothing
+            case $context instanceof InstalledComposerComponentContext:
+                $this->vendorComponents[$context->getComponentName()] = $context;
+                break;
+
+            default:
+                parent::attachChildContext($context);
         }
     }
 
@@ -91,7 +97,8 @@ class ExpressionContext
     public function attachParentContext(Context $context)
     {
         switch(true) {
-            // do nothing
+            default:
+                parent::attachChildContext($context);
         }
     }
 
@@ -101,50 +108,4 @@ class ExpressionContext
     //
     // ------------------------------------------------------------------
 
-    /**
-     * return the PHP namespace for this context
-     *
-     * @return string|null
-     *         - string is empty if this is part of the global scope
-     *         - NULL if there is no namespace context available
-     */
-    public function getContainingNamespace()
-    {
-
-    }
-
-    /**
-     * return the docblock for a context - if there is one!
-     *
-     * @return DocblockContext|null
-     */
-    public function getDocblock()
-    {
-
-    }
-
-    public function getLHS()
-    {
-        return $this->lhs;
-    }
-
-    public function getOperator()
-    {
-        return $this->operator;
-    }
-
-    public function getRHS()
-    {
-        return $this->rhs;
-    }
-
-    /**
-     * return the source file where we were defined
-     *
-     * @return SourceFileContext
-     */
-    public function getSourceFile() : SourceFileContext
-    {
-
-    }
 }

@@ -46,25 +46,55 @@ namespace GanbaroDigital\DeepReflection\V1\Contexts;
 use GanbaroDigital\DeepReflection\V1\Exceptions\UnsupportedContext;
 
 /**
- * represents an expression in PHP
- *
- * an expression typically has three elements:
- *
- * - left hand side (LHS)
- * - right hand side (RHS)
- * - the operator that connects them
+ * container for everything we learn about a single composer component
  */
-class ExpressionContext
+class ComposerComponentContext implements Context
 {
-    protected $lhs;
-    protected $rhs;
-    protected $operator;
+    /**
+     * what is the name of this composer component?
+     * @var string
+     */
+    protected $componentName;
 
-    public function __construct($lhs, $operator, $rhs)
+    /**
+     * what PSR0 autoloading do we need to do?
+     * @var array
+     */
+    protected $autoloadPsr0 = [];
+
+    /**
+     * what PSR4 autoloading do we need to do?
+     * @var array
+     */
+    protected $autoloadPsr4 = [];
+
+    /**
+     * which files would we be autoloading?
+     * @var array
+     */
+    protected $autoloadFiles = [];
+
+    /**
+     * which namespaces *have* we loaded?
+     * @var array
+     */
+    protected $namespaces = [];
+
+    /**
+     * which source files *have* we loaded?
+     * @var array
+     */
+    protected $sourceFiles = [];
+
+    /**
+     * where will we be looking for .php and .inc files?
+     * @var array
+     */
+    protected $autoloadClassmaps = [];
+
+    public function __construct(string $componentName)
     {
-        $this->lhs = $lhs;
-        $this->operator = $operator;
-        $this->rhs = $rhs;
+        $this->componentName = $componentName;
     }
 
     /**
@@ -77,7 +107,30 @@ class ExpressionContext
     public function attachChildContext(Context $context)
     {
         switch(true) {
-            // do nothing
+            case $context instanceof AutoloadPsr0Context:
+                $this->autoloadPsr0[$context->getAutoloadNamespace()][] = $context;
+                break;
+
+            case $context instanceof AutoloadPsr4Context:
+                $this->autoloadPsr4[$context->getAutoloadNamespace()][] = $context;
+                break;
+
+            case $context instanceof AutoloadFileContext:
+                $this->autoloadFiles[] = $context;
+                break;
+
+            case $context instanceof AutoloadClassmapContext:
+                $this->autoloadClassmaps[] = $context;
+                break;
+
+            case $context instanceof SourceFileContext:
+                $this->sourceFiles[$context->getFilename()] = $context;
+                break;
+
+            case $context instanceof NamespaceContext:
+                $namespaceName = $context->getContainingNamespace();
+                $this->namespaces[$namespaceName] = $context;
+                break;
         }
     }
 
@@ -101,16 +154,47 @@ class ExpressionContext
     //
     // ------------------------------------------------------------------
 
+    public function getAutoloadPsr0() : array
+    {
+        return $this->autoloadPsr0;
+    }
+
+    public function getAutoloadPsr4() : array
+    {
+        return $this->autoloadPsr4;
+    }
+
+    public function getAutoloadFiles() : array
+    {
+        return $this->autoloadFiles;
+    }
+
+    public function getAutoloadClassmaps() : array
+    {
+        return $this->autoloadClassmaps;
+    }
+
+    /**
+     * return the name of the composer component
+     *
+     * @return string
+     *         the component name
+     */
+    public function getComponentName()
+    {
+        return $this->componentName;
+    }
+
     /**
      * return the PHP namespace for this context
      *
-     * @return string|null
+     * @return string | null
      *         - string is empty if this is part of the global scope
      *         - NULL if there is no namespace context available
      */
     public function getContainingNamespace()
     {
-
+        return null;
     }
 
     /**
@@ -120,22 +204,7 @@ class ExpressionContext
      */
     public function getDocblock()
     {
-
-    }
-
-    public function getLHS()
-    {
-        return $this->lhs;
-    }
-
-    public function getOperator()
-    {
-        return $this->operator;
-    }
-
-    public function getRHS()
-    {
-        return $this->rhs;
+        return null;
     }
 
     /**
@@ -145,6 +214,6 @@ class ExpressionContext
      */
     public function getSourceFile() : SourceFileContext
     {
-
+        return $this->definedIn;
     }
 }
