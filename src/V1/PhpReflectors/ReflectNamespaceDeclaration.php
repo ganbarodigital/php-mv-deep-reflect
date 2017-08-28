@@ -34,25 +34,63 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   DeepReflection/Helpers
+ * @package   DeepReflection/PhpReflectors
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Helpers;
+namespace GanbaroDigital\DeepReflection\V1\PhpReflectors;
 
-use GanbaroDigital\DeepReflection\V1\Context;
+use GanbaroDigital\DeepReflection\V1\Helpers;
+use GanbaroDigital\DeepReflection\V1\PhpContexts;
 use GanbaroDigital\DeepReflection\V1\Scope;
+use Microsoft\PhpParser\Node\Statement\NamespaceDefinition;
+use Microsoft\PhpParser\Node\Statement as Statements;
+use Microsoft\PhpParser\Node as Nodes;
 
-class AttachToParents
+/**
+ * understand a namespace declaration
+ */
+class ReflectNamespaceDeclaration
 {
-    public static function using(Context $context, Scope $activeScope)
+    /**
+     * understand a namespace declaration
+     *
+     * @param  NamespaceDefintion $node
+     *         the AST that declares the namespace
+     * @param  Scope $activeScope
+     *         keeping track of where we are as we inspect things
+     * @return PhpContexts\NamespaceContext
+     *         our understanding about the namespace
+     */
+    public static function from(NamespaceDefinition $node, Scope $activeScope) : PhpContexts\NamespaceContext
     {
-        foreach($activeScope->getParentContexts() as $parentContext) {
-            $parentContext->attachChildContext($context);
-            $context->attachParentContext($parentContext);
+        // we cannot create our return value until we know which namespace
+        // we are looking at
+
+        // find the namespace
+        $namespaceName = null;
+        foreach ($node->getChildNodes() as $childNode)
+        {
+            switch(true) {
+                case $childNode instanceof Nodes\QualifiedName:
+                    $namespaceName = $childNode->getText();
+                    break;
+            }
         }
+
+        // at this point, we should have the namespace
+        //
+        // we don't create it ourselves - we let our global context
+        // handle that
+        //
+        // it acts as the ultimate container of everything we have
+        // seen so far
+        $retval = $activeScope->getGlobalContext()->getNamespace($namespaceName);
+
+        // all done
+        return $retval;
     }
 }

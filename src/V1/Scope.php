@@ -43,7 +43,8 @@
 
 namespace GanbaroDigital\DeepReflection\V1;
 
-use GanbaroDigital\DeepReflection\V1\Contexts;
+use GanbaroDigital\DeepReflection\V1\ComposerContexts;
+use GanbaroDigital\DeepReflection\V1\PhpContexts;
 
 /**
  * keep track of the current active scope(s)
@@ -68,12 +69,12 @@ class Scope
     /**
      * create a new active scope
      *
-     * @param Contexts\GlobalContext $globalCtx
+     * @param PhpContexts\GlobalContext $globalCtx
      *        the global scope for the code we are parsing
-     * @param Contexts\AutoloaderContext $autoloaderCtx
+     * @param ComposerContexts\AutoloaderContext $autoloaderCtx
      *        keep track of the autoloader instructions we come across
      */
-    public function __construct(Contexts\GlobalContext $globalCtx, Contexts\AutoloaderContext $autoloaderCtx)
+    public function __construct(PhpContexts\GlobalContext $globalCtx, ComposerContexts\AutoloaderContext $autoloaderCtx)
     {
         $this->contexts['globalCtx'] = $globalCtx;
         $this->contexts['autoloaderCtx'] = $autoloaderCtx;
@@ -117,7 +118,7 @@ class Scope
      * @param Contexts\ClassContext $classCtx|null
      *        the class that we're looking at
      */
-    public function withClass(Contexts\ClassContext $classCtx) : Scope
+    public function withClass(PhpContexts\ClassContext $classCtx) : Scope
     {
         $retval = clone $this;
         $retval->contexts['classCtx'] = $classCtx;
@@ -131,7 +132,7 @@ class Scope
         return $retval;
     }
 
-    public function withComposerComponent(Contexts\ComposerComponentContext $composerCtx) : Scope
+    public function withComposerComponent(ComposerContexts\ComposerComponentContext $composerCtx) : Scope
     {
         $retval = clone $this;
         $retval->contexts['composerCtx'] = $composerCtx;
@@ -159,7 +160,7 @@ class Scope
      * @param Contexts\FunctionContext $functionCtx|null
      *        the function that we're looking at
      */
-    public function withFunction(Contexts\FunctionContext $functionCtx) : Scope
+    public function withFunction(PhpContexts\FunctionContext $functionCtx) : Scope
     {
         $retval = clone $this;
         $retval->contexts['functionCtx'] = $functionCtx;
@@ -188,7 +189,7 @@ class Scope
      * @param Contexts\InterfaceContext $interfaceCtx|null
      *        the interface that we're looking at
      */
-    public function withInterface(Contexts\InterfaceContext $interfaceCtx) : Scope
+    public function withInterface(PhpContexts\InterfaceContext $interfaceCtx) : Scope
     {
         $retval = clone $this;
         $retval->contexts['interfaceCtx'] = $interfaceCtx;
@@ -218,7 +219,7 @@ class Scope
      * @param Contexts\NamespaceContext $namespaceCtx
      *        the namespace that we're defining things in
      */
-    public function withNamespace(Contexts\NamespaceContext $namespaceCtx) : Scope
+    public function withNamespace(PhpContexts\NamespaceContext $namespaceCtx) : Scope
     {
         $retval = clone $this;
         $retval->contexts['namespaceCtx'] = $namespaceCtx;
@@ -248,7 +249,7 @@ class Scope
      * @param Contexts\MethodContext $methodCtx|null
      *        the method that we're looking at
      */
-    public function withMethod(Contexts\MethodContext $methodCtx) : Scope
+    public function withMethod(PhpContexts\MethodContext $methodCtx) : Scope
     {
         $retval = clone $this;
         $retval->contexts['methodCtx'] = $methodCtx;
@@ -278,7 +279,7 @@ class Scope
      * @param Contexts\SourceFileContext $sourceFileCtx
      * @return Scope
      */
-    public function withSourceFile(Contexts\SourceFileContext $sourceFileCtx) : Scope
+    public function withSourceFile(PhpContexts\SourceFileContext $sourceFileCtx) : Scope
     {
         $retval = clone $this;
         $retval->contexts['sourceFileCtx'] = $sourceFileCtx;
@@ -305,7 +306,7 @@ class Scope
      * @param Contexts\TraitContext $traitCtx
      *        the trait that we're looking at
      */
-    public function withTrait(Contexts\TraitContext $traitCtx) : Scope
+    public function withTrait(PhpContexts\TraitContext $traitCtx) : Scope
     {
         $retval = clone $this;
         $retval->contexts['traitCtx'] = $traitCtx;

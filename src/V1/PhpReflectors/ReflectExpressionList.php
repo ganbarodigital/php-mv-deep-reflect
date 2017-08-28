@@ -34,25 +34,57 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   DeepReflection/Helpers
+ * @package   DeepReflection/PhpReflectors
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Helpers;
+namespace GanbaroDigital\DeepReflection\V1\PhpReflectors;
 
-use GanbaroDigital\DeepReflection\V1\Context;
+use GanbaroDigital\DeepReflection\V1\Checks;
+use GanbaroDigital\DeepReflection\V1\Helpers;
+use GanbaroDigital\DeepReflection\V1\PhpContexts;
 use GanbaroDigital\DeepReflection\V1\Scope;
+use Microsoft\PhpParser\Node\MethodDeclaration;
+use Microsoft\PhpParser\Node\Statement as Statements;
+use Microsoft\PhpParser\Node as Nodes;
 
-class AttachToParents
+/**
+ * understand an expression list
+ */
+class ReflectExpressionList
 {
-    public static function using(Context $context, Scope $activeScope)
+    /**
+     * understand an expression list
+     *
+     * @param  Nodes\DelimitedList\ExpressionList $node
+     *         the AST that declares the list of expressions
+     * @param  Scope $activeScope
+     *         keeping track of where we are as we inspect things
+     * @return array
+     *         the expression(s) that we found
+     */
+    public static function from(Nodes\DelimitedList\ExpressionList $node, Scope $activeScope) : array
     {
-        foreach($activeScope->getParentContexts() as $parentContext) {
-            $parentContext->attachChildContext($context);
-            $context->attachParentContext($parentContext);
+        // this will hold all the expressions that we find
+        $retval = [];
+
+        // what do we have?
+        foreach($node->getChildNodes() as $childNode) {
+            switch(true) {
+                case $childNode instanceof Nodes\Expression\AssignmentExpression:
+                    $retval[] = ReflectExpression::from($childNode, $activeScope);
+                    break;
+
+                case $childNode instanceof Nodes\Expression\Variable:
+                    $retval[] = new PhpContexts\ExpressionContext(Helpers\GetTokenText::from($childNode, $childNode->name), null, null);
+                    break;
+            }
         }
+
+        // all done
+        return $retval;
     }
 }

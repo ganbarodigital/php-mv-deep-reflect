@@ -34,25 +34,21 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   DeepReflection/Helpers
+ * @package   DeepReflection/ComposerContexts
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Helpers;
+namespace GanbaroDigital\DeepReflection\V1\ComposerContexts;
 
-use GanbaroDigital\DeepReflection\V1\Context;
-use GanbaroDigital\DeepReflection\V1\Scope;
+use GanbaroDigital\DeepReflection\V1\Exceptions\UnsupportedContext;
 
-class AttachToParents
+/**
+ * container for a PSR-0 namespace
+ */
+class AutoloadPsr0Context extends AutoloadContext
 {
-    public static function using(Context $context, Scope $activeScope)
-    {
-        foreach($activeScope->getParentContexts() as $parentContext) {
-            $parentContext->attachChildContext($context);
-            $context->attachParentContext($parentContext);
-        }
-    }
+
 }

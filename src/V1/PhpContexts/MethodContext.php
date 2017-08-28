@@ -34,25 +34,60 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   DeepReflection/Helpers
+ * @package   DeepReflection/PhpContexts
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Helpers;
+namespace GanbaroDigital\DeepReflection\V1\PhpContexts;
 
 use GanbaroDigital\DeepReflection\V1\Context;
-use GanbaroDigital\DeepReflection\V1\Scope;
+use GanbaroDigital\DeepReflection\V1\Exceptions\UnsupportedContext;
 
-class AttachToParents
+/**
+ * container for everything in the scope of a single method
+ */
+class MethodContext extends FunctionLikeContext
 {
-    public static function using(Context $context, Scope $activeScope)
+    /**
+     * add something to our scope
+     *
+     * @param  Context $context
+     *         the context that we want to add
+     * @return void
+     */
+    public function attachChildContext(Context $context)
     {
-        foreach($activeScope->getParentContexts() as $parentContext) {
-            $parentContext->attachChildContext($context);
-            $context->attachParentContext($parentContext);
+        switch(true) {
+            default:
+                parent::attachChildContext($context);
         }
     }
+
+    /**
+     * add a context that we belong to
+     *
+     * @param  Context $context
+     *         our parent's context
+     * @return void
+     */
+    public function attachParentContext(Context $context)
+    {
+        switch(true) {
+            case $context instanceof ClassLikeContext:
+                $this->parentClass = $context;
+                break;
+
+            default:
+                parent::attachParentContext($context);
+        }
+    }
+
+    // ==================================================================
+    //
+    // GET INFORMATION ABOUT THIS CONTEXT
+    //
+    // ------------------------------------------------------------------
 }

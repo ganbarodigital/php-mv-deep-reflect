@@ -34,25 +34,36 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   DeepReflection/Helpers
+ * @package   DeepReflection/PhpReflectors
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Helpers;
+namespace GanbaroDigital\DeepReflection\V1\PhpReflectors;
 
-use GanbaroDigital\DeepReflection\V1\Context;
+use GanbaroDigital\DeepReflection\V1\Checks;
+use GanbaroDigital\DeepReflection\V1\Helpers;
+use GanbaroDigital\DeepReflection\V1\PhpContexts;
 use GanbaroDigital\DeepReflection\V1\Scope;
 
-class AttachToParents
+/**
+ * find source files, and look inside them
+ */
+class ReflectSourceFiles
 {
-    public static function using(Context $context, Scope $activeScope)
+    public static function from(string $path, array $fileExts, Scope $activeScope) : array
     {
-        foreach($activeScope->getParentContexts() as $parentContext) {
-            $parentContext->attachChildContext($context);
-            $context->attachParentContext($parentContext);
+        // this will hold everything we find
+        $retval = [];
+
+        // okay, find the files we want
+        foreach (Helpers\FindFiles::from($path, $fileExts) as $filename) {
+            $retval[$path] = ReflectSourceFile::from($filename, $activeScope);
         }
+
+        // all done
+        return $retval;
     }
 }

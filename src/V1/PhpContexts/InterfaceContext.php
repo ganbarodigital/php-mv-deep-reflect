@@ -34,25 +34,18 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   DeepReflection/Helpers
+ * @package   DeepReflection/PhpContexts
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Helpers;
+namespace GanbaroDigital\DeepReflection\V1\PhpContexts;
 
-use GanbaroDigital\DeepReflection\V1\Context;
-use GanbaroDigital\DeepReflection\V1\Scope;
-
-class AttachToParents
+/**
+ * container for everything in the scope of a given interface
+ */
+class InterfaceContext extends ClassLikeContext
 {
-    public static function using(Context $context, Scope $activeScope)
-    {
-        foreach($activeScope->getParentContexts() as $parentContext) {
-            $parentContext->attachChildContext($context);
-            $context->attachParentContext($parentContext);
-        }
-    }
 }

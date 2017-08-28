@@ -34,25 +34,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   DeepReflection/Helpers
+ * @package   DeepReflection/PhpReflectors
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Helpers;
+namespace GanbaroDigital\DeepReflection\V1\PhpReflectors;
 
-use GanbaroDigital\DeepReflection\V1\Context;
+use GanbaroDigital\DeepReflection\V1\Checks;
+use GanbaroDigital\DeepReflection\V1\Helpers;
+use GanbaroDigital\DeepReflection\V1\PhpContexts;
 use GanbaroDigital\DeepReflection\V1\Scope;
+use Microsoft\PhpParser\Node\MethodDeclaration;
+use Microsoft\PhpParser\Node\Statement as Statements;
+use Microsoft\PhpParser\Node as Nodes;
 
-class AttachToParents
+/**
+ * understand a PHP assignment expression
+ */
+class ReflectAssignmentExpression
 {
-    public static function using(Context $context, Scope $activeScope)
+    /**
+     * understand a PHP assignment expression
+     *
+     * @param  Nodes\Expression\AssignmentExpression $node
+     *         the AST that declares the expression
+     * @param  Scope $activeScope
+     *         keeping track of where we are as we inspect things
+     * @return PhpContexts\ExpressionContext
+     *         our understanding about the assignment
+     */
+    public static function from(Nodes\Expression\AssignmentExpression $node, Scope $activeScope) : PhpContexts\ExpressionContext
     {
-        foreach($activeScope->getParentContexts() as $parentContext) {
-            $parentContext->attachChildContext($context);
-            $context->attachParentContext($parentContext);
-        }
+        // what do we have?
+        $lhs = Helpers\GetTokenText::from($node, $node->leftOperand);
+        $rhs = Helpers\GetTokenText::from($node, $node->rightOperand);
+
+        $retval = new PhpContexts\ExpressionContext($lhs, '=', $rhs);
+        return $retval;
     }
 }

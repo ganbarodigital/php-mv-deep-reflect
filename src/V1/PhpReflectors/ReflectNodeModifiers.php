@@ -34,25 +34,48 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   DeepReflection/Helpers
+ * @package   DeepReflection/PhpReflectors
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Helpers;
+namespace GanbaroDigital\DeepReflection\V1\PhpReflectors;
 
-use GanbaroDigital\DeepReflection\V1\Context;
+use GanbaroDigital\DeepReflection\V1\Checks;
+use GanbaroDigital\DeepReflection\V1\Helpers;
+use GanbaroDigital\DeepReflection\V1\PhpContexts;
 use GanbaroDigital\DeepReflection\V1\Scope;
+use Microsoft\PhpParser\Node;
 
-class AttachToParents
+/**
+ * extract the list of modifiers for a class or function or similar
+ */
+class ReflectNodeModifiers
 {
-    public static function using(Context $context, Scope $activeScope)
+    /**
+     * extract the list of modifiers for a class or function or similar
+     *
+     * @param  Node $node
+     *         the AST where the modifiers are
+     * @param  array $modifierTokens
+     *         a list of the modifier tokens to understand
+     * @return array
+     *         a list of modifiers found
+     */
+    public static function from(Node $node, array $modifiers) : array
     {
-        foreach($activeScope->getParentContexts() as $parentContext) {
-            $parentContext->attachChildContext($context);
-            $context->attachParentContext($parentContext);
+        // our return value
+        $retval = [];
+
+        // let's find out what kind of modifiers it has
+        foreach ($modifiers as $modifierToken) {
+            $modifier = Helpers\GetTokenText::from($node, $modifierToken);
+            $retval[$modifier] = $modifier;
         }
+
+        // all done
+        return $retval;
     }
 }

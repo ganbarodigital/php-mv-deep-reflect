@@ -34,25 +34,44 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * @category  Libraries
- * @package   DeepReflection/Helpers
+ * @package   DeepReflection/PhpReflectors
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1\Helpers;
+namespace GanbaroDigital\DeepReflection\V1\PhpReflectors;
 
-use GanbaroDigital\DeepReflection\V1\Context;
-use GanbaroDigital\DeepReflection\V1\Scope;
-
-class AttachToParents
+/**
+ * understand a security scope
+ */
+class ReflectSecurityScope
 {
-    public static function using(Context $context, Scope $activeScope)
+    /**
+     * understand a security scope
+     *
+     * @param  array $modifiers
+     *         a list of modifiers extracted by ReflectNodeModifiers
+     * @return string
+     *         one of 'public', 'protected', 'private', or ''
+     */
+    public static function from(array $modifiers) : string
     {
-        foreach($activeScope->getParentContexts() as $parentContext) {
-            $parentContext->attachChildContext($context);
-            $context->attachParentContext($parentContext);
+        $searchOrder = [ 'private', 'protected', 'public' ];
+        foreach ($searchOrder as $searchItem) {
+            if (isset($modifiers[$searchItem])) {
+                return $modifiers[$searchItem];
+            }
         }
+
+        // if we get there, then there is *no* security scope set
+        //
+        // we could return 'public' here (which is the default behaviour)
+        // but we're not trying to parse *behaviour*, but *explicit*
+        // declarations
+        //
+        // an empty string seems the most appropriate
+        return '';
     }
 }
