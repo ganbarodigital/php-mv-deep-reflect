@@ -69,7 +69,7 @@ class ReflectSourceFile
      */
     public static function from(string $filename, Scope $activeScope) : PhpContexts\SourceFileContext
     {
-        echo "->> {$filename}" . PHP_EOL;
+        // echo "->> {$filename}" . PHP_EOL;
 
         // our return value
         $retval = new PhpContexts\SourceFileContext($filename);
