@@ -132,7 +132,7 @@ class Scope
         return $retval;
     }
 
-    public function withComposerComponent(ComposerContexts\ComposerComponentContext $composerCtx) : Scope
+    public function withComposerPackage(ComposerContexts\ComposerPackageContext $composerCtx) : Scope
     {
         $retval = clone $this;
         $retval->contexts['composerCtx'] = $composerCtx;

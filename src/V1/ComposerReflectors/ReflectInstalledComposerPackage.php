@@ -54,15 +54,15 @@ use Microsoft\PhpParser\Node\Statement as Statements;
 /**
  * understand an entry from composer's installed.json file
  */
-class ReflectInstalledComposerComponent
+class ReflectInstalledComposerPackage
 {
     public static function from($projectRootPath, $installedDetails, Scope $activeScope)
     {
-        $retval = new ComposerContexts\InstalledComposerComponentContext(
+        $retval = new ComposerContexts\InstalledComposerPackageContext(
             $installedDetails->name,
             $installedDetails->version
         );
-        $activeScope = $activeScope->withComposerComponent($retval);
+        $activeScope = $activeScope->withComposerPackage($retval);
 
         $autoloadBits = ReflectComposerAutoload::from($installedDetails->autoload ?? [], $activeScope);
         foreach ($autoloadBits as $autoloadBit) {

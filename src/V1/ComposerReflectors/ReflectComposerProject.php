@@ -76,7 +76,7 @@ class ReflectComposerProject
         );
 
         // our scope has changed!
-        $activeScope = $activeScope->withComposerComponent($retval);
+        $activeScope = $activeScope->withComposerPackage($retval);
 
         // what will it try and autoload?
         $autoloadBits = ReflectComposerAutoload::from($projectJson->autoload, $activeScope);
@@ -119,7 +119,7 @@ class ReflectComposerProject
         // what's in the vendor folder?
         $installedJson = Helpers\LoadJsonFile::from($path, 'vendor', 'composer', 'installed.json');
         foreach ($installedJson as $installedComponent) {
-            $installedCtx = ReflectInstalledComposerComponent::from($path, $installedComponent, $activeScope);
+            $installedCtx = ReflectInstalledComposerPackage::from($path, $installedComponent, $activeScope);
             Helpers\AttachToParents::using($installedCtx, $activeScope);
         }
 

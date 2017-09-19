@@ -67,7 +67,7 @@ class AutoloadContext implements Context
      * our parent container may be:
      *
      * - ComposerProjectContext
-     * - InstalledComposerComponentContext
+     * - InstalledComposerPackageContext
      *
      * @var string
      */
@@ -75,7 +75,7 @@ class AutoloadContext implements Context
 
     /**
      * which composer project are we autoloading for?
-     * @var ComposerComponentContext
+     * @var ComposerPackageContext
      */
     protected $parentComponent;
 
@@ -109,7 +109,7 @@ class AutoloadContext implements Context
     public function attachParentContext(Context $context)
     {
         switch(true) {
-            case $context instanceof ComposerComponentContext:
+            case $context instanceof ComposerPackageContext:
                 $this->parentComponent = $context;
                 break;
         }

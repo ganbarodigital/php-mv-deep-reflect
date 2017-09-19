@@ -30,7 +30,7 @@ Initial support for understanding what's in a PHP source file
 
 Initial support for understanding what's in a Composer project
 - composer project
-- installed composer components
+- installed composer packages
 - autoloaded PSR0 classes
 - autoloaded PSR4 classes
 - autoloaded files

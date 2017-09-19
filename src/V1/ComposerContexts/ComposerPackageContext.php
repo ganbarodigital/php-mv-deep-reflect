@@ -50,7 +50,7 @@ use GanbaroDigital\DeepReflection\V1\PhpContexts;
 /**
  * container for everything we learn about a single composer component
  */
-class ComposerComponentContext implements Context
+class ComposerPackageContext implements Context
 {
     /**
      * what is the name of this composer component?
@@ -94,6 +94,30 @@ class ComposerComponentContext implements Context
      */
     protected $autoloadClassmaps = [];
 
+    /**
+     * which classes have we seen in this component?
+     * @var array
+     */
+    protected $classes = [];
+
+    /**
+     * which interfaces have we seen in this component?
+     * @var array
+     */
+    protected $interfaces = [];
+
+    /**
+     * which traits have we seen in this component?
+     * @var array
+     */
+    protected $traits = [];
+
+    /**
+     * which functions have we seen in this component?
+     * @var array
+     */
+    protected $functions = [];
+
     public function __construct(string $componentName)
     {
         $this->componentName = $componentName;
@@ -132,6 +156,22 @@ class ComposerComponentContext implements Context
             case $context instanceof PhpContexts\NamespaceContext:
                 $namespaceName = $context->getContainingNamespace();
                 $this->namespaces[$namespaceName] = $context;
+                break;
+
+            case $context instanceof PhpContexts\ClassContext:
+                $this->classes[$context->getName()] = $context;
+                break;
+
+            case $context instanceof PhpContexts\FunctionContext:
+                $this->functions[$context->getName()] = $context;
+                break;
+
+            case $context instanceof PhpContexts\InterfaceContext:
+                $this->interfaces[$context->getName()] = $context;
+                break;
+
+            case $context instanceof PhpContexts\TraitContext:
+                $this->traits[$context->getName()] = $context;
                 break;
         }
     }
@@ -217,5 +257,25 @@ class ComposerComponentContext implements Context
     public function getSourceFile() : PhpContexts\SourceFileContext
     {
         return $this->definedIn;
+    }
+
+    public function getClasses(): array
+    {
+        return $this->classes;
+    }
+
+    public function getInterfaces(): array
+    {
+        return $this->interfaces;
+    }
+
+    public function getTraits(): array
+    {
+        return $this->traits;
+    }
+
+    public function getFunctions(): array
+    {
+        return $this->functions;
     }
 }

@@ -49,7 +49,7 @@ use GanbaroDigital\DeepReflection\V1\Exceptions\UnsupportedContext;
 /**
  * container for everything we learn about a composer project
  */
-class ComposerProjectContext extends ComposerComponentContext
+class ComposerProjectContext extends ComposerPackageContext
 {
     /**
      * where is this project's root folder?
@@ -79,7 +79,7 @@ class ComposerProjectContext extends ComposerComponentContext
     public function attachChildContext(Context $context)
     {
         switch(true) {
-            case $context instanceof InstalledComposerComponentContext:
+            case $context instanceof InstalledComposerPackageContext:
                 $this->vendorComponents[$context->getComponentName()] = $context;
                 break;
 

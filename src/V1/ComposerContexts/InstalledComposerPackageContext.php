@@ -50,7 +50,7 @@ use GanbaroDigital\DeepReflection\V1\Exceptions\UnsupportedContext;
  * container for everything we learn about a single installed
  * composer component
  */
-class InstalledComposerComponentContext extends ComposerComponentContext
+class InstalledComposerPackageContext extends ComposerPackageContext
 {
     /**
      * which version of the component is currently installed?
