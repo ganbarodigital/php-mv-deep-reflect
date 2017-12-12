@@ -36,7 +36,11 @@ use GanbaroDigital\DeepReflection\V1\PhpReflectors;
 use GanbaroDigital\DeepReflection\V1\PhpScopes;
 use PhpUnit\Framework\TestCase;
 
+require_once(__DIR__ . '/PhpClassContainerTests.php');
 require_once(__DIR__ . '/PhpFunctionContainerTests.php');
+require_once(__DIR__ . '/PhpInterfaceContainerTests.php');
+require_once(__DIR__ . '/PhpNamespaceContainerTests.php');
+require_once(__DIR__ . '/PhpTraitContainerTests.php');
 
 /**
  * @coversDefaultClass GanbaroDigital\DeepReflection\V1\PhpContexts\PhpGlobalContext
@@ -106,101 +110,6 @@ class PhpGlobalContextTest extends TestCase
         // test the results
 
         $this->assertEquals($expectedResult, $actualResult);
-    }
-
-    /**
-     * @covers ::__construct
-     */
-    public function test_is_PhpClassContainer()
-    {
-        // ----------------------------------------------------------------
-        // setup your test
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $unit = new PhpGlobalContext();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertInstanceOf(PhpContexts\PhpClassContainer::class, $unit);
-    }
-
-    /**
-     * @covers ::__construct
-     */
-    public function test_is_PhpFunctionContainer()
-    {
-        // ----------------------------------------------------------------
-        // setup your test
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $unit = new PhpGlobalContext();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertInstanceOf(PhpContexts\PhpFunctionContainer::class, $unit);
-    }
-
-    /**
-     * @covers ::__construct
-     */
-    public function test_is_PhpInterfaceContainer()
-    {
-        // ----------------------------------------------------------------
-        // setup your test
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $unit = new PhpGlobalContext();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertInstanceOf(PhpContexts\PhpInterfaceContainer::class, $unit);
-    }
-
-    /**
-     * @covers ::__construct
-     */
-    public function test_is_PhpNamespaceContainer()
-    {
-        // ----------------------------------------------------------------
-        // setup your test
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $unit = new PhpGlobalContext();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertInstanceOf(PhpContexts\PhpNamespaceContainer::class, $unit);
-    }
-
-    /**
-     * @covers ::__construct
-     */
-    public function test_is_PhpTraitContainer()
-    {
-        // ----------------------------------------------------------------
-        // setup your test
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $unit = new PhpGlobalContext();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertInstanceOf(PhpContexts\PhpTraitContainer::class, $unit);
     }
 
     /**
@@ -280,7 +189,7 @@ class PhpGlobalContextTest extends TestCase
     /**
      * @covers ::getChildrenByType
      */
-    public function test_namespaced_functions_do_not_appear_in_context()
+    public function test_namespaced_functions_do_not_appear_in_global_namespace()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -315,6 +224,93 @@ class PhpGlobalContextTest extends TestCase
     //
     // ------------------------------------------------------------------
 
+    use PhpNamespaceContainerTests;
+
+    /**
+     * @covers ::getChildrenByType
+     */
+    public function test_get_all_namespaces_from_global_context()
+    {
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = $this->getUnitToTest();
+        $unit->createNamespace($unit->getScope(), 'FooBar');
+        $unit->createNamespace($unit->getScope(), 'BarBaz');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $namespaceCtxs = PhpReflection\GetAllNamespaces::from($unit);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // make sure we have the correctly-sized array first
+        $this->assertEquals('array', gettype($namespaceCtxs));
+        $this->assertEquals(2, count($namespaceCtxs));
+
+        $this->assertInstanceOf(PhpContexts\PhpNamespace::class, $namespaceCtxs['FooBar']);
+        $this->assertEquals('FooBar', $namespaceCtxs['FooBar']->getName());
+
+        $this->assertInstanceOf(PhpContexts\PhpNamespace::class, $namespaceCtxs['BarBaz']);
+        $this->assertEquals('BarBaz', $namespaceCtxs['BarBaz']->getName());
+    }
+
+    /**
+     * @covers ::createNamespace
+     */
+    public function test_can_create_new_namespaces()
+    {
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = $this->getUnitToTest();
+        $scope = $unit->getScope();
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $namespaceCtx = $unit->createNamespace($scope, 'FooBar');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertInstanceOf(PhpContexts\PhpNamespace::class, $namespaceCtx);
+        $this->assertEquals('FooBar', $namespaceCtx->getName());
+    }
+
+    /**
+     * @covers ::createNamespace
+     * @covers ::getChildrenByType
+     */
+    public function test_multiple_calls_to_createNamespace_will_return_same_PhpNamespace_back()
+    {
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = $this->getUnitToTest();
+        $scope = $unit->getScope();
+        $expectedResult = $unit->createNamespace($scope, 'FooBar');
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $actualResult1 = $unit->createNamespace($scope, 'FooBar');
+        $actualResult2 = $unit->createNamespace($scope, 'FooBar');
+
+        // for final proof, bypass createNamespace() entirely
+        $actualResult3 = PhpReflection\GetNamespace::from($unit, 'FooBar');
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertSame($expectedResult, $actualResult1);
+        $this->assertSame($expectedResult, $actualResult2);
+        $this->assertSame($expectedResult, $actualResult3);
+    }
+
+
 
     // ==================================================================
     //
@@ -322,6 +318,38 @@ class PhpGlobalContextTest extends TestCase
     //
     // ------------------------------------------------------------------
 
+    use PhpClassContainerTests;
+
+    /**
+     * @covers ::getChildrenByType
+     */
+    public function test_namespaced_classes_do_not_appear_in_global_namespace()
+    {
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = $this->getUnitToTest();
+        $this->assertFalse(PhpReflection\HasClasses::check($unit));
+        $this->assertFalse(PhpReflection\HasNamespaces::check($unit));
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $this->addMinimalNamespacedClasses($unit);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // make sure the namespace was created
+        $this->assertTrue(PhpReflection\HasNamespaces::check($unit));
+        $this->assertTrue(PhpReflection\HasNamespace::check($unit, 'GanbaroDigitalTest\\Fixtures'));
+        $namespaceCtx = PhpReflection\GetNamespace::from($unit, 'GanbaroDigitalTest\\Fixtures');
+        $this->assertEquals(['FooClass', 'BarClass'], PhpReflection\GetClassNames::from($namespaceCtx));
+
+        // make sure none of this ended up in the global namespace
+        $this->assertFalse(PhpReflection\HasClasses::check($unit));
+        $this->assertEquals([], PhpReflection\GetClassNames::from($unit));
+    }
 
     // ==================================================================
     //
@@ -329,6 +357,38 @@ class PhpGlobalContextTest extends TestCase
     //
     // ------------------------------------------------------------------
 
+    use PhpInterfaceContainerTests;
+
+    /**
+     * @covers ::getChildrenByType
+     */
+    public function test_namespaced_interfaces_do_not_appear_in_global_namespace()
+    {
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = $this->getUnitToTest();
+        $this->assertFalse(PhpReflection\HasInterfaces::check($unit));
+        $this->assertFalse(PhpReflection\HasNamespaces::check($unit));
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $this->addMinimalNamespacedInterfaces($unit);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // make sure the namespace was created
+        $this->assertTrue(PhpReflection\HasNamespaces::check($unit));
+        $this->assertTrue(PhpReflection\HasNamespace::check($unit, 'GanbaroDigitalTest\\Fixtures'));
+        $namespaceCtx = PhpReflection\GetNamespace::from($unit, 'GanbaroDigitalTest\\Fixtures');
+        $this->assertEquals(['FooInterface', 'BarInterface'], PhpReflection\GetInterfaceNames::from($namespaceCtx));
+
+        // make sure none of this ended up in the global namespace
+        $this->assertFalse(PhpReflection\HasInterfaces::check($unit));
+        $this->assertEquals([], PhpReflection\GetInterfaceNames::from($unit));
+    }
 
     // ==================================================================
     //
@@ -336,4 +396,36 @@ class PhpGlobalContextTest extends TestCase
     //
     // ------------------------------------------------------------------
 
+    use PhpTraitContainerTests;
+
+    /**
+     * @covers ::getChildrenByType
+     */
+    public function test_namespaced_traits_do_not_appear_in_global_namespace()
+    {
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $unit = $this->getUnitToTest();
+        $this->assertFalse(PhpReflection\HasTraits::check($unit));
+        $this->assertFalse(PhpReflection\HasNamespaces::check($unit));
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        $this->addMinimalNamespacedTraits($unit);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // make sure the namespace was created
+        $this->assertTrue(PhpReflection\HasNamespaces::check($unit));
+        $this->assertTrue(PhpReflection\HasNamespace::check($unit, 'GanbaroDigitalTest\\Fixtures'));
+        $namespaceCtx = PhpReflection\GetNamespace::from($unit, 'GanbaroDigitalTest\\Fixtures');
+        $this->assertEquals(['FooTrait', 'BarTrait'], PhpReflection\GetTraitNames::from($namespaceCtx));
+
+        // make sure none of this ended up in the global namespace
+        $this->assertFalse(PhpReflection\HasTraits::check($unit));
+        $this->assertEquals([], PhpReflection\GetTraitNames::from($unit));
+    }
 }
