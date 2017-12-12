@@ -35,7 +35,7 @@
         }
     },
     "require": {
-        "ganbarodigital/php-the-missing-bits": "^1.9",
+        "ganbarodigital/php-the-missing-bits": "dev-develop as 1.10.0",
         "phpdocumentor/reflection-docblock": "dev-master",
         "phpdocumentor/reflection-common": "dev-master as 1.0",
         "phpdocumentor/type-resolver": "dev-master as 0.4.0"
