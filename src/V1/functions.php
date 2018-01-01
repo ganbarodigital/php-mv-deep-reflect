@@ -48,6 +48,20 @@ function has_class(PhpContexts\PhpClassContainer $context, string $className) : 
 }
 
 /**
+ * does the context contain any classes at all?
+ *
+ * @param  PhpClassContainer $context
+ *         the context to examine
+ * @return boolean
+ *         `true` if the context has at least one class defined
+ *         `false` otherwise
+ */
+function has_classes(PhpContexts\PhpClassContainer $context) : bool
+{
+    return PhpReflection\HasClasses::check($context);
+}
+
+/**
  * return a list of all classes from a particular context
  *
  * @param  PhpContexts\PhpClassContainer $context
