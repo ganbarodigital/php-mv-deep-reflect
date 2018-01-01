@@ -34,11 +34,25 @@ use GanbaroDigital\DeepReflection\V1\PhpReflection;
 /**
  * return a list of all classes from a particular context
  *
- * @param  PhpContexts\PhpClassContainer $container
+ * @param  PhpContexts\PhpClassContainer $context
  *         the context to examine
  * @return array
  */
-function get_all_classes(PhpContexts\PhpClassContainer $container) : array
+function get_all_classes(PhpContexts\PhpClassContainer $context) : array
 {
-    return PhpReflection\GetAllClasses::from($container);
+    return PhpReflection\GetAllClasses::from($context);
+}
+
+/**
+ * return a named class from a particular context
+ *
+ * @param  PhpContexts\PhpClassContainer $context
+ *         the context to examine
+ * @param  string $className
+ *         which class do you want to get?
+ * @return PhpContexts\PhpClass
+ */
+function get_class(PhpContexts\PhpClassContainer $context, string $className) : PhpContexts\PhpClass
+{
+    return PhpReflection\GetClass::from($context);
 }
