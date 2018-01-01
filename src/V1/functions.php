@@ -32,6 +32,22 @@ use GanbaroDigital\DeepReflection\V1\PhpContexts;
 use GanbaroDigital\DeepReflection\V1\PhpReflection;
 
 /**
+ * does the context contain a named class?
+ *
+ * @param  PhpClassContainer $context
+ *         the context to examine
+ * @param  string $className
+ *         which class are you looking for?
+ * @return boolean
+ *         - `true` if the context contains the named class
+ *         - `false` otherwise
+ */
+function has_class(PhpContexts\PhpClassContainer $context, string $className) : bool
+{
+    return PhpReflection\ContextHasClass::check($context, $className);
+}
+
+/**
  * return a list of all classes from a particular context
  *
  * @param  PhpContexts\PhpClassContainer $context
