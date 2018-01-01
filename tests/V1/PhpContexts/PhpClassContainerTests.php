@@ -34,9 +34,14 @@ use GanbaroDigital\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpReflectors;
 use GanbaroDigital\DeepReflection\V1\PhpScopes;
 use GanbaroDigital\MissingBits\ErrorResponders\OnFatal;
+use GanbaroDigitalTest\DeepReflection\V1\PhpFixtures\AddClassesToContainer;
+
+require_once(__DIR__ . '/../PhpFixtures/AddClassesToContainer.php');
 
 trait PhpClassContainerTests
 {
+    use AddClassesToContainer;
+
     /**
      * @covers ::__construct
      */
@@ -346,33 +351,4 @@ trait PhpClassContainerTests
 
         $classCtx = PhpReflection\GetClass::from($unit, 'not_a_class', $onFatal);
     }
-
-
-
-    protected function addMinimalClasses(PhpContexts\PhpClassContainer $unit)
-    {
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicGlobalExamples/MinimalClassFoo.php',
-            $unit->getScope()
-        );
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicGlobalExamples/MinimalClassBar.php',
-            $unit->getScope()
-        );
-    }
-
-    protected function addMinimalNamespacedClasses(PhpContexts\PhpClassContainer $unit)
-    {
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicNamespacedExamples/MinimalClassFoo.php',
-            $unit->getScope()
-        );
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicNamespacedExamples/MinimalClassBar.php',
-            $unit->getScope()
-        );
-    }
-
-
-
 }
