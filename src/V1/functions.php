@@ -56,3 +56,15 @@ function get_class(PhpContexts\PhpClassContainer $context, string $className) : 
 {
     return PhpReflection\GetClass::from($context);
 }
+
+/**
+ * get a list of all the classes in the given context
+ *
+ * @param  PhpClassContainer $context
+ *         the context to extract from
+ * @return string[]
+ */
+function get_class_names(PhpContexts\PhpClassContainer $context) : array
+{
+    return PhpReflection\GetClassNames::from($context);
+}
