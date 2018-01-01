@@ -34,9 +34,14 @@ use GanbaroDigital\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpReflectors;
 use GanbaroDigital\DeepReflection\V1\PhpScopes;
 use GanbaroDigital\MissingBits\ErrorResponders\OnFatal;
+use GanbaroDigitalTest\DeepReflection\V1\PhpFixtures\AddFunctionsToContainer;
+
+require_once(__DIR__ . '/../PhpFixtures/AddFunctionsToContainer.php');
 
 trait PhpFunctionContainerTests
 {
+    use AddFunctionsToContainer;
+
     /**
      * @covers ::__construct
      */
@@ -350,23 +355,4 @@ trait PhpFunctionContainerTests
 
         $functionCtx = PhpReflection\GetFunction::from($unit, 'not_a_function', $onFatal);
     }
-
-
-    protected function addMinimalFunctions(PhpContexts\PhpFunctionContainer $unit)
-    {
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicGlobalExamples/MinimalFunctions.php',
-            $unit->getScope()
-        );
-    }
-
-    protected function addMinimalNamespacedFunctions(PhpContexts\PhpFunctionContainer $unit)
-    {
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicNamespacedExamples/MinimalFunctions.php',
-            $unit->getScope()
-        );
-    }
-
-
 }
