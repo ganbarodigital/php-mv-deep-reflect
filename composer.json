@@ -32,7 +32,10 @@
     "autoload": {
         "psr-4": {
             "GanbaroDigital\\DeepReflection\\": "src"
-        }
+        },
+        "files": [
+            "src/V1/functions.php"
+        ]
     },
     "require": {
         "ganbarodigital/php-the-missing-bits": "dev-develop as 1.10.0",
