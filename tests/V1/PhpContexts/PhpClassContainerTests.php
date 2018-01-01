@@ -82,26 +82,6 @@ trait PhpClassContainerTests
     }
 
     /**
-     * @covers ::getChildrenByType
-     */
-    public function test_getClassNames_returns_empty_array_when_no_classes_in_context()
-    {
-        // ----------------------------------------------------------------
-        // setup your test
-
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $unit = $this->getUnitToTest();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertEquals([], PhpReflection\GetClassNames::from($unit));
-    }
-
-    /**
      * @covers ::attachChildContext
      */
     public function test_can_add_classes_to_context()
