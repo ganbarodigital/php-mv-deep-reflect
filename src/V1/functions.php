@@ -62,6 +62,22 @@ function has_classes(PhpContexts\PhpClassContainer $context) : bool
 }
 
 /**
+ * does the context have all our named classes?
+ *
+ * @param  PhpClassContainer $context
+ *         the context to examine
+ * @param  array $classNames
+ *         the list of classes to check for
+ * @return bool
+ *         - `true` if all the classes are in `$context`
+ *         - `false` otherwise
+ */
+function has_classes_called(PhpContexts\PhpClassContainer $context, array $classNames) : bool
+{
+    return PhpReflection\ContextHasClassesCalled::check($context, $classNames);
+}
+
+/**
  * return a list of all classes from a particular context
  *
  * @param  PhpContexts\PhpClassContainer $context

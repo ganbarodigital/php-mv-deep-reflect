@@ -199,10 +199,10 @@ trait PhpClassContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals(0, PhpReflection\HasClassesCalled::check($unit, ['not_a_class']));
-        $this->assertEquals(1, PhpReflection\HasClassesCalled::check($unit, ['FooClass']));
-        $this->assertEquals(2, PhpReflection\HasClassesCalled::check($unit, ['FooClass', 'BarClass']));
-        $this->assertEquals(2, PhpReflection\HasClassesCalled::check($unit, ['FooClass', 'BarClass', 'not_a_class']));
+        $this->assertFalse(PhpReflection\ContextHasClassesCalled::check($unit, ['not_a_class']));
+        $this->assertTrue(PhpReflection\ContextHasClassesCalled::check($unit, ['FooClass']));
+        $this->assertTrue(PhpReflection\ContextHasClassesCalled::check($unit, ['FooClass', 'BarClass']));
+        $this->assertFalse(PhpReflection\ContextHasClassesCalled::check($unit, ['FooClass', 'BarClass', 'not_a_class']));
     }
 
     /**
