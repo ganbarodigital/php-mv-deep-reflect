@@ -140,3 +140,15 @@ function get_function(PhpContexts\PhpFunctionContainer $context, string $funcNam
 {
     return PhpReflection\GetFunction::from($context);
 }
+
+/**
+ * get a list of all the functions in the given context
+ *
+ * @param  PhpContexts\PhpFunctionContainer $context
+ *         the context to extract from
+ * @return string[]
+ */
+function get_function_names(PhpContexts\PhpFunctionContainer $context) : array
+{
+    return PhpReflection\GetFunctionNames::from($context);
+}
