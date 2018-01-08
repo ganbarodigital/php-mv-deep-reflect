@@ -34,9 +34,14 @@ use GanbaroDigital\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpReflectors;
 use GanbaroDigital\DeepReflection\V1\PhpScopes;
 use GanbaroDigital\MissingBits\ErrorResponders\OnFatal;
+use GanbaroDigitalTest\DeepReflection\V1\PhpFixtures\AddNamespacesToContainer;
+
+require_once(__DIR__ . '/../PhpFixtures/AddNamespacesToContainer.php');
 
 trait PhpNamespaceContainerTests
 {
+    use AddNamespacesToContainer;
+
     /**
      * @covers ::__construct
      */
@@ -278,11 +283,4 @@ trait PhpNamespaceContainerTests
         $actualResult = PhpReflection\GetNamespace::from($unit, 'FooBar', $onFatal);
     }
 
-    protected function addNamespaces(PhpContexts\PhpNamespaceContainer $unit, ...$namespaceNames)
-    {
-        foreach ($namespaceNames as $namespaceName) {
-            $item = new PhpContexts\PhpNamespace($unit->getScope(), $namespaceName);
-            $unit->attachChildContext($namespaceName, $item);
-        }
-    }
 }
