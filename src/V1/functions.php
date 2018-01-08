@@ -82,7 +82,7 @@ function has_classes_called(PhpContexts\PhpClassContainer $context, array $class
  *
  * @param  PhpContexts\PhpClassContainer $context
  *         the context to examine
- * @return array
+ * @return PhpContexts\PhpClass[]
  */
 function get_all_classes(PhpContexts\PhpClassContainer $context) : array
 {
