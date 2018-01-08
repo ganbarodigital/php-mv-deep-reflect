@@ -34,9 +34,14 @@ use GanbaroDigital\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpReflectors;
 use GanbaroDigital\DeepReflection\V1\PhpScopes;
 use GanbaroDigital\MissingBits\ErrorResponders\OnFatal;
+use GanbaroDigitalTest\DeepReflection\V1\PhpFixtures\AddInterfacesToContainer;
+
+require_once(__DIR__ . '/../PhpFixtures/AddInterfacesToContainer.php');
 
 trait PhpInterfaceContainerTests
 {
+    use AddInterfacesToContainer;
+
     /**
      * @covers ::__construct
      */
@@ -347,33 +352,6 @@ trait PhpInterfaceContainerTests
 
         $interfaceCtx = PhpReflection\GetInterface::from($unit, 'not_a_interface', $onFatal);
 
-    }
-
-
-
-
-    protected function addMinimalInterfaces(PhpContexts\PhpInterfaceContainer $unit)
-    {
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicGlobalExamples/MinimalInterfaceFoo.php',
-            $unit->getScope()
-        );
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicGlobalExamples/MinimalInterfaceBar.php',
-            $unit->getScope()
-        );
-    }
-
-    protected function addMinimalNamespacedInterfaces(PhpContexts\PhpInterfaceContainer $unit)
-    {
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicNamespacedExamples/MinimalInterfaceFoo.php',
-            $unit->getScope()
-        );
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicNamespacedExamples/MinimalInterfaceBar.php',
-            $unit->getScope()
-        );
     }
 
 }
