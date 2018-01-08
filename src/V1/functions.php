@@ -152,3 +152,29 @@ function get_function_names(PhpContexts\PhpFunctionContainer $context) : array
 {
     return PhpReflection\GetFunctionNames::from($context);
 }
+
+/**
+ * return a named interface from a particular context
+ *
+ * @param  PhpContexts\PhpInterfaceContainer $context
+ *         the context to examine
+ * @param  string $interfaceName
+ *         which interface do you want?
+ * @return PhpContexts\PhpInterface
+ */
+function get_interface(PhpContexts\PhpInterfaceContainer $context, string $interfaceName) : PhpContexts\PhpInterface
+{
+    return PhpReflection\GetInterface::from($context);
+}
+
+/**
+ * get a list of all the interfaces in the given context
+ *
+ * @param  PhpContexts\PhpInterfaceContainer $context
+ *         the context to extract from
+ * @return string[]
+ */
+function get_interface_names(PhpContexts\PhpInterfaceContainer $context) : array
+{
+    return PhpReflection\GetInterfaceNames::from($context);
+}
