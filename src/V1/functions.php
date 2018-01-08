@@ -126,3 +126,17 @@ function get_class_names(PhpContexts\PhpClassContainer $context) : array
 {
     return PhpReflection\GetClassNames::from($context);
 }
+
+/**
+ * return a named function from a particular context
+ *
+ * @param  PhpContexts\PhpFunctionContainer $context
+ *         the context to examine
+ * @param  string $funcName
+ *         which function do you want?
+ * @return PhpContexts\PhpFunction
+ */
+function get_function(PhpContexts\PhpFunctionContainer $context, string $funcName) : PhpContexts\PhpFunction
+{
+    return PhpReflection\GetFunction::from($context);
+}
