@@ -90,6 +90,18 @@ function get_all_classes(PhpContexts\PhpClassContainer $context) : array
 }
 
 /**
+ * return a list of all functions from a particular context
+ *
+ * @param  PhpContexts\PhpFunctionContainer $context
+ *         the context to examine
+ * @return PhpContexts\PhpFunction[]
+ */
+function get_all_functions(PhpContexts\PhpFunctionContainer $context) : array
+{
+    return PhpReflection\GetAllFunctions::from($context);
+}
+
+/**
  * return a named class from a particular context
  *
  * @param  PhpContexts\PhpClassContainer $context
