@@ -85,7 +85,7 @@ trait PhpInterfaceContainerTests
     /**
      * @covers ::getChildrenByType
      */
-    public function test_GetInterfaces_returns_empty_array_when_no_interfaces_in_context()
+    public function test_GetAllInterfaces_returns_empty_array_when_no_interfaces_in_context()
     {
         // ----------------------------------------------------------------
         // setup your test
