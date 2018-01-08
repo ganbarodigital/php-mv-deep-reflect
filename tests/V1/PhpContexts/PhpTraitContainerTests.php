@@ -34,9 +34,14 @@ use GanbaroDigital\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpReflectors;
 use GanbaroDigital\DeepReflection\V1\PhpScopes;
 use GanbaroDigital\MissingBits\ErrorResponders\OnFatal;
+use GanbaroDigitalTest\DeepReflection\V1\PhpFixtures\AddTraitsToContainer;
+
+require_once(__DIR__ . '/../PhpFixtures/AddTraitsToContainer.php');
 
 trait PhpTraitContainerTests
 {
+    use AddTraitsToContainer;
+
     /**
      * @covers ::__construct
      */
@@ -352,28 +357,5 @@ trait PhpTraitContainerTests
         $this->assertEquals("not_a_trait not found", $traitCtx);
     }
 
-    protected function addMinimalTraits(PhpContexts\PhpTraitContainer $unit)
-    {
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicGlobalExamples/MinimalTraitFoo.php',
-            $unit->getScope()
-        );
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicGlobalExamples/MinimalTraitBar.php',
-            $unit->getScope()
-        );
-    }
-
-    protected function addMinimalNamespacedTraits(PhpContexts\PhpTraitContainer $unit)
-    {
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicNamespacedExamples/MinimalTraitFoo.php',
-            $unit->getScope()
-        );
-        PhpReflectors\ReflectSourceFile::from(
-            __DIR__ . '/../PhpFixtures/BasicNamespacedExamples/MinimalTraitBar.php',
-            $unit->getScope()
-        );
-    }
 
 }
