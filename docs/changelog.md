@@ -28,6 +28,7 @@ Initial support for understanding what's in a PHP source file
   - function params
   - function return type
 - type safety
+  - type-aliases for class names
   - type-aliases for namespace names
 
 Initial support for understanding what's in a Composer project
