@@ -36,10 +36,10 @@ trait AddClassesToContainer
     protected function addMinimalClasses(PhpContexts\PhpClassContainer $unit)
     {
         $unit->attachChildContext(
-            'FooClass', new PhpContexts\PhpClass($unit->getScope(), 'FooClass')
+            'FooClass', new PhpContexts\PhpClass($unit->getScope(), new PhpContexts\PhpClassName('FooClass'))
         );
         $unit->attachChildContext(
-            'BarClass', new PhpContexts\PhpClass($unit->getScope(), 'BarClass')
+            'BarClass', new PhpContexts\PhpClass($unit->getScope(), new PhpContexts\PhpClassName('BarClass'))
         );
     }
 

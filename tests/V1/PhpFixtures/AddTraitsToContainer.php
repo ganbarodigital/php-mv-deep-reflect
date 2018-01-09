@@ -36,10 +36,10 @@ trait AddTraitsToContainer
     protected function addMinimalTraits(PhpContexts\PhpTraitContainer $unit)
     {
         $unit->attachChildContext(
-            'FooTrait', new PhpContexts\PhpTrait($unit->getScope(), 'FooTrait')
+            'FooTrait', new PhpContexts\PhpTrait($unit->getScope(), new PhpContexts\PhpTraitName('FooTrait'))
         );
         $unit->attachChildContext(
-            'BarTrait', new PhpContexts\PhpTrait($unit->getScope(), 'BarTrait')
+            'BarTrait', new PhpContexts\PhpTrait($unit->getScope(), new PhpContexts\PhpTraitName('BarTrait'))
         );
     }
 

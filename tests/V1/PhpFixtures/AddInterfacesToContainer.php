@@ -36,10 +36,10 @@ trait AddInterfacesToContainer
     protected function addMinimalInterfaces(PhpContexts\PhpInterfaceContainer $unit)
     {
         $unit->attachChildContext(
-            'FooInterface', new PhpContexts\PhpInterface($unit->getScope(), 'FooInterface')
+            'FooInterface', new PhpContexts\PhpInterface($unit->getScope(), new PhpContexts\PhpInterfaceName('FooInterface'))
         );
         $unit->attachChildContext(
-            'BarInterface', new PhpContexts\PhpInterface($unit->getScope(), 'BarInterface')
+            'BarInterface', new PhpContexts\PhpInterface($unit->getScope(), new PhpContexts\PhpInterfaceName('BarInterface'))
         );
     }
 
