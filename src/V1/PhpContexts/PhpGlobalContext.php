@@ -48,20 +48,6 @@ class PhpGlobalContext extends PhpNamespace
         $activeScope = new PhpScope($this);
 
         parent::__construct($activeScope, '\\');
-
-        // this is how we make sure that we appear as a namespace too
-        // we are the GLOBAL namespace :)
-        // $this->attachChildContextType('\\', NamespaceContext::class, $this);
-    }
-
-    /**
-     * what is the name of the context we represent?
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return '\\';
     }
 
     /**

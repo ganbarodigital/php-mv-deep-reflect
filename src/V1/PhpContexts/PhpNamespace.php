@@ -39,7 +39,7 @@ class PhpNamespace extends PhpSourceCode
     /**
      * what namespace do we represent?
      *
-     * @var string
+     * @var PhpNamespaceName
      */
     protected $namespace;
 
@@ -52,13 +52,13 @@ class PhpNamespace extends PhpSourceCode
     public function __construct(PhpScope $scope, string $namespace)
     {
         parent::__construct($scope);
-        $this->namespace = $namespace;
+        $this->namespace = new PhpNamespaceName($namespace);
     }
 
     /**
      * what is the name of the context we represent?
      *
-     * @return string
+     * @return PhpNamespaceName
      */
     public function getName()
     {
@@ -82,10 +82,10 @@ class PhpNamespace extends PhpSourceCode
      * use this to get this namespace with '\' on the end
      * suitable for using as a prefix in your code
      *
-     * @return string
+     * @return PhpNamespaceName
      */
     public function getNameAsPrefix()
     {
-        return $this->namespace . '\\';
+        return new PhpNamespaceName($this->namespace . '\\');
     }
 }
