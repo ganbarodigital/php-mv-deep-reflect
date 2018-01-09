@@ -34,6 +34,6 @@ namespace GanbaroDigital\DeepReflection\V1\PhpContexts;
  * we use these lightweight value classes as type aliases, to help with
  * type safety
  */
-class PhpNamespaceName extends PhpClassLikeContextName
+class PhpNamespaceName extends PhpClassLikeName
 {
 }
