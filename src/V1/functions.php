@@ -23,7 +23,7 @@
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
  * @copyright 2017-present Ganbaro Digital Ltd www.ganbarodigital.com
  * @license   https://www.gnu.org/licenses/agpl.html  GNU Affero GPL v3
- * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
+ * @link      https://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
 namespace GanbaroDigital\DeepReflection\V1;
