@@ -31,6 +31,7 @@ Initial support for understanding what's in a PHP source file
   - type-aliases for class names
   - type-aliases for interface names
   - type-aliases for namespace names
+  - type-aliases for trait names
 
 Initial support for understanding what's in a Composer project
 - composer project
