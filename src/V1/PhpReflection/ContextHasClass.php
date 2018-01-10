@@ -73,20 +73,6 @@ class ContextHasClass implements Check
      *         - `true` if the context contains the named class
      *         - `false` otherwise
      */
-    public function __invoke(string $name) : bool
-    {
-        return static::check($this->context, $name);
-    }
-
-    /**
-     * does the context contain a named class?
-     *
-     * @param  string $name
-     *         which class are you looking for?
-     * @return boolean
-     *         - `true` if the context contains the named class
-     *         - `false` otherwise
-     */
     public function inspect($name) : bool
     {
         return static::check($this->context, $name);

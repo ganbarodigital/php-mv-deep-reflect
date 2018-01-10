@@ -65,7 +65,6 @@ class GetAllNamespacesTest extends TestCase
 
     /**
      * @covers ::from
-     * @covers ::__invoke
      * @covers ::getAllNamespaces
      */
     public function test_returns_empty_array_when_no_namespaces_in_namespace_container()
@@ -80,20 +79,17 @@ class GetAllNamespacesTest extends TestCase
         // perform the change
 
         $actualResult1 = GetAllNamespaces::from($namespaceContainer);
-        $actualResult2 = $unit($namespaceContainer);
-        $actualResult3 = $unit->getAllNamespaces($namespaceContainer);
+        $actualResult2 = $unit->getAllNamespaces($namespaceContainer);
 
         // ----------------------------------------------------------------
         // test the results
 
         $this->assertEquals([], $actualResult1);
         $this->assertEquals([], $actualResult2);
-        $this->assertEquals([], $actualResult3);
     }
 
     /**
      * @covers ::from
-     * @covers ::__invoke
      * @covers ::getAllNamespaces
      */
     public function test_can_get_all_namespaces_from_context()
@@ -112,8 +108,7 @@ class GetAllNamespacesTest extends TestCase
         // perform the change
 
         $namespaceCtxs1 = GetAllNamespaces::from($namespaceContainer);
-        $namespaceCtxs2 = $unit($namespaceContainer);
-        $namespaceCtxs3 = $unit->getAllNamespaces($namespaceContainer);
+        $namespaceCtxs2 = $unit->getAllNamespaces($namespaceContainer);
 
         // ----------------------------------------------------------------
         // test the results
@@ -146,21 +141,5 @@ class GetAllNamespacesTest extends TestCase
         $this->assertTrue(isset($namespaceCtxs2['BarNamespace']));
         $this->assertInstanceOf(PhpContexts\PhpNamespace::class, $namespaceCtxs2['BarNamespace']);
         $this->assertEquals('BarNamespace', $namespaceCtxs2['BarNamespace']->getName());
-
-
-        // make sure we got back an array of the right size
-        $this->assertEquals('array', gettype($namespaceCtxs3));
-        $this->assertEquals(2, count($namespaceCtxs3));
-
-        // the namespace 'this\\is\\a\\namespace' should be in the array
-        $this->assertTrue(isset($namespaceCtxs3['this\\is\\a\\namespace']));
-        $this->assertInstanceOf(PhpContexts\PhpNamespace::class, $namespaceCtxs3['this\\is\\a\\namespace']);
-        $this->assertEquals('this\\is\\a\\namespace', $namespaceCtxs3['this\\is\\a\\namespace']->getName());
-
-        // the namespace 'BarNamespace' should be in the array
-        $this->assertTrue(isset($namespaceCtxs3['BarNamespace']));
-        $this->assertInstanceOf(PhpContexts\PhpNamespace::class, $namespaceCtxs3['BarNamespace']);
-        $this->assertEquals('BarNamespace', $namespaceCtxs3['BarNamespace']->getName());
     }
-
 }

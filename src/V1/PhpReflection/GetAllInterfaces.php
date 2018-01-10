@@ -59,16 +59,4 @@ class GetAllInterfaces
     {
         return $context->getChildrenByType(PhpInterface::class);
     }
-
-    /**
-     * get a list of all interfaces from a given context
-     *
-     * @param  PhpInterfaceContainer $context
-     *         the context to extract from
-     * @return PhpInterface[]
-     */
-    public function __invoke(PhpInterfaceContainer $context) : array
-    {
-        return $context->getChildrenByType(PhpInterface::class);
-    }
 }

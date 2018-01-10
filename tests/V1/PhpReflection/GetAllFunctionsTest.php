@@ -65,7 +65,6 @@ class GetAllFunctionsTest extends TestCase
 
     /**
      * @covers ::from
-     * @covers ::__invoke
      * @covers ::getAllFunctions
      */
     public function test_returns_empty_array_when_no_functions_in_function_container()
@@ -80,20 +79,17 @@ class GetAllFunctionsTest extends TestCase
         // perform the change
 
         $actualResult1 = GetAllFunctions::from($funcContainer);
-        $actualResult2 = $unit($funcContainer);
-        $actualResult3 = $unit->getAllFunctions($funcContainer);
+        $actualResult2 = $unit->getAllFunctions($funcContainer);
 
         // ----------------------------------------------------------------
         // test the results
 
         $this->assertEquals([], $actualResult1);
         $this->assertEquals([], $actualResult2);
-        $this->assertEquals([], $actualResult3);
     }
 
     /**
      * @covers ::from
-     * @covers ::__invoke
      * @covers ::getAllFunctions
      */
     public function test_can_get_all_functions_from_context()
@@ -112,8 +108,7 @@ class GetAllFunctionsTest extends TestCase
         // perform the change
 
         $funcCtxs1 = GetAllFunctions::from($funcContainer);
-        $funcCtxs2 = $unit($funcContainer);
-        $funcCtxs3 = $unit->getAllFunctions($funcContainer);
+        $funcCtxs2 = $unit->getAllFunctions($funcContainer);
 
         // ----------------------------------------------------------------
         // test the results
@@ -142,19 +137,6 @@ class GetAllFunctionsTest extends TestCase
         // the function 'var' should be in the array
         $this->assertInstanceOf(PhpContexts\PhpFunction::class, $funcCtxs2['bar']);
         $this->assertEquals('bar', $funcCtxs2['bar']->getName());
-
-
-        // make sure we got back an array of the right size
-        $this->assertEquals('array', gettype($funcCtxs3));
-        $this->assertEquals(2, count($funcCtxs3));
-
-        // the function 'foo' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpFunction::class, $funcCtxs3['foo']);
-        $this->assertEquals('foo', $funcCtxs3['foo']->getName());
-
-        // the function 'bar' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpFunction::class, $funcCtxs3['bar']);
-        $this->assertEquals('bar', $funcCtxs3['bar']->getName());
     }
 
 }

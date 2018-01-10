@@ -59,16 +59,4 @@ class GetAllTraits
     {
         return $context->getChildrenByType(PhpTrait::class);
     }
-
-    /**
-     * get a list of all traits from a given context
-     *
-     * @param  PhpTraitContainer $context
-     *         the context to extract from
-     * @return PhpTrait[]
-     */
-    public function __invoke(PhpTraitContainer $context) : array
-    {
-        return $context->getChildrenByType(PhpTrait::class);
-    }
 }

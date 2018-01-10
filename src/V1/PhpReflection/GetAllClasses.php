@@ -59,16 +59,4 @@ class GetAllClasses
     {
         return $context->getChildrenByType(PhpClass::class);
     }
-
-    /**
-     * get a list of all classes from a given context
-     *
-     * @param  PhpClassContainer $context
-     *         the context to extract from
-     * @return PhpClass[]
-     */
-    public function __invoke(PhpClassContainer $context) : array
-    {
-        return $context->getChildrenByType(PhpClass::class);
-    }
 }

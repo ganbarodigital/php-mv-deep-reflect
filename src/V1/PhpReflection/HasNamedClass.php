@@ -73,20 +73,6 @@ class HasNamedClass implements Check
      *         - `true` if the context contains the named class
      *         - `false` otherwise
      */
-    public function __invoke(PhpClassContainer $context) : bool
-    {
-        return static::check($context, $this->name);
-    }
-
-    /**
-     * does the context contain a named class?
-     *
-     * @param PhpClassContainer $context
-     *        the context to examine
-     * @return boolean
-     *         - `true` if the context contains the named class
-     *         - `false` otherwise
-     */
     public function inspect($context) : bool
     {
         return static::check($context, $this->name);

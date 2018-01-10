@@ -59,16 +59,4 @@ class GetAllNamespaces
     {
         return $context->getChildrenByType(PhpNamespace::class);
     }
-
-    /**
-     * get a list of all namespaces from a given context
-     *
-     * @param  PhpNamespaceContainer $context
-     *         the context to extract from
-     * @return PhpNamespace[]
-     */
-    public function __invoke(PhpNamespaceContainer $context) : array
-    {
-        return $context->getChildrenByType(PhpNamespace::class);
-    }
 }

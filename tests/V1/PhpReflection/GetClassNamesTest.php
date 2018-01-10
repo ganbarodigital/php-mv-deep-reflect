@@ -66,7 +66,7 @@ class GetClassNamesTest extends TestCase
 
     /**
      * @covers ::from
-     * @covers ::__invoke
+     * @covers ::getClassNames
      */
     public function test_returns_empty_array_when_no_classes_in_context()
     {
@@ -86,12 +86,12 @@ class GetClassNamesTest extends TestCase
         // test the results
 
         $this->assertEquals([], GetClassNames::from($classContainer));
-        $this->assertEquals([], $unit($classContainer));
+        $this->assertEquals([], $unit->getClassNames($classContainer));
     }
 
     /**
      * @covers ::from
-     * @covers ::__invoke
+     * @covers ::getClassNames
      */
     public function test_can_get_named_class_from_context()
     {
@@ -117,6 +117,6 @@ class GetClassNamesTest extends TestCase
         // test the results
 
         $this->assertEquals($expectedClassNames, GetClassNames::from($classContainer));
-        $this->assertEquals($expectedClassNames, $unit($classContainer));
+        $this->assertEquals($expectedClassNames, $unit->getClassNames($classContainer));
     }
 }

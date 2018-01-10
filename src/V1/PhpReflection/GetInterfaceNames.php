@@ -60,17 +60,4 @@ class GetInterfaceNames
         $interfaces = GetAllInterfaces::from($context);
         return array_keys($interfaces);
     }
-
-    /**
-     * get a list of all the interfaces in the given context
-     *
-     * @param  PhpInterfaceContainer $context
-     *         the context to extract from
-     * @return string[]
-     */
-    public function __invoke(PhpInterfaceContainer $context) : array
-    {
-        $interfaces = GetAllInterfaces::from($context);
-        return array_keys($interfaces);
-    }
 }

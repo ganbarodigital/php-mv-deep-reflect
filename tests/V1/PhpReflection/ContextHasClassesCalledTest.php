@@ -88,7 +88,6 @@ class ContextHasClassesCalledTest extends TestCase
     }
 
     /**
-     * @covers ::__invoke
      * @covers ::check
      * @covers ::inspect
      */
@@ -113,11 +112,6 @@ class ContextHasClassesCalledTest extends TestCase
         $this->assertTrue(ContextHasClassesCalled::check($classContainer, ['FooClass']));
         $this->assertTrue(ContextHasClassesCalled::check($classContainer, ['FooClass', 'BarClass']));
         $this->assertFalse(ContextHasClassesCalled::check($classContainer, ['FooClass', 'BarClass', 'not_a_class']));
-
-        $this->assertFalse($unit(['not_a_class']));
-        $this->assertTrue($unit(['FooClass']));
-        $this->assertTrue($unit(['FooClass', 'BarClass']));
-        $this->assertFalse($unit(['FooClass', 'BarClass', 'not_a_class']));
 
         $this->assertFalse($unit->inspect(['not_a_class']));
         $this->assertTrue($unit->inspect(['FooClass']));

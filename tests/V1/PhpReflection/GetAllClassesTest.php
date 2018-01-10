@@ -65,7 +65,6 @@ class GetAllClassesTest extends TestCase
 
     /**
      * @covers ::from
-     * @covers ::__invoke
      * @covers ::getAllClasses
      */
     public function test_returns_empty_array_when_no_classes_in_class_container()
@@ -80,20 +79,17 @@ class GetAllClassesTest extends TestCase
         // perform the change
 
         $actualResult1 = GetAllClasses::from($classContainer);
-        $actualResult2 = $unit($classContainer);
-        $actualResult3 = $unit->getAllClasses($classContainer);
+        $actualResult2 = $unit->getAllClasses($classContainer);
 
         // ----------------------------------------------------------------
         // test the results
 
         $this->assertEquals([], $actualResult1);
         $this->assertEquals([], $actualResult2);
-        $this->assertEquals([], $actualResult3);
     }
 
     /**
      * @covers ::from
-     * @covers ::__invoke
      * @covers ::getAllClasses
      */
     public function test_can_get_all_classes_from_context()
@@ -112,8 +108,7 @@ class GetAllClassesTest extends TestCase
         // perform the change
 
         $classCtxs1 = GetAllClasses::from($classContainer);
-        $classCtxs2 = $unit($classContainer);
-        $classCtxs3 = $unit->getAllClasses($classContainer);
+        $classCtxs2 = $unit->getAllClasses($classContainer);
 
         // ----------------------------------------------------------------
         // test the results
@@ -142,19 +137,6 @@ class GetAllClassesTest extends TestCase
         // the class 'BarClass' should be in the array
         $this->assertInstanceOf(PhpContexts\PhpClass::class, $classCtxs2['BarClass']);
         $this->assertEquals('BarClass', $classCtxs2['BarClass']->getName());
-
-
-        // make sure we got back an array of the right size
-        $this->assertEquals('array', gettype($classCtxs3));
-        $this->assertEquals(2, count($classCtxs3));
-
-        // the class 'FooClass' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpClass::class, $classCtxs3['FooClass']);
-        $this->assertEquals('FooClass', $classCtxs3['FooClass']->getName());
-
-        // the class 'BarClass' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpClass::class, $classCtxs3['BarClass']);
-        $this->assertEquals('BarClass', $classCtxs3['BarClass']->getName());
     }
 
 }

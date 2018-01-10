@@ -59,16 +59,4 @@ class GetAllFunctions
     {
         return $context->getChildrenByType(PhpFunction::class);
     }
-
-    /**
-     * get a list of all functions from a given context
-     *
-     * @param  PhpFunctionContainer $context
-     *         the context to extract from
-     * @return PhpFunction[]
-     */
-    public function __invoke(PhpFunctionContainer $context) : array
-    {
-        return $context->getChildrenByType(PhpFunction::class);
-    }
 }

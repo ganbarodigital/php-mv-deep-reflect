@@ -85,7 +85,6 @@ class HasNamedClassTest extends TestCase
     }
 
     /**
-     * @covers ::__invoke
      * @covers ::check
      * @covers ::inspect
      */
@@ -109,9 +108,6 @@ class HasNamedClassTest extends TestCase
 
         $this->assertTrue(HasNamedClass::check($classContainer, 'FooClass'));
         $this->assertFalse(HasNamedClass::check($classContainer, 'not_a_class'));
-
-        $this->assertTrue($unit1($classContainer));
-        $this->assertFalse($unit2($classContainer));
 
         $this->assertTrue($unit1->inspect($classContainer));
         $this->assertFalse($unit2->inspect($classContainer));

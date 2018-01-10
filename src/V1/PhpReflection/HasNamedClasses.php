@@ -77,18 +77,4 @@ class HasNamedClasses implements Check
     {
         return static::check($context, $this->names);
     }
-
-    /**
-     * does the context have all our named classes?
-     *
-     * @param  PhpClassContainer $context
-     *         the context to examine
-     * @return bool
-     *         - `true` if all the classes are in `$context`
-     *         - `false` otherwise
-     */
-    public function __invoke(PhpClassContainer $context) : bool
-    {
-        return static::check($context, $this->names);
-    }
 }

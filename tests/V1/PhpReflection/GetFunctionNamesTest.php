@@ -66,7 +66,6 @@ class GetFunctionNamesTest extends TestCase
 
     /**
      * @covers ::from
-     * @covers ::__invoke
      * @covers ::getFunctionNames
      */
     public function test_returns_empty_array_when_no_functions_in_context()
@@ -87,13 +86,11 @@ class GetFunctionNamesTest extends TestCase
         // test the results
 
         $this->assertEquals([], GetFunctionNames::from($funcContainer));
-        $this->assertEquals([], $unit($funcContainer));
         $this->assertEquals([], $unit->getFunctionNames($funcContainer));
     }
 
     /**
      * @covers ::from
-     * @covers ::__invoke
      * @covers ::getFunctionNames
      */
     public function test_can_get_named_function_from_context()
@@ -120,7 +117,6 @@ class GetFunctionNamesTest extends TestCase
         // test the results
 
         $this->assertEquals($expectedNames, GetFunctionNames::from($funcContainer));
-        $this->assertEquals($expectedNames, $unit($funcContainer));
         $this->assertEquals($expectedNames, $unit->getFunctionNames($funcContainer));
     }
 }

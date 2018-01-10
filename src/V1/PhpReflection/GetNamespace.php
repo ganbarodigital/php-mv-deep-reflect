@@ -93,25 +93,6 @@ class GetNamespace
      *         - if we don't have a namespace called `$name`, and
      *         - if `$onFailure` is `null`
      */
-    public function __invoke(string $name, callable $onFailure = null) : PhpNamespace
-    {
-        return static::from($this->context, $name, $onFailure);
-    }
-
-    /**
-     * get details about a namespace, by name
-     *
-     * @param  string $name
-     *         the name of the namespace to look for
-     * @param  callable|null $onFailure
-     *         what to do if we don't have any such namespace
-     *         Params are:
-     *         - `$name` - the name of the namespace we cannot find
-     * @return PhpNamespace
-     * @throws PhpExceptions\NoSuchNamespace
-     *         - if we don't have a namespace called `$name`, and
-     *         - if `$onFailure` is `null`
-     */
     public function getNamespace(string $name, callable $onFailure = null) : PhpNamespace
     {
         return static::from($this->context, $name, $onFailure);

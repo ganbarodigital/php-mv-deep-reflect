@@ -55,7 +55,7 @@ class GetClassNames
      *         the context to extract from
      * @return string[]
      */
-    public function __invoke(PhpClassContainer $context) : array
+    public function getClassNames(PhpClassContainer $context) : array
     {
         return static::from($context);
     }

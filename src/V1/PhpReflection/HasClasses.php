@@ -60,20 +60,6 @@ class HasClasses implements Check
      *         `true` if the context has at least one class defined
      *         `false` otherwise
      */
-    public function __invoke(PhpClassContainer $context) : bool
-    {
-        return static::check($context);
-    }
-
-    /**
-     * does the context contain any classes at all?
-     *
-     * @param  PhpClassContainer $context
-     *         the context to examine
-     * @return boolean
-     *         `true` if the context has at least one class defined
-     *         `false` otherwise
-     */
     public function inspect($context) : bool
     {
         return static::check($context);

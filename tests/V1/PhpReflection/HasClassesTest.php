@@ -84,7 +84,6 @@ class HasClassesTest extends TestCase
     }
 
     /**
-     * @covers ::__invoke
      * @covers ::check
      * @covers ::inspect
      */
@@ -109,9 +108,6 @@ class HasClassesTest extends TestCase
 
         $this->assertTrue(HasClasses::check($classContainer1));
         $this->assertFalse(HasClasses::check($classContainer2));
-
-        $this->assertTrue($unit($classContainer1));
-        $this->assertFalse($unit($classContainer2));
 
         $this->assertTrue($unit->inspect($classContainer1));
         $this->assertFalse($unit->inspect($classContainer2));

@@ -59,16 +59,4 @@ class GetFunctionNames
     {
         return static::from($context);
     }
-
-    /**
-     * get a list of all the functions in the given context
-     *
-     * @param  PhpFunctionContainer $context
-     *         the context to extract from
-     * @return string[]
-     */
-    public function __invoke(PhpFunctionContainer $context) : array
-    {
-        return static::from($context);
-    }
 }

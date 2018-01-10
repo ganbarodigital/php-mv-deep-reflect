@@ -88,7 +88,6 @@ class HasNamedClassesTest extends TestCase
     }
 
     /**
-     * @covers ::__invoke
      * @covers ::check
      * @covers ::inspect
      */
@@ -116,13 +115,6 @@ class HasNamedClassesTest extends TestCase
         $this->assertTrue(HasNamedClasses::check($containerWithClasses, ['FooClass']));
         $this->assertTrue(HasNamedClasses::check($containerWithClasses, ['FooClass', 'BarClass']));
         $this->assertFalse(HasNamedClasses::check($containerWithClasses, ['FooClass', 'BarClass', 'not_a_class']));
-
-        $this->assertTrue($unit1($containerWithClasses));
-        $this->assertTrue($unit2($containerWithClasses));
-        $this->assertFalse($unit3($containerWithClasses));
-        $this->assertFalse($unit1($emptyContainer));
-        $this->assertFalse($unit2($emptyContainer));
-        $this->assertFalse($unit3($emptyContainer));
 
         $this->assertTrue($unit1->inspect($containerWithClasses));
         $this->assertTrue($unit2->inspect($containerWithClasses));

@@ -66,7 +66,6 @@ class GetInterfaceNamesTest extends TestCase
 
     /**
      * @covers ::from
-     * @covers ::__invoke
      * @covers ::getInterfaceNames
      */
     public function test_returns_empty_array_when_no_interfaces_in_context()
@@ -87,13 +86,11 @@ class GetInterfaceNamesTest extends TestCase
         // test the results
 
         $this->assertEquals([], GetInterfaceNames::from($interfaceContainer));
-        $this->assertEquals([], $unit($interfaceContainer));
         $this->assertEquals([], $unit->getInterfaceNames($interfaceContainer));
     }
 
     /**
      * @covers ::from
-     * @covers ::__invoke
      * @covers ::getInterfaceNames
      */
     public function test_can_get_list_of_interface_names_from_context()
@@ -118,7 +115,6 @@ class GetInterfaceNamesTest extends TestCase
         // test the results
 
         $this->assertEquals($expectedNames, GetInterfaceNames::from($interfaceContainer));
-        $this->assertEquals($expectedNames, $unit($interfaceContainer));
         $this->assertEquals($expectedNames, $unit->getInterfaceNames($interfaceContainer));
     }
 }

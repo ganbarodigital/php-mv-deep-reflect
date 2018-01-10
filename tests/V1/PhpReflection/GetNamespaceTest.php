@@ -70,7 +70,6 @@ class GetNamespaceTest extends TestCase
 
     /**
      * @covers ::from
-     * @covers ::__invoke
      * @covers ::getNamespace
      */
     public function test_can_get_named_namespace_from_context()
@@ -89,8 +88,7 @@ class GetNamespaceTest extends TestCase
         // perform the change
 
         $namespaceCtx1 = GetNamespace::from($namespaceContainer, 'FooNamespace');
-        $namespaceCtx2 = $unit('FooNamespace');
-        $namespaceCtx3 = $unit->getNamespace('FooNamespace');
+        $namespaceCtx2 = $unit->getNamespace('FooNamespace');
 
         // ----------------------------------------------------------------
         // test the results
@@ -100,9 +98,6 @@ class GetNamespaceTest extends TestCase
 
         $this->assertInstanceOf(PhpContexts\PhpNamespace::class, $namespaceCtx2);
         $this->assertEquals('FooNamespace', $namespaceCtx2->getName());
-
-        $this->assertInstanceOf(PhpContexts\PhpNamespace::class, $namespaceCtx3);
-        $this->assertEquals('FooNamespace', $namespaceCtx3->getName());
     }
 
     /**

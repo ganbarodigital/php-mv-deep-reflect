@@ -77,18 +77,4 @@ class ContextHasClassesCalled implements Check
     {
         return static::check($this->context, $names);
     }
-
-    /**
-     * does the context have all our named classes?
-     *
-     * @param  array $names
-     *         the list of classes to check for
-     * @return bool
-     *         - `true` if all the classes are in `$context`
-     *         - `false` otherwise
-     */
-    public function __invoke(array $names) : bool
-    {
-        return static::check($this->context, $names);
-    }
 }
