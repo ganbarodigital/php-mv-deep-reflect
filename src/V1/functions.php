@@ -178,3 +178,17 @@ function get_interface_names(PhpContexts\PhpInterfaceContainer $context) : array
 {
     return PhpReflection\GetInterfaceNames::from($context);
 }
+
+/**
+ * return a named namespace from a particular context
+ *
+ * @param  PhpContexts\PhpNamespaceContainer $context
+ *         the context to examine
+ * @param  string $namespaceName
+ *         which namespace do you want?
+ * @return PhpContexts#PhpNamespace
+ */
+function get_namespace(PhpContexts\PhpNamespaceContainer $context, string $namespaceName) : PhpContexts\PhpNamespace
+{
+    return PhpReflection\GetNamespace::from($context);
+}
