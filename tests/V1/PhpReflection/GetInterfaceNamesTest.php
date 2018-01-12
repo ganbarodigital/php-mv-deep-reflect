@@ -45,9 +45,10 @@ class GetInterfaceNamesTest extends TestCase
     use AddInterfacesToContainer;
 
     /**
-     * @coversNothing
+     * @covers ::__construct
+     * @expectedException Error
      */
-    public function test_can_be_instantiated()
+    public function test_cannot_be_instantiated()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -60,23 +61,18 @@ class GetInterfaceNamesTest extends TestCase
 
         // ----------------------------------------------------------------
         // test the results
-
-        $this->assertInstanceOf(GetInterfaceNames::class, $unit);
     }
 
     /**
      * @covers ::from
-     * @covers ::getInterfaceNames
      */
     public function test_returns_empty_array_when_no_interfaces_in_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $interfaceContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasInterfaces::check($interfaceContainer));
-
-        $unit = new GetInterfaceNames;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasInterfaces::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -85,36 +81,32 @@ class GetInterfaceNamesTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals([], GetInterfaceNames::from($interfaceContainer));
-        $this->assertEquals([], $unit->getInterfaceNames($interfaceContainer));
+        $this->assertEquals([], GetInterfaceNames::from($context));
     }
 
     /**
      * @covers ::from
-     * @covers ::getInterfaceNames
      */
     public function test_can_get_list_of_interface_names_from_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $interfaceContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasInterfaces::check($interfaceContainer));
-        $this->addMinimalInterfaces($interfaceContainer);
-        $this->assertTrue(PhpReflection\HasInterfaces::check($interfaceContainer));
-
-        $unit = new GetInterfaceNames;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasInterfaces::check($context));
+        $this->addMinimalInterfaces($context);
+        $this->assertTrue(PhpReflection\HasInterfaces::check($context));
 
         $expectedNames = [ 'FooInterface', 'BarInterface' ];
 
         // ----------------------------------------------------------------
         // perform the change
 
+        $actualNames = GetInterfaceNames::from($context);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals($expectedNames, GetInterfaceNames::from($interfaceContainer));
-        $this->assertEquals($expectedNames, $unit->getInterfaceNames($interfaceContainer));
+        $this->assertEquals($expectedNames, $actualNames);
     }
 }

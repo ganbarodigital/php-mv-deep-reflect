@@ -29,12 +29,16 @@
 namespace GanbaroDigital\DeepReflection\V1\PhpReflection;
 
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpInterfaceContainer;
+use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
  * get a list of all the interfaces in the given context
  */
 class GetInterfaceNames
 {
+    // we don't want you making objects from this class, sorry!
+    use StatelessClass;
+
     /**
      * get a list of all the interfaces in the given context
      *
@@ -43,19 +47,6 @@ class GetInterfaceNames
      * @return string[]
      */
     public static function from(PhpInterfaceContainer $context) : array
-    {
-        $interfaces = GetAllInterfaces::from($context);
-        return array_keys($interfaces);
-    }
-
-    /**
-     * get a list of all the interfaces in the given context
-     *
-     * @param  PhpInterfaceContainer $context
-     *         the context to extract from
-     * @return string[]
-     */
-    public function getInterfaceNames(PhpInterfaceContainer $context) : array
     {
         $interfaces = GetAllInterfaces::from($context);
         return array_keys($interfaces);
