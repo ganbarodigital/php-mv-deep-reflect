@@ -45,9 +45,10 @@ class GetClassNamesTest extends TestCase
     use AddClassesToContainer;
 
     /**
-     * @coversNothing
+     * @covers ::__construct
+     * @expectedException Error
      */
-    public function test_can_be_instantiated()
+    public function test_cannot_be_instantiated()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -60,23 +61,18 @@ class GetClassNamesTest extends TestCase
 
         // ----------------------------------------------------------------
         // test the results
-
-        $this->assertInstanceOf(GetClassNames::class, $unit);
     }
 
     /**
      * @covers ::from
-     * @covers ::getClassNames
      */
     public function test_returns_empty_array_when_no_classes_in_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $classContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasClasses::check($classContainer));
-
-        $unit = new GetClassNames;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasClasses::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -85,38 +81,32 @@ class GetClassNamesTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals([], GetClassNames::from($classContainer));
-        $this->assertEquals([], $unit->getClassNames($classContainer));
+        $this->assertEquals([], GetClassNames::from($context));
     }
 
     /**
      * @covers ::from
-     * @covers ::getClassNames
      */
     public function test_can_get_named_class_from_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $classContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasClasses::check($classContainer));
-        $this->addMinimalClasses($classContainer);
-        $this->assertTrue(PhpReflection\HasClasses::check($classContainer));
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasClasses::check($context));
+        $this->addMinimalClasses($context);
+        $this->assertTrue(PhpReflection\HasClasses::check($context));
 
-        $unit = new GetClassNames;
-
-        $expectedClassNames = [ 'FooClass', 'BarClass' ];
+        $expectedNames = [ 'FooClass', 'BarClass' ];
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->addMinimalClasses($classContainer);
-        $this->assertTrue(PhpReflection\HasClasses::check($classContainer));
+        $actualNames = GetClassNames::from($context);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals($expectedClassNames, GetClassNames::from($classContainer));
-        $this->assertEquals($expectedClassNames, $unit->getClassNames($classContainer));
+        $this->assertEquals($expectedNames, $actualNames);
     }
 }
