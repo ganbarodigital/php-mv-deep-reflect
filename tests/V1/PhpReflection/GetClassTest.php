@@ -45,9 +45,10 @@ class GetClassTest extends TestCase
     use AddClassesToContainer;
 
     /**
-     * @coversNothing
+     * @covers ::__construct
+     * @expectedException Error
      */
-    public function test_can_be_instantiated()
+    public function test_cannot_be_instantiated()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -60,8 +61,6 @@ class GetClassTest extends TestCase
 
         // ----------------------------------------------------------------
         // test the results
-
-        $this->assertInstanceOf(GetClass::class, $unit);
     }
 
     /**
@@ -72,23 +71,21 @@ class GetClassTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $classContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasClasses::check($classContainer));
-        $this->addMinimalClasses($classContainer);
-        $this->assertTrue(PhpReflection\HasClasses::check($classContainer));
-
-        $unit = new GetClass;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasClasses::check($context));
+        $this->addMinimalClasses($context);
+        $this->assertTrue(PhpReflection\HasClasses::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $classCtx1 = GetClass::from($classContainer, 'FooClass');
+        $actualResult = GetClass::from($context, 'FooClass');
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertInstanceOf(PhpContexts\PhpClass::class, $classCtx1);
-        $this->assertEquals('FooClass', $classCtx1->getName());
+        $this->assertInstanceOf(PhpContexts\PhpClass::class, $actualResult);
+        $this->assertEquals('FooClass', $actualResult->getName());
     }
 
     /**
@@ -100,17 +97,15 @@ class GetClassTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $classContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasClasses::check($classContainer));
-        $this->addMinimalClasses($classContainer);
-        $this->assertTrue(PhpReflection\HasClasses::check($classContainer));
-
-        $unit = new GetClass;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasClasses::check($context));
+        $this->addMinimalClasses($context);
+        $this->assertTrue(PhpReflection\HasClasses::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $functionCtx = GetClass::from($classContainer, 'not_a_class');
+        GetClass::from($context, 'not_a_class');
 
         // ----------------------------------------------------------------
         // test the results
@@ -126,12 +121,10 @@ class GetClassTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $classContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasClasses::check($classContainer));
-        $this->addMinimalClasses($classContainer);
-        $this->assertTrue(PhpReflection\HasClasses::check($classContainer));
-
-        $unit = new GetClass;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasClasses::check($context));
+        $this->addMinimalClasses($context);
+        $this->assertTrue(PhpReflection\HasClasses::check($context));
 
         $onFatal = new OnFatal(function($name) {
             throw new \InvalidArgumentException("VIVA LA REVOLUTION");
@@ -140,7 +133,7 @@ class GetClassTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $classCtx = GetClass::from($classContainer, 'not_a_class', $onFatal);
+        GetClass::from($context, 'not_a_class', $onFatal);
     }
 
 }
