@@ -31,12 +31,16 @@ namespace GanbaroDigital\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpClassContainer;
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpClass;
 use GanbaroDigital\DeepReflection\V1\PhpExceptions;
+use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
  * get details about a class, by name
  */
 class GetClass
 {
+    // we don't want you making objects from this class, sorry!
+    use StatelessClass;
+
     /**
      * get details about a class, by name
      *
