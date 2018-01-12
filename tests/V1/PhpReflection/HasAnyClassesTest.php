@@ -30,7 +30,7 @@ namespace GanbaroDigitalTest\DeepReflection\V1\PhpReflection;
 
 use GanbaroDigital\DeepReflection\V1\PhpContexts;
 use GanbaroDigital\DeepReflection\V1\PhpReflection;
-use GanbaroDigital\DeepReflection\V1\PhpReflection\HasClasses;
+use GanbaroDigital\DeepReflection\V1\PhpReflection\HasAnyClasses;
 use GanbaroDigital\MissingBits\ErrorResponders\OnFatal;
 use GanbaroDigitalTest\DeepReflection\V1\PhpFixtures\AddClassesToContainer;
 use PhpUnit\Framework\TestCase;
@@ -38,9 +38,9 @@ use PhpUnit\Framework\TestCase;
 require_once(__DIR__ . '/../PhpFixtures/AddClassesToContainer.php');
 
 /**
- * @coversDefaultClass GanbaroDigital\DeepReflection\V1\PhpReflection\HasClasses
+ * @coversDefaultClass GanbaroDigital\DeepReflection\V1\PhpReflection\HasAnyClasses
  */
-class HasClassesTest extends TestCase
+class HasAnyClassesTest extends TestCase
 {
     use AddClassesToContainer;
 
@@ -56,7 +56,7 @@ class HasClassesTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $unit = new HasClasses();
+        $unit = new HasAnyClasses();
 
         // ----------------------------------------------------------------
         // test the results
@@ -75,7 +75,7 @@ class HasClassesTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = HasClasses::check($context);
+        $actualResult = HasAnyClasses::check($context);
 
         // ----------------------------------------------------------------
         // test the results
@@ -101,6 +101,6 @@ class HasClassesTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(HasClasses::check($context));
+        $this->assertTrue(HasAnyClasses::check($context));
     }
 }

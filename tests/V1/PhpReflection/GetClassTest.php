@@ -72,9 +72,9 @@ class GetClassTest extends TestCase
         // setup your test
 
         $context = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasClasses::check($context));
+        $this->assertFalse(PhpReflection\HasAnyClasses::check($context));
         $this->addMinimalClasses($context);
-        $this->assertTrue(PhpReflection\HasClasses::check($context));
+        $this->assertTrue(PhpReflection\HasAnyClasses::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -98,9 +98,9 @@ class GetClassTest extends TestCase
         // setup your test
 
         $context = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasClasses::check($context));
+        $this->assertFalse(PhpReflection\HasAnyClasses::check($context));
         $this->addMinimalClasses($context);
-        $this->assertTrue(PhpReflection\HasClasses::check($context));
+        $this->assertTrue(PhpReflection\HasAnyClasses::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -122,9 +122,9 @@ class GetClassTest extends TestCase
         // setup your test
 
         $context = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasClasses::check($context));
+        $this->assertFalse(PhpReflection\HasAnyClasses::check($context));
         $this->addMinimalClasses($context);
-        $this->assertTrue(PhpReflection\HasClasses::check($context));
+        $this->assertTrue(PhpReflection\HasAnyClasses::check($context));
 
         $onFatal = new OnFatal(function($name) {
             throw new \InvalidArgumentException("VIVA LA REVOLUTION");

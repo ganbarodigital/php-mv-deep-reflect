@@ -72,7 +72,7 @@ class GetClassNamesTest extends TestCase
         // setup your test
 
         $context = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasClasses::check($context));
+        $this->assertFalse(PhpReflection\HasAnyClasses::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -93,9 +93,9 @@ class GetClassNamesTest extends TestCase
         // setup your test
 
         $context = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasClasses::check($context));
+        $this->assertFalse(PhpReflection\HasAnyClasses::check($context));
         $this->addMinimalClasses($context);
-        $this->assertTrue(PhpReflection\HasClasses::check($context));
+        $this->assertTrue(PhpReflection\HasAnyClasses::check($context));
 
         $expectedNames = [ 'FooClass', 'BarClass' ];
 

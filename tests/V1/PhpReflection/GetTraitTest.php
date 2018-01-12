@@ -135,5 +135,4 @@ class GetTraitTest extends TestCase
 
         GetTrait::from($context, 'not_a_trait', $onFatal);
     }
-
 }

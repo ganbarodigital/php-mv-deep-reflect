@@ -34,7 +34,7 @@ use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 /**
  * does the context contain any classes at all?
  */
-class HasClasses
+class HasAnyClasses
 {
     // we don't want you making objects from this class, sorry!
     use StatelessClass;

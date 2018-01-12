@@ -329,7 +329,7 @@ class PhpGlobalContextTest extends TestCase
         // setup your test
 
         $unit = $this->getUnitToTest();
-        $this->assertFalse(PhpReflection\HasClasses::check($unit));
+        $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
         $this->assertFalse(PhpReflection\HasNamespaces::check($unit));
 
         // ----------------------------------------------------------------
@@ -347,7 +347,7 @@ class PhpGlobalContextTest extends TestCase
         $this->assertEquals(['FooClass', 'BarClass'], PhpReflection\GetClassNames::from($namespaceCtx));
 
         // make sure none of this ended up in the global namespace
-        $this->assertFalse(PhpReflection\HasClasses::check($unit));
+        $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
         $this->assertEquals([], PhpReflection\GetClassNames::from($unit));
     }
 
