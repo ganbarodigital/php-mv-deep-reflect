@@ -29,12 +29,16 @@
 namespace GanbaroDigital\DeepReflection\V1\PhpReflection;
 
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpNamespaceContainer;
+use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
  * get a list of all the namespaces in the given context
  */
 class GetNamespaceNames
 {
+    // we don't want you making objects from this class, sorry!
+    use StatelessClass;
+
     /**
      * get a list of all the namespaces in the given context
      *
@@ -43,19 +47,6 @@ class GetNamespaceNames
      * @return string[]
      */
     public static function from(PhpNamespaceContainer $context) : array
-    {
-        $namespaces = GetAllNamespaces::from($context);
-        return array_keys($namespaces);
-    }
-
-    /**
-     * get a list of all the namespaces in the given context
-     *
-     * @param  PhpNamespaceContainer $context
-     *         the context to extract from
-     * @return string[]
-     */
-    public function getNamespaceNames(PhpNamespaceContainer $context) : array
     {
         $namespaces = GetAllNamespaces::from($context);
         return array_keys($namespaces);

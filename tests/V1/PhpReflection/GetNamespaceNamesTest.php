@@ -45,9 +45,10 @@ class GetNamespaceNamesTest extends TestCase
     use AddNamespacesToContainer;
 
     /**
-     * @coversNothing
+     * @covers ::__construct
+     * @expectedException Error
      */
-    public function test_can_be_instantiated()
+    public function test_cannot_be_instantiated()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -66,17 +67,14 @@ class GetNamespaceNamesTest extends TestCase
 
     /**
      * @covers ::from
-     * @covers ::getNamespaceNames
      */
     public function test_returns_empty_array_when_no_namespaces_in_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $namespaceContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasNamespaces::check($namespaceContainer));
-
-        $unit = new GetNamespaceNames;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasNamespaces::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -85,13 +83,11 @@ class GetNamespaceNamesTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals([], GetNamespaceNames::from($namespaceContainer));
-        $this->assertEquals([], $unit->getNamespaceNames($namespaceContainer));
+        $this->assertEquals([], GetNamespaceNames::from($context));
     }
 
     /**
      * @covers ::from
-     * @covers ::getNamespaceNames
      */
     public function test_can_get_list_of_namespaces_from_context()
     {
@@ -100,21 +96,19 @@ class GetNamespaceNamesTest extends TestCase
 
         $expectedNames = [ 'FooNamespace', 'BarNamespace' ];
 
-        $namespaceContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasNamespaces::check($namespaceContainer));
-        $this->addNamespaces($namespaceContainer, ...$expectedNames);
-        $this->assertTrue(PhpReflection\HasNamespaces::check($namespaceContainer));
-
-        $unit = new GetNamespaceNames;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasNamespaces::check($context));
+        $this->addNamespaces($context, ...$expectedNames);
+        $this->assertTrue(PhpReflection\HasNamespaces::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
+        $actualNames = GetNamespaceNames::from($context);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals($expectedNames, GetNamespaceNames::from($namespaceContainer));
-        $this->assertEquals($expectedNames, $unit->getNamespaceNames($namespaceContainer));
+        $this->assertEquals($expectedNames, $actualNames);
     }
 }
