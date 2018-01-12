@@ -30,12 +30,16 @@ namespace GanbaroDigital\DeepReflection\V1\PhpReflection;
 
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpClass;
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpClassContainer;
+use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
  * get a list of all classes from a given context
  */
 class GetAllClasses
 {
+    // we don't want you making objects from this class, sorry!
+    use StatelessClass;
+
     /**
      * get a list of all classes from a given context
      *
@@ -44,18 +48,6 @@ class GetAllClasses
      * @return PhpClass[]
      */
     public static function from(PhpClassContainer $context) : array
-    {
-        return $context->getChildrenByType(PhpClass::class);
-    }
-
-    /**
-     * get a list of all classes from a given context
-     *
-     * @param  PhpClassContainer $context
-     *         the context to extract from
-     * @return PhpClass[]
-     */
-    public function getAllClasses(PhpClassContainer $context) : array
     {
         return $context->getChildrenByType(PhpClass::class);
     }
