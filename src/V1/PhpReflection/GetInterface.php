@@ -31,12 +31,16 @@ namespace GanbaroDigital\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpInterfaceContainer;
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpInterface;
 use GanbaroDigital\DeepReflection\V1\PhpExceptions;
+use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
  * get details about an interface, by name
  */
 class GetInterface
 {
+    // we don't want you making objects from this class, sorry!
+    use StatelessClass;
+
     /**
      * get details about an interface, by name
      *

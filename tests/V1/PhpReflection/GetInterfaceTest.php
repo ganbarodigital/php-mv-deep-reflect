@@ -45,9 +45,10 @@ class GetInterfaceTest extends TestCase
     use AddInterfacesToContainer;
 
     /**
-     * @coversNothing
+     * @covers ::__construct
+     * @expectedException Error
      */
-    public function test_can_be_instantiated()
+    public function test_cannot_be_instantiated()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -60,8 +61,6 @@ class GetInterfaceTest extends TestCase
 
         // ----------------------------------------------------------------
         // test the results
-
-        $this->assertInstanceOf(GetInterface::class, $unit);
     }
 
     /**
@@ -72,23 +71,21 @@ class GetInterfaceTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $interfaceContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasInterfaces::check($interfaceContainer));
-        $this->addMinimalInterfaces($interfaceContainer);
-        $this->assertTrue(PhpReflection\HasInterfaces::check($interfaceContainer));
-
-        $unit = new GetInterface;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasInterfaces::check($context));
+        $this->addMinimalInterfaces($context);
+        $this->assertTrue(PhpReflection\HasInterfaces::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $interfaceCtx1 = GetInterface::from($interfaceContainer, 'FooInterface');
+        $actualResult = GetInterface::from($context, 'FooInterface');
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertInstanceOf(PhpContexts\PhpInterface::class, $interfaceCtx1);
-        $this->assertEquals('FooInterface', $interfaceCtx1->getName());
+        $this->assertInstanceOf(PhpContexts\PhpInterface::class, $actualResult);
+        $this->assertEquals('FooInterface', $actualResult->getName());
     }
 
     /**
@@ -100,17 +97,15 @@ class GetInterfaceTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $interfaceContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasInterfaces::check($interfaceContainer));
-        $this->addMinimalInterfaces($interfaceContainer);
-        $this->assertTrue(PhpReflection\HasInterfaces::check($interfaceContainer));
-
-        $unit = new GetInterface;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasInterfaces::check($context));
+        $this->addMinimalInterfaces($context);
+        $this->assertTrue(PhpReflection\HasInterfaces::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $functionCtx = GetInterface::from($interfaceContainer, 'not_an_interface');
+        GetInterface::from($context, 'not_an_interface');
 
         // ----------------------------------------------------------------
         // test the results
@@ -126,12 +121,10 @@ class GetInterfaceTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $interfaceContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasInterfaces::check($interfaceContainer));
-        $this->addMinimalInterfaces($interfaceContainer);
-        $this->assertTrue(PhpReflection\HasInterfaces::check($interfaceContainer));
-
-        $unit = new GetInterface;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasInterfaces::check($context));
+        $this->addMinimalInterfaces($context);
+        $this->assertTrue(PhpReflection\HasInterfaces::check($context));
 
         $onFatal = new OnFatal(function($name) {
             throw new \InvalidArgumentException("VIVA LA REVOLUTION");
@@ -140,7 +133,7 @@ class GetInterfaceTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $interfaceCtx = GetInterface::from($interfaceContainer, 'not_an_interface', $onFatal);
+        GetInterface::from($context, 'not_an_interface', $onFatal);
     }
 
 }
