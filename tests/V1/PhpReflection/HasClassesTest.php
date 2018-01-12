@@ -31,7 +31,6 @@ namespace GanbaroDigitalTest\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpContexts;
 use GanbaroDigital\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpReflection\HasClasses;
-use GanbaroDigital\MissingBits\Checks\Check;
 use GanbaroDigital\MissingBits\ErrorResponders\OnFatal;
 use GanbaroDigitalTest\DeepReflection\V1\PhpFixtures\AddClassesToContainer;
 use PhpUnit\Framework\TestCase;
@@ -46,9 +45,10 @@ class HasClassesTest extends TestCase
     use AddClassesToContainer;
 
     /**
-     * @coversNothing
+     * @covers ::__construct
+     * @expectedException Error
      */
-    public function test_can_be_instantiated()
+    public function test_cannot_be_instantiated()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -60,44 +60,39 @@ class HasClassesTest extends TestCase
 
         // ----------------------------------------------------------------
         // test the results
-
-        $this->assertInstanceOf(HasClasses::class, $unit);
-    }
-
-    /**
-     * @coversNothing
-     */
-    public function test_is_Check()
-    {
-        // ----------------------------------------------------------------
-        // setup your test
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $unit = new HasClasses();
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertInstanceOf(Check::class, $unit);
     }
 
     /**
      * @covers ::check
-     * @covers ::inspect
      */
-    public function test_can_check_if_any_classes_in_context()
+    public function test_returns_false_when_no_classes_in_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $classContainer1 = new PhpContexts\PhpGlobalContext;
-        $this->addMinimalClasses($classContainer1);
+        $context = new PhpContexts\PhpGlobalContext;
 
-        $classContainer2 = new PhpContexts\PhpGlobalContext;
+        // ----------------------------------------------------------------
+        // perform the change
 
-        $unit = new HasClasses();
+        $actualResult = HasClasses::check($context);
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertFalse($actualResult);
+    }
+
+    /**
+     * @covers ::check
+     */
+    public function test_returns_true_if_any_classes_in_context()
+    {
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->addMinimalClasses($context);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -106,11 +101,6 @@ class HasClassesTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(HasClasses::check($classContainer1));
-        $this->assertFalse(HasClasses::check($classContainer2));
-
-        $this->assertTrue($unit->inspect($classContainer1));
-        $this->assertFalse($unit->inspect($classContainer2));
+        $this->assertTrue(HasClasses::check($context));
     }
-
 }
