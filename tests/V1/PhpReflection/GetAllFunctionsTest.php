@@ -44,9 +44,10 @@ class GetAllFunctionsTest extends TestCase
     use AddFunctionsToContainer;
 
     /**
-     * @coversNothing
+     * @covers ::__construct
+     * @expectedException Error
      */
-    public function test_can_be_instantiated()
+    public function test_cannot_be_instantiated()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -60,83 +61,61 @@ class GetAllFunctionsTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertInstanceOf(GetAllFunctions::class, $unit);
     }
 
     /**
      * @covers ::from
-     * @covers ::getAllFunctions
      */
-    public function test_returns_empty_array_when_no_functions_in_function_container()
+    public function test_returns_empty_array_when_no_functions_in_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $funcContainer = new PhpContexts\PhpGlobalContext;
-        $unit = new GetAllFunctions;
+        $context = new PhpContexts\PhpGlobalContext;
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult1 = GetAllFunctions::from($funcContainer);
-        $actualResult2 = $unit->getAllFunctions($funcContainer);
+        $actualResult = GetAllFunctions::from($context);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals([], $actualResult1);
-        $this->assertEquals([], $actualResult2);
+        $this->assertEquals([], $actualResult);
     }
 
     /**
      * @covers ::from
-     * @covers ::getAllFunctions
      */
     public function test_can_get_all_functions_from_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $funcContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasFunctions::check($funcContainer));
-        $this->addMinimalFunctions($funcContainer);
-        $this->assertTrue(PhpReflection\HasFunctions::check($funcContainer));
-
-        $unit = new GetAllFunctions;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasFunctions::check($context));
+        $this->addMinimalFunctions($context);
+        $this->assertTrue(PhpReflection\HasFunctions::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $funcCtxs1 = GetAllFunctions::from($funcContainer);
-        $funcCtxs2 = $unit->getAllFunctions($funcContainer);
+        $actualResult = GetAllFunctions::from($context);
 
         // ----------------------------------------------------------------
         // test the results
 
         // make sure we got back an array of the right size
-        $this->assertEquals('array', gettype($funcCtxs1));
-        $this->assertEquals(2, count($funcCtxs1));
+        $this->assertEquals('array', gettype($actualResult));
+        $this->assertEquals(2, count($actualResult));
 
         // the function 'foo' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpFunction::class, $funcCtxs1['foo']);
-        $this->assertEquals('foo', $funcCtxs1['foo']->getName());
+        $this->assertInstanceOf(PhpContexts\PhpFunction::class, $actualResult['foo']);
+        $this->assertEquals('foo', $actualResult['foo']->getName());
 
         // the function 'bar' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpFunction::class, $funcCtxs1['bar']);
-        $this->assertEquals('bar', $funcCtxs1['bar']->getName());
-
-
-        // make sure we got back an array of the right size
-        $this->assertEquals('array', gettype($funcCtxs2));
-        $this->assertEquals(2, count($funcCtxs2));
-
-        // the function 'foo' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpFunction::class, $funcCtxs2['foo']);
-        $this->assertEquals('foo', $funcCtxs2['foo']->getName());
-
-        // the function 'var' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpFunction::class, $funcCtxs2['bar']);
-        $this->assertEquals('bar', $funcCtxs2['bar']->getName());
+        $this->assertInstanceOf(PhpContexts\PhpFunction::class, $actualResult['bar']);
+        $this->assertEquals('bar', $actualResult['bar']->getName());
     }
 
 }
