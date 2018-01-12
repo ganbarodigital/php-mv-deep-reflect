@@ -45,9 +45,10 @@ class GetTraitTest extends TestCase
     use AddTraitsToContainer;
 
     /**
-     * @coversNothing
+     * @covers ::__construct
+     * @expectedException Error
      */
-    public function test_can_be_instantiated()
+    public function test_cannot_be_instantiated()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -60,8 +61,6 @@ class GetTraitTest extends TestCase
 
         // ----------------------------------------------------------------
         // test the results
-
-        $this->assertInstanceOf(GetTrait::class, $unit);
     }
 
     /**
@@ -72,23 +71,21 @@ class GetTraitTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $traitContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasTraits::check($traitContainer));
-        $this->addMinimalTraits($traitContainer);
-        $this->assertTrue(PhpReflection\HasTraits::check($traitContainer));
-
-        $unit = new GetTrait;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasTraits::check($context));
+        $this->addMinimalTraits($context);
+        $this->assertTrue(PhpReflection\HasTraits::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $traitCtx1 = GetTrait::from($traitContainer, 'FooTrait');
+        $actualResult = GetTrait::from($context, 'FooTrait');
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertInstanceOf(PhpContexts\PhpTrait::class, $traitCtx1);
-        $this->assertEquals('FooTrait', $traitCtx1->getName());
+        $this->assertInstanceOf(PhpContexts\PhpTrait::class, $actualResult);
+        $this->assertEquals('FooTrait', $actualResult->getName());
     }
 
     /**
@@ -100,17 +97,15 @@ class GetTraitTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $traitContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasTraits::check($traitContainer));
-        $this->addMinimalTraits($traitContainer);
-        $this->assertTrue(PhpReflection\HasTraits::check($traitContainer));
-
-        $unit = new GetTrait;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasTraits::check($context));
+        $this->addMinimalTraits($context);
+        $this->assertTrue(PhpReflection\HasTraits::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $traitCtx = GetTrait::from($traitContainer, 'not_a_trait');
+        GetTrait::from($context, 'not_a_trait');
 
         // ----------------------------------------------------------------
         // test the results
@@ -126,12 +121,10 @@ class GetTraitTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $traitContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasTraits::check($traitContainer));
-        $this->addMinimalTraits($traitContainer);
-        $this->assertTrue(PhpReflection\HasTraits::check($traitContainer));
-
-        $unit = new GetTrait;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasTraits::check($context));
+        $this->addMinimalTraits($context);
+        $this->assertTrue(PhpReflection\HasTraits::check($context));
 
         $onFatal = new OnFatal(function($name) {
             throw new \InvalidArgumentException("VIVA LA REVOLUTION");
@@ -140,7 +133,7 @@ class GetTraitTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $traitCtx = GetTrait::from($traitContainer, 'not_a_trait', $onFatal);
+        GetTrait::from($context, 'not_a_trait', $onFatal);
     }
 
 }

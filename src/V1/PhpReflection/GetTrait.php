@@ -31,12 +31,16 @@ namespace GanbaroDigital\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpTraitContainer;
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpTrait;
 use GanbaroDigital\DeepReflection\V1\PhpExceptions;
+use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
  * get details about a trait, by name
  */
 class GetTrait
 {
+    // we don't want you making objects from this class, sorry!
+    use StatelessClass;
+
     /**
      * get details about a trait, by name
      *
