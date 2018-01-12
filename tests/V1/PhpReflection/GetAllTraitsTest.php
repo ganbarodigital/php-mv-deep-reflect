@@ -44,9 +44,10 @@ class GetAllTraitsTest extends TestCase
     use AddTraitsToContainer;
 
     /**
-     * @coversNothing
+     * @covers ::__construct
+     * @expectedException Error
      */
-    public function test_can_be_instantiated()
+    public function test_cannot_be_instantiated()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -59,83 +60,60 @@ class GetAllTraitsTest extends TestCase
 
         // ----------------------------------------------------------------
         // test the results
-
-        $this->assertInstanceOf(GetAllTraits::class, $unit);
     }
 
     /**
      * @covers ::from
-     * @covers ::getAllTraits
      */
-    public function test_returns_empty_array_when_no_traits_in_trait_container()
+    public function test_returns_empty_array_when_no_traits_in_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $traitContainer = new PhpContexts\PhpGlobalContext;
-        $unit = new GetAllTraits;
+        $context = new PhpContexts\PhpGlobalContext;
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult1 = GetAllTraits::from($traitContainer);
-        $actualResult2 = $unit->getAllTraits($traitContainer);
+        $actualResult = GetAllTraits::from($context);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals([], $actualResult1);
-        $this->assertEquals([], $actualResult2);
+        $this->assertEquals([], $actualResult);
     }
 
     /**
      * @covers ::from
-     * @covers ::getAllTraits
      */
     public function test_can_get_all_traits_from_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $traitContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasTraits::check($traitContainer));
-        $this->addMinimalTraits($traitContainer);
-        $this->assertTrue(PhpReflection\HasTraits::check($traitContainer));
-
-        $unit = new GetAllTraits;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasTraits::check($context));
+        $this->addMinimalTraits($context);
+        $this->assertTrue(PhpReflection\HasTraits::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $traitCtxs1 = GetAllTraits::from($traitContainer);
-        $traitCtxs2 = $unit->getAllTraits($traitContainer);
+        $actualResult = GetAllTraits::from($context);
 
         // ----------------------------------------------------------------
         // test the results
 
         // make sure we got back an array of the right size
-        $this->assertEquals('array', gettype($traitCtxs1));
-        $this->assertEquals(2, count($traitCtxs1));
+        $this->assertEquals('array', gettype($actualResult));
+        $this->assertEquals(2, count($actualResult));
 
         // the trait 'FooTrait' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpTrait::class, $traitCtxs1['FooTrait']);
-        $this->assertEquals('FooTrait', $traitCtxs1['FooTrait']->getName());
+        $this->assertInstanceOf(PhpContexts\PhpTrait::class, $actualResult['FooTrait']);
+        $this->assertEquals('FooTrait', $actualResult['FooTrait']->getName());
 
         // the trait 'BarTrait' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpTrait::class, $traitCtxs1['BarTrait']);
-        $this->assertEquals('BarTrait', $traitCtxs1['BarTrait']->getName());
-
-
-        // make sure we got back an array of the right size
-        $this->assertEquals('array', gettype($traitCtxs2));
-        $this->assertEquals(2, count($traitCtxs2));
-
-        // the trait 'FooTrait' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpTrait::class, $traitCtxs2['FooTrait']);
-        $this->assertEquals('FooTrait', $traitCtxs2['FooTrait']->getName());
-
-        // the trait 'BarTrait' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpTrait::class, $traitCtxs2['BarTrait']);
-        $this->assertEquals('BarTrait', $traitCtxs2['BarTrait']->getName());
+        $this->assertInstanceOf(PhpContexts\PhpTrait::class, $actualResult['BarTrait']);
+        $this->assertEquals('BarTrait', $actualResult['BarTrait']->getName());
     }
 }

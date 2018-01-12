@@ -30,12 +30,16 @@ namespace GanbaroDigital\DeepReflection\V1\PhpReflection;
 
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpTrait;
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpTraitContainer;
+use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
  * get a list of all traits from a given context
  */
 class GetAllTraits
 {
+    // we don't want you making objects from this class, sorry!
+    use StatelessClass;
+
     /**
      * get a list of all traits from a given context
      *
@@ -44,18 +48,6 @@ class GetAllTraits
      * @return PhpTrait[]
      */
     public static function from(PhpTraitContainer $context) : array
-    {
-        return $context->getChildrenByType(PhpTrait::class);
-    }
-
-    /**
-     * get a list of all traits from a given context
-     *
-     * @param  PhpTraitContainer $context
-     *         the context to extract from
-     * @return PhpTrait[]
-     */
-    public function getAllTraits(PhpTraitContainer $context) : array
     {
         return $context->getChildrenByType(PhpTrait::class);
     }
