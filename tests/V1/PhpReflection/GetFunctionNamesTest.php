@@ -45,9 +45,10 @@ class GetFunctionNamesTest extends TestCase
     use AddFunctionsToContainer;
 
     /**
-     * @coversNothing
+     * @covers ::__construct
+     * @expectedException Error
      */
-    public function test_can_be_instantiated()
+    public function test_cannot_be_instantiated()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -60,23 +61,18 @@ class GetFunctionNamesTest extends TestCase
 
         // ----------------------------------------------------------------
         // test the results
-
-        $this->assertInstanceOf(GetFunctionNames::class, $unit);
     }
 
     /**
      * @covers ::from
-     * @covers ::getFunctionNames
      */
     public function test_returns_empty_array_when_no_functions_in_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $funcContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasFunctions::check($funcContainer));
-
-        $unit = new GetFunctionNames;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasFunctions::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -85,38 +81,32 @@ class GetFunctionNamesTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals([], GetFunctionNames::from($funcContainer));
-        $this->assertEquals([], $unit->getFunctionNames($funcContainer));
+        $this->assertEquals([], GetFunctionNames::from($context));
     }
 
     /**
      * @covers ::from
-     * @covers ::getFunctionNames
      */
     public function test_can_get_named_function_from_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $funcContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasFunctions::check($funcContainer));
-        $this->addMinimalFunctions($funcContainer);
-        $this->assertTrue(PhpReflection\HasFunctions::check($funcContainer));
-
-        $unit = new GetFunctionNames;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasFunctions::check($context));
+        $this->addMinimalFunctions($context);
+        $this->assertTrue(PhpReflection\HasFunctions::check($context));
 
         $expectedNames = [ 'foo', 'bar' ];
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $this->addMinimalFunctions($funcContainer);
-        $this->assertTrue(PhpReflection\HasFunctions::check($funcContainer));
+        $actualNames = GetFunctionNames::from($context);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals($expectedNames, GetFunctionNames::from($funcContainer));
-        $this->assertEquals($expectedNames, $unit->getFunctionNames($funcContainer));
+        $this->assertEquals($expectedNames, $actualNames);
     }
 }

@@ -29,12 +29,16 @@
 namespace GanbaroDigital\DeepReflection\V1\PhpReflection;
 
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpFunctionContainer;
+use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
  * get a list of all the functions in the given context
  */
 class GetFunctionNames
 {
+    // we don't want you making objects from this class, sorry!
+    use StatelessClass;
+
     /**
      * get a list of all the functions in the given context
      *
@@ -46,17 +50,5 @@ class GetFunctionNames
     {
         $functions = GetAllFunctions::from($context);
         return array_keys($functions);
-    }
-
-    /**
-     * get a list of all the functions in the given context
-     *
-     * @param  PhpFunctionContainer $context
-     *         the context to extract from
-     * @return string[]
-     */
-    public function getFunctionNames(PhpFunctionContainer $context) : array
-    {
-        return static::from($context);
     }
 }
