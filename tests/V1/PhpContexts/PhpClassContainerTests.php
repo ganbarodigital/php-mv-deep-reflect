@@ -163,7 +163,7 @@ trait PhpClassContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
-        $this->assertFalse(PhpReflection\ContextHasClass::check($unit, 'FooClass'));
+        $this->assertFalse(PhpReflection\HasClass::check($unit, 'FooClass'));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -174,8 +174,8 @@ trait PhpClassContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(PhpReflection\ContextHasClass::check($unit, 'FooClass'));
-        $this->assertFalse(PhpReflection\ContextHasClass::check($unit, 'not_a_class'));
+        $this->assertTrue(PhpReflection\HasClass::check($unit, 'FooClass'));
+        $this->assertFalse(PhpReflection\HasClass::check($unit, 'not_a_class'));
     }
 
     /**
@@ -188,7 +188,7 @@ trait PhpClassContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
-        $this->assertFalse(PhpReflection\ContextHasClass::check($unit, 'FooClass'));
+        $this->assertFalse(PhpReflection\HasClass::check($unit, 'FooClass'));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -199,10 +199,10 @@ trait PhpClassContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertFalse(PhpReflection\ContextHasClassesCalled::check($unit, ['not_a_class']));
-        $this->assertTrue(PhpReflection\ContextHasClassesCalled::check($unit, ['FooClass']));
-        $this->assertTrue(PhpReflection\ContextHasClassesCalled::check($unit, ['FooClass', 'BarClass']));
-        $this->assertFalse(PhpReflection\ContextHasClassesCalled::check($unit, ['FooClass', 'BarClass', 'not_a_class']));
+        $this->assertFalse(PhpReflection\HasClasses::check($unit, ['not_a_class']));
+        $this->assertTrue(PhpReflection\HasClasses::check($unit, ['FooClass']));
+        $this->assertTrue(PhpReflection\HasClasses::check($unit, ['FooClass', 'BarClass']));
+        $this->assertFalse(PhpReflection\HasClasses::check($unit, ['FooClass', 'BarClass', 'not_a_class']));
     }
 
     /**
