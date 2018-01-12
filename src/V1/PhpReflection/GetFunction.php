@@ -31,6 +31,7 @@ namespace GanbaroDigital\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpFunctionContainer;
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpFunction;
 use GanbaroDigital\DeepReflection\V1\PhpExceptions;
+use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 use GanbaroDigital\MissingBits\ErrorResponders\OnFatal;
 
 /**
@@ -38,6 +39,9 @@ use GanbaroDigital\MissingBits\ErrorResponders\OnFatal;
  */
 class GetFunction
 {
+    // we don't want you making objects from this class, sorry!
+    use StatelessClass;
+
     /**
      * get details about a function, by name
      *

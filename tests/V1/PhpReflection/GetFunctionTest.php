@@ -45,9 +45,10 @@ class GetFunctionTest extends TestCase
     use AddFunctionsToContainer;
 
     /**
-     * @coversNothing
+     * @covers ::__construct
+     * @expectedException Error
      */
-    public function test_can_be_instantiated()
+    public function test_cannot_be_instantiated()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -60,8 +61,6 @@ class GetFunctionTest extends TestCase
 
         // ----------------------------------------------------------------
         // test the results
-
-        $this->assertInstanceOf(GetFunction::class, $unit);
     }
 
     /**
@@ -72,23 +71,21 @@ class GetFunctionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $funcContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasFunctions::check($funcContainer));
-        $this->addMinimalFunctions($funcContainer);
-        $this->assertTrue(PhpReflection\HasFunctions::check($funcContainer));
-
-        $unit = new GetFunction;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasFunctions::check($context));
+        $this->addMinimalFunctions($context);
+        $this->assertTrue(PhpReflection\HasFunctions::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $funcCtx1 = GetFunction::from($funcContainer, 'foo');
+        $actualResult = GetFunction::from($context, 'foo');
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertInstanceOf(PhpContexts\PhpFunction::class, $funcCtx1);
-        $this->assertEquals('foo', $funcCtx1->getName());
+        $this->assertInstanceOf(PhpContexts\PhpFunction::class, $actualResult);
+        $this->assertEquals('foo', $actualResult->getName());
     }
 
     /**
@@ -100,17 +97,15 @@ class GetFunctionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $funcContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasFunctions::check($funcContainer));
-        $this->addMinimalFunctions($funcContainer);
-        $this->assertTrue(PhpReflection\HasFunctions::check($funcContainer));
-
-        $unit = new GetFunction;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasFunctions::check($context));
+        $this->addMinimalFunctions($context);
+        $this->assertTrue(PhpReflection\HasFunctions::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $functionCtx = GetFunction::from($funcContainer, 'not_a_function');
+        GetFunction::from($context, 'not_a_function');
 
         // ----------------------------------------------------------------
         // test the results
@@ -126,12 +121,10 @@ class GetFunctionTest extends TestCase
         // ----------------------------------------------------------------
         // setup your test
 
-        $funcContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasFunctions::check($funcContainer));
-        $this->addMinimalFunctions($funcContainer);
-        $this->assertTrue(PhpReflection\HasFunctions::check($funcContainer));
-
-        $unit = new GetFunction;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasFunctions::check($context));
+        $this->addMinimalFunctions($context);
+        $this->assertTrue(PhpReflection\HasFunctions::check($context));
 
         $onFatal = new OnFatal(function($name) {
             throw new \InvalidArgumentException("VIVA LA REVOLUTION");
@@ -140,7 +133,7 @@ class GetFunctionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $funcCtx = GetFunction::from($funcContainer, 'not_a_function', $onFatal);
+        GetFunction::from($context, 'not_a_function', $onFatal);
     }
 
 }
