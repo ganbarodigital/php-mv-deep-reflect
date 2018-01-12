@@ -31,12 +31,16 @@ namespace GanbaroDigital\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpNamespace;
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpNamespaceContainer;
 use GanbaroDigital\DeepReflection\V1\PhpExceptions;
+use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
  * get details about a namespace, by name
  */
 class GetNamespace
 {
+    // we don't want you making objects from this class, sorry!
+    use StatelessClass;
+
     /**
      * get details about a namespace, by name
      *
@@ -66,35 +70,5 @@ class GetNamespace
 
         // all done
         return $retval;
-    }
-
-    /**
-     * our constructor
-     *
-     * @param  PhpNamespaceContainer $context
-     *         the context to extract from
-     */
-    public function __construct(PhpNamespaceContainer $context)
-    {
-        $this->context = $context;
-    }
-
-    /**
-     * get details about a namespace, by name
-     *
-     * @param  string $name
-     *         the name of the namespace to look for
-     * @param  callable|null $onFailure
-     *         what to do if we don't have any such namespace
-     *         Params are:
-     *         - `$name` - the name of the namespace we cannot find
-     * @return PhpNamespace
-     * @throws PhpExceptions\NoSuchNamespace
-     *         - if we don't have a namespace called `$name`, and
-     *         - if `$onFailure` is `null`
-     */
-    public function getNamespace(string $name, callable $onFailure = null) : PhpNamespace
-    {
-        return static::from($this->context, $name, $onFailure);
     }
 }
