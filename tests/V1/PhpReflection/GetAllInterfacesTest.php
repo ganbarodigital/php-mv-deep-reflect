@@ -44,9 +44,10 @@ class GetAllInterfacesTest extends TestCase
     use AddInterfacesToContainer;
 
     /**
-     * @coversNothing
+     * @covers ::__construct
+     * @expectedException Error
      */
-    public function test_can_be_instantiated()
+    public function test_cannot_be_instantiated()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -60,83 +61,61 @@ class GetAllInterfacesTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertInstanceOf(GetAllInterfaces::class, $unit);
     }
 
     /**
      * @covers ::from
-     * @covers ::getAllInterfaces
      */
-    public function test_returns_empty_array_when_no_interfaces_in_interface_container()
+    public function test_returns_empty_array_when_no_interfaces_in_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $interfaceContainer = new PhpContexts\PhpGlobalContext;
-        $unit = new GetAllInterfaces;
+        $context = new PhpContexts\PhpGlobalContext;
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult1 = GetAllInterfaces::from($interfaceContainer);
-        $actualResult2 = $unit->getAllInterfaces($interfaceContainer);
+        $actualResult = GetAllInterfaces::from($context);
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals([], $actualResult1);
-        $this->assertEquals([], $actualResult2);
+        $this->assertEquals([], $actualResult);
     }
 
     /**
      * @covers ::from
-     * @covers ::getAllInterfaces
      */
     public function test_can_get_all_interfaces_from_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $interfaceContainer = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasInterfaces::check($interfaceContainer));
-        $this->addMinimalInterfaces($interfaceContainer);
-        $this->assertTrue(PhpReflection\HasInterfaces::check($interfaceContainer));
-
-        $unit = new GetAllInterfaces;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->assertFalse(PhpReflection\HasInterfaces::check($context));
+        $this->addMinimalInterfaces($context);
+        $this->assertTrue(PhpReflection\HasInterfaces::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $interfaceCtxs1 = GetAllInterfaces::from($interfaceContainer);
-        $interfaceCtxs2 = $unit->getAllInterfaces($interfaceContainer);
+        $actualResult = GetAllInterfaces::from($context);
 
         // ----------------------------------------------------------------
         // test the results
 
         // make sure we got back an array of the right size
-        $this->assertEquals('array', gettype($interfaceCtxs1));
-        $this->assertEquals(2, count($interfaceCtxs1));
+        $this->assertEquals('array', gettype($actualResult));
+        $this->assertEquals(2, count($actualResult));
 
         // the interface 'FooInterface' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpInterface::class, $interfaceCtxs1['FooInterface']);
-        $this->assertEquals('FooInterface', $interfaceCtxs1['FooInterface']->getName());
+        $this->assertInstanceOf(PhpContexts\PhpInterface::class, $actualResult['FooInterface']);
+        $this->assertEquals('FooInterface', $actualResult['FooInterface']->getName());
 
         // the interface 'BarInterface' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpInterface::class, $interfaceCtxs1['BarInterface']);
-        $this->assertEquals('BarInterface', $interfaceCtxs1['BarInterface']->getName());
-
-
-        // make sure we got back an array of the right size
-        $this->assertEquals('array', gettype($interfaceCtxs2));
-        $this->assertEquals(2, count($interfaceCtxs2));
-
-        // the interface 'FooInterface' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpInterface::class, $interfaceCtxs2['FooInterface']);
-        $this->assertEquals('FooInterface', $interfaceCtxs2['FooInterface']->getName());
-
-        // the interface 'BarInterface' should be in the array
-        $this->assertInstanceOf(PhpContexts\PhpInterface::class, $interfaceCtxs2['BarInterface']);
-        $this->assertEquals('BarInterface', $interfaceCtxs2['BarInterface']->getName());
+        $this->assertInstanceOf(PhpContexts\PhpInterface::class, $actualResult['BarInterface']);
+        $this->assertEquals('BarInterface', $actualResult['BarInterface']->getName());
     }
 
 }
