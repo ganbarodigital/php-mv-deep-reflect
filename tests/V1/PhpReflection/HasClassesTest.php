@@ -30,7 +30,7 @@ namespace GanbaroDigitalTest\DeepReflection\V1\PhpReflection;
 
 use GanbaroDigital\DeepReflection\V1\PhpContexts;
 use GanbaroDigital\DeepReflection\V1\PhpReflection;
-use GanbaroDigital\DeepReflection\V1\PhpReflection\HasNamedClasses;
+use GanbaroDigital\DeepReflection\V1\PhpReflection\HasClasses;
 use GanbaroDigital\MissingBits\Checks\Check;
 use GanbaroDigital\MissingBits\ErrorResponders\OnFatal;
 use GanbaroDigitalTest\DeepReflection\V1\PhpFixtures\AddClassesToContainer;
@@ -39,71 +39,40 @@ use PhpUnit\Framework\TestCase;
 require_once(__DIR__ . '/../PhpFixtures/AddClassesToContainer.php');
 
 /**
- * @coversDefaultClass GanbaroDigital\DeepReflection\V1\PhpReflection\HasNamedClasses
+ * @coversDefaultClass GanbaroDigital\DeepReflection\V1\PhpReflection\HasClasses
  */
-class HasNamedClassesTest extends TestCase
+class HasClassesTest extends TestCase
 {
     use AddClassesToContainer;
 
     /**
      * @covers ::__construct
+     * @expectedException Error
      */
-    public function test_can_be_instantiated()
+    public function test_cannot_be_instantiated()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $expectedClasses = ['FooClass'];
-
         // ----------------------------------------------------------------
         // perform the change
 
-        $unit = new HasNamedClasses($expectedClasses);
+        $unit = new HasClasses();
 
         // ----------------------------------------------------------------
         // test the results
-
-        $this->assertInstanceOf(HasNamedClasses::class, $unit);
-    }
-
-    /**
-     * @covers ::__construct
-     */
-    public function test_is_Check()
-    {
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $expectedClasses = ['FooClass'];
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $unit = new HasNamedClasses($expectedClasses);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertInstanceOf(Check::class, $unit);
     }
 
     /**
      * @covers ::check
-     * @covers ::inspect
      */
-    public function test_can_check_if_named_classes_in_context()
+    public function test_returns_true_if_named_classes_in_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
-        $unit1 = new HasNamedClasses(['FooClass']);
-        $unit2 = new HasNamedClasses(['FooClass', 'BarClass']);
-        $unit3 = new HasNamedClasses(['FooClass', 'BarClass', 'not_a_class']);
-
-        $containerWithClasses = new PhpContexts\PhpGlobalContext;
-        $this->addMinimalClasses($containerWithClasses);
-
-        $emptyContainer = new PhpContexts\PhpGlobalContext;
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->addMinimalClasses($context);
 
         // ----------------------------------------------------------------
         // perform the change
@@ -111,18 +80,32 @@ class HasNamedClassesTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertFalse(HasNamedClasses::check($containerWithClasses, ['not_a_class']));
-        $this->assertTrue(HasNamedClasses::check($containerWithClasses, ['FooClass']));
-        $this->assertTrue(HasNamedClasses::check($containerWithClasses, ['FooClass', 'BarClass']));
-        $this->assertFalse(HasNamedClasses::check($containerWithClasses, ['FooClass', 'BarClass', 'not_a_class']));
+        $this->assertTrue(HasClasses::check($context, ['FooClass']));
+        $this->assertTrue(HasClasses::check($context, ['FooClass', 'BarClass']));
+    }
 
-        $this->assertTrue($unit1->inspect($containerWithClasses));
-        $this->assertTrue($unit2->inspect($containerWithClasses));
-        $this->assertFalse($unit3->inspect($containerWithClasses));
-        $this->assertFalse($unit1->inspect($emptyContainer));
-        $this->assertFalse($unit2->inspect($emptyContainer));
-        $this->assertFalse($unit3->inspect($emptyContainer));
+    /**
+     * @covers ::check
+     */
+    public function test_returns_false_otherwise()
+    {
+        // ----------------------------------------------------------------
+        // setup your test
 
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->addMinimalClasses($context);
+
+        // ----------------------------------------------------------------
+        // perform the change
+
+        // ----------------------------------------------------------------
+        // test the results
+
+        // prove that FooClass is in there
+        $this->assertTrue(HasClasses::check($context, ['FooClass']));
+
+        $this->assertFalse(HasClasses::check($context, ['not_a_class']));
+        $this->assertFalse(HasClasses::check($context, ['FooClass', 'not_a_class']));
     }
 
 }

@@ -29,13 +29,16 @@
 namespace GanbaroDigital\DeepReflection\V1\PhpReflection;
 
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpClassContainer;
-use GanbaroDigital\MissingBits\Checks\Check;
+use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
  * does the context have all our named classes?
  */
-class HasNamedClasses implements Check
+class HasClasses
 {
+    // we don't want you making objects from this class, sorry!
+    use StatelessClass;
+
     /**
      * does the context have all our named classes?
      *
@@ -51,30 +54,5 @@ class HasNamedClasses implements Check
     {
         $classes = GetAllClasses::from($context);
         return count(array_intersect(array_keys($classes), $names)) == count($names);
-    }
-
-    /**
-     * create a new Check
-     *
-     * @param  array $names
-     *         the list of classes to check for
-     */
-    public function __construct(array $names)
-    {
-        $this->names = $names;
-    }
-
-    /**
-     * does the context have all our named classes?
-     *
-     * @param  PhpClassContainer $context
-     *         the context to examine
-     * @return bool
-     *         - `true` if all the classes are in `$context`
-     *         - `false` otherwise
-     */
-    public function inspect($context) : bool
-    {
-        return static::check($context, $this->names);
     }
 }
