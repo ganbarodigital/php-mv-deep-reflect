@@ -79,7 +79,7 @@ class GetInterfaceTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = GetInterface::from($context, 'FooInterface');
+        $actualResult = GetInterface::from('FooInterface', $context);
 
         // ----------------------------------------------------------------
         // test the results
@@ -105,7 +105,7 @@ class GetInterfaceTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        GetInterface::from($context, 'not_an_interface');
+        GetInterface::from('not_an_interface', $context);
 
         // ----------------------------------------------------------------
         // test the results
@@ -133,7 +133,7 @@ class GetInterfaceTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        GetInterface::from($context, 'not_an_interface', $onFatal);
+        GetInterface::from('not_an_interface', $context, $onFatal);
     }
 
 }

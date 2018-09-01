@@ -59,7 +59,7 @@ class HasClassTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $unit = new HasClass($context, 'FooClass');
+        $unit = new HasClass('FooClass', $context);
 
         // ----------------------------------------------------------------
         // test the results
@@ -83,7 +83,7 @@ class HasClassTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(HasClass::check($context, 'FooClass'));
+        $this->assertTrue(HasClass::check('FooClass', $context));
     }
 
     /**
@@ -104,7 +104,7 @@ class HasClassTest extends TestCase
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertFalse(HasClass::check($context, 'not_a_class'));
+        $this->assertFalse(HasClass::check('not_a_class', $context));
     }
 
 }

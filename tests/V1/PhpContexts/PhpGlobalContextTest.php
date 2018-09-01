@@ -208,8 +208,8 @@ class PhpGlobalContextTest extends TestCase
 
         // make sure the namespace was created
         $this->assertTrue(PhpReflection\HasNamespaces::check($unit));
-        $this->assertTrue(PhpReflection\HasNamespace::check($unit, 'GanbaroDigitalTest\\Fixtures'));
-        $namespaceCtx = PhpReflection\GetNamespace::from($unit, 'GanbaroDigitalTest\\Fixtures');
+        $this->assertTrue(PhpReflection\HasNamespace::check('GanbaroDigitalTest\\Fixtures', $unit));
+        $namespaceCtx = PhpReflection\GetNamespace::from('GanbaroDigitalTest\\Fixtures', $unit);
         $this->assertEquals(['foo', 'bar'], PhpReflection\GetFunctionNames::from($namespaceCtx));
 
         // make sure none of this ended up in the global namespace
@@ -300,7 +300,7 @@ class PhpGlobalContextTest extends TestCase
         $actualResult2 = $unit->createNamespace($scope, 'FooBar');
 
         // for final proof, bypass createNamespace() entirely
-        $actualResult3 = PhpReflection\GetNamespace::from($unit, 'FooBar');
+        $actualResult3 = PhpReflection\GetNamespace::from('FooBar', $unit);
 
         // ----------------------------------------------------------------
         // test the results
@@ -329,7 +329,7 @@ class PhpGlobalContextTest extends TestCase
         // setup your test
 
         $unit = $this->getUnitToTest();
-        $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertFalse(PhpReflection\HasClasses::check($unit));
         $this->assertFalse(PhpReflection\HasNamespaces::check($unit));
 
         // ----------------------------------------------------------------
@@ -342,12 +342,12 @@ class PhpGlobalContextTest extends TestCase
 
         // make sure the namespace was created
         $this->assertTrue(PhpReflection\HasNamespaces::check($unit));
-        $this->assertTrue(PhpReflection\HasNamespace::check($unit, 'GanbaroDigitalTest\\Fixtures'));
-        $namespaceCtx = PhpReflection\GetNamespace::from($unit, 'GanbaroDigitalTest\\Fixtures');
+        $this->assertTrue(PhpReflection\HasNamespace::check('GanbaroDigitalTest\\Fixtures', $unit));
+        $namespaceCtx = PhpReflection\GetNamespace::from('GanbaroDigitalTest\\Fixtures', $unit);
         $this->assertEquals(['FooClass', 'BarClass'], PhpReflection\GetClassNames::from($namespaceCtx));
 
         // make sure none of this ended up in the global namespace
-        $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertFalse(PhpReflection\HasClasses::check($unit));
         $this->assertEquals([], PhpReflection\GetClassNames::from($unit));
     }
 
@@ -381,8 +381,8 @@ class PhpGlobalContextTest extends TestCase
 
         // make sure the namespace was created
         $this->assertTrue(PhpReflection\HasNamespaces::check($unit));
-        $this->assertTrue(PhpReflection\HasNamespace::check($unit, 'GanbaroDigitalTest\\Fixtures'));
-        $namespaceCtx = PhpReflection\GetNamespace::from($unit, 'GanbaroDigitalTest\\Fixtures');
+        $this->assertTrue(PhpReflection\HasNamespace::check('GanbaroDigitalTest\\Fixtures', $unit));
+        $namespaceCtx = PhpReflection\GetNamespace::from('GanbaroDigitalTest\\Fixtures', $unit);
         $this->assertEquals(['FooInterface', 'BarInterface'], PhpReflection\GetInterfaceNames::from($namespaceCtx));
 
         // make sure none of this ended up in the global namespace
@@ -420,8 +420,8 @@ class PhpGlobalContextTest extends TestCase
 
         // make sure the namespace was created
         $this->assertTrue(PhpReflection\HasNamespaces::check($unit));
-        $this->assertTrue(PhpReflection\HasNamespace::check($unit, 'GanbaroDigitalTest\\Fixtures'));
-        $namespaceCtx = PhpReflection\GetNamespace::from($unit, 'GanbaroDigitalTest\\Fixtures');
+        $this->assertTrue(PhpReflection\HasNamespace::check('GanbaroDigitalTest\\Fixtures', $unit));
+        $namespaceCtx = PhpReflection\GetNamespace::from('GanbaroDigitalTest\\Fixtures', $unit);
         $this->assertEquals(['FooTrait', 'BarTrait'], PhpReflection\GetTraitNames::from($namespaceCtx));
 
         // make sure none of this ended up in the global namespace

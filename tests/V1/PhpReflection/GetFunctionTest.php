@@ -79,7 +79,7 @@ class GetFunctionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = GetFunction::from($context, 'foo');
+        $actualResult = GetFunction::from('foo', $context);
 
         // ----------------------------------------------------------------
         // test the results
@@ -105,7 +105,7 @@ class GetFunctionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        GetFunction::from($context, 'not_a_function');
+        GetFunction::from('not_a_function', $context);
 
         // ----------------------------------------------------------------
         // test the results
@@ -133,7 +133,7 @@ class GetFunctionTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        GetFunction::from($context, 'not_a_function', $onFatal);
+        GetFunction::from('not_a_function', $context, $onFatal);
     }
 
 }

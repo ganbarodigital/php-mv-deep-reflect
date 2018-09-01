@@ -204,7 +204,7 @@ trait PhpFunctionContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasFunctions::check($unit));
-        $this->assertFalse(PhpReflection\HasFunction::check($unit, 'foo'));
+        $this->assertFalse(PhpReflection\HasFunction::check('foo', $unit));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -215,8 +215,8 @@ trait PhpFunctionContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(PhpReflection\HasFunction::check($unit, 'foo'));
-        $this->assertFalse(PhpReflection\HasFunction::check($unit, 'not_a_function'));
+        $this->assertTrue(PhpReflection\HasFunction::check('foo', $unit));
+        $this->assertFalse(PhpReflection\HasFunction::check('not_a_function', $unit));
     }
 
     /**
@@ -229,7 +229,7 @@ trait PhpFunctionContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasFunctions::check($unit));
-        $this->assertFalse(PhpReflection\HasFunction::check($unit, 'foo'));
+        $this->assertFalse(PhpReflection\HasFunction::check('foo', $unit));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -240,10 +240,10 @@ trait PhpFunctionContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals(0, PhpReflection\HasFunctionsCalled::check($unit, ['not_a_function']));
-        $this->assertEquals(1, PhpReflection\HasFunctionsCalled::check($unit, ['foo']));
-        $this->assertEquals(2, PhpReflection\HasFunctionsCalled::check($unit, ['foo', 'bar']));
-        $this->assertEquals(2, PhpReflection\HasFunctionsCalled::check($unit, ['foo', 'bar', 'not_a_function']));
+        $this->assertEquals(0, PhpReflection\HasFunctionsCalled::check(['not_a_function'], $unit));
+        $this->assertEquals(1, PhpReflection\HasFunctionsCalled::check(['foo'], $unit));
+        $this->assertEquals(2, PhpReflection\HasFunctionsCalled::check(['foo', 'bar'], $unit));
+        $this->assertEquals(2, PhpReflection\HasFunctionsCalled::check(['foo', 'bar', 'not_a_function'], $unit));
     }
 
     /**
@@ -262,7 +262,7 @@ trait PhpFunctionContainerTests
         // ----------------------------------------------------------------
         // perform the change
 
-        $functionCtx = PhpReflection\GetFunction::from($unit, 'foo');
+        $functionCtx = PhpReflection\GetFunction::from('foo', $unit);
 
         // ----------------------------------------------------------------
         // test the results
@@ -325,7 +325,7 @@ trait PhpFunctionContainerTests
         // ----------------------------------------------------------------
         // perform the change
 
-        $functionCtx = PhpReflection\GetFunction::from($unit, 'not_a_function');
+        $functionCtx = PhpReflection\GetFunction::from('not_a_function', $unit);
 
         // ----------------------------------------------------------------
         // test the results
@@ -353,6 +353,6 @@ trait PhpFunctionContainerTests
         // ----------------------------------------------------------------
         // perform the change
 
-        $functionCtx = PhpReflection\GetFunction::from($unit, 'not_a_function', $onFatal);
+        $functionCtx = PhpReflection\GetFunction::from('not_a_function', $unit, $onFatal);
     }
 }

@@ -72,14 +72,14 @@ class GetClassTest extends TestCase
         // setup your test
 
         $context = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasAnyClasses::check($context));
+        $this->assertFalse(PhpReflection\HasClasses::check($context));
         $this->addMinimalClasses($context);
-        $this->assertTrue(PhpReflection\HasAnyClasses::check($context));
+        $this->assertTrue(PhpReflection\HasClasses::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = GetClass::from($context, 'FooClass');
+        $actualResult = GetClass::from('FooClass', $context);
 
         // ----------------------------------------------------------------
         // test the results
@@ -98,14 +98,14 @@ class GetClassTest extends TestCase
         // setup your test
 
         $context = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasAnyClasses::check($context));
+        $this->assertFalse(PhpReflection\HasClasses::check($context));
         $this->addMinimalClasses($context);
-        $this->assertTrue(PhpReflection\HasAnyClasses::check($context));
+        $this->assertTrue(PhpReflection\HasClasses::check($context));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        GetClass::from($context, 'not_a_class');
+        GetClass::from('not_a_class', $context);
 
         // ----------------------------------------------------------------
         // test the results
@@ -122,9 +122,9 @@ class GetClassTest extends TestCase
         // setup your test
 
         $context = new PhpContexts\PhpGlobalContext;
-        $this->assertFalse(PhpReflection\HasAnyClasses::check($context));
+        $this->assertFalse(PhpReflection\HasClasses::check($context));
         $this->addMinimalClasses($context);
-        $this->assertTrue(PhpReflection\HasAnyClasses::check($context));
+        $this->assertTrue(PhpReflection\HasClasses::check($context));
 
         $onFatal = new OnFatal(function($name) {
             throw new \InvalidArgumentException("VIVA LA REVOLUTION");
@@ -133,7 +133,7 @@ class GetClassTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        GetClass::from($context, 'not_a_class', $onFatal);
+        GetClass::from('not_a_class', $context, $onFatal);
     }
 
 }

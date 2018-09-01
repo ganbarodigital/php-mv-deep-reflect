@@ -203,7 +203,7 @@ trait PhpTraitContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasTraits::check($unit));
-        $this->assertFalse(PhpReflection\HasTrait::check($unit, 'FooTrait'));
+        $this->assertFalse(PhpReflection\HasTrait::check('FooTrait', $unit));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -214,8 +214,8 @@ trait PhpTraitContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(PhpReflection\HasTrait::check($unit, 'FooTrait'));
-        $this->assertFalse(PhpReflection\HasTrait::check($unit, 'not_a_trait'));
+        $this->assertTrue(PhpReflection\HasTrait::check('FooTrait', $unit));
+        $this->assertFalse(PhpReflection\HasTrait::check('not_a_trait', $unit));
     }
 
     /**
@@ -228,7 +228,7 @@ trait PhpTraitContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasTraits::check($unit));
-        $this->assertFalse(PhpReflection\HasTrait::check($unit, 'FooTrait'));
+        $this->assertFalse(PhpReflection\HasTrait::check('FooTrait', $unit));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -239,10 +239,10 @@ trait PhpTraitContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals(0, PhpReflection\HasTraitsCalled::check($unit, ['not_a_trait']));
-        $this->assertEquals(1, PhpReflection\HasTraitsCalled::check($unit, ['FooTrait']));
-        $this->assertEquals(2, PhpReflection\HasTraitsCalled::check($unit, ['FooTrait', 'BarTrait']));
-        $this->assertEquals(2, PhpReflection\HasTraitsCalled::check($unit, ['FooTrait', 'BarTrait', 'not_a_trait']));
+        $this->assertEquals(0, PhpReflection\HasTraitsCalled::check(['not_a_trait'], $unit));
+        $this->assertEquals(1, PhpReflection\HasTraitsCalled::check(['FooTrait'], $unit));
+        $this->assertEquals(2, PhpReflection\HasTraitsCalled::check(['FooTrait', 'BarTrait'], $unit));
+        $this->assertEquals(2, PhpReflection\HasTraitsCalled::check(['FooTrait', 'BarTrait', 'not_a_trait'], $unit));
     }
 
     /**
@@ -261,7 +261,7 @@ trait PhpTraitContainerTests
         // ----------------------------------------------------------------
         // perform the change
 
-        $traitCtx = PhpReflection\GetTrait::from($unit, 'FooTrait');
+        $traitCtx = PhpReflection\GetTrait::from('FooTrait', $unit);
 
         // ----------------------------------------------------------------
         // test the results
@@ -321,7 +321,7 @@ trait PhpTraitContainerTests
         // ----------------------------------------------------------------
         // perform the change
 
-        $functionCtx = PhpReflection\GetTrait::from($unit, 'not_a_trait');
+        $functionCtx = PhpReflection\GetTrait::from('not_a_trait', $unit);
 
         // ----------------------------------------------------------------
         // test the results
@@ -349,7 +349,7 @@ trait PhpTraitContainerTests
         // ----------------------------------------------------------------
         // perform the change
 
-        $traitCtx = PhpReflection\GetTrait::from($unit, 'not_a_trait', $onFatal);
+        $traitCtx = PhpReflection\GetTrait::from('not_a_trait', $unit, $onFatal);
 
         // ----------------------------------------------------------------
         // test the results

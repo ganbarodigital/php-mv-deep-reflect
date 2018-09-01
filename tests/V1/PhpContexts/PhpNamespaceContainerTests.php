@@ -186,8 +186,8 @@ trait PhpNamespaceContainerTests
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult1 = PhpReflection\HasNamespace::check($unit, 'FooBar');
-        $actualResult2 = PhpReflection\HasNamespace::check($unit, 'FooBaz');
+        $actualResult1 = PhpReflection\HasNamespace::check('FooBar', $unit);
+        $actualResult2 = PhpReflection\HasNamespace::check('FooBaz', $unit);
 
         // ----------------------------------------------------------------
         // test the results
@@ -213,10 +213,10 @@ trait PhpNamespaceContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals(0, PhpReflection\HasNamespacesCalled::check($unit, ['FooBaz']));
-        $this->assertEquals(1, PhpReflection\HasNamespacesCalled::check($unit, ['FooBaz', 'FooBar']));
-        $this->assertEquals(2, PhpReflection\HasNamespacesCalled::check($unit, ['FooBaz', 'FooBar', 'BarBaz']));
-        $this->assertEquals(2, PhpReflection\HasNamespacesCalled::check($unit, ['FooBar', 'BarBaz']));
+        $this->assertEquals(0, PhpReflection\HasNamespacesCalled::check(['FooBaz'], $unit));
+        $this->assertEquals(1, PhpReflection\HasNamespacesCalled::check(['FooBaz', 'FooBar'], $unit));
+        $this->assertEquals(2, PhpReflection\HasNamespacesCalled::check(['FooBaz', 'FooBar', 'BarBaz'], $unit));
+        $this->assertEquals(2, PhpReflection\HasNamespacesCalled::check(['FooBar', 'BarBaz'], $unit));
     }
 
     /**
@@ -233,7 +233,7 @@ trait PhpNamespaceContainerTests
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = PhpReflection\GetNamespace::from($unit, 'FooBar');
+        $actualResult = PhpReflection\GetNamespace::from('FooBar', $unit);
 
         // ----------------------------------------------------------------
         // test the results
@@ -256,7 +256,7 @@ trait PhpNamespaceContainerTests
         // ----------------------------------------------------------------
         // perform the change
 
-        PhpReflection\GetNamespace::from($unit, 'FooBar');
+        PhpReflection\GetNamespace::from('FooBar', $unit);
 
         // ----------------------------------------------------------------
         // test the results
@@ -280,7 +280,7 @@ trait PhpNamespaceContainerTests
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = PhpReflection\GetNamespace::from($unit, 'FooBar', $onFatal);
+        $actualResult = PhpReflection\GetNamespace::from('FooBar', $unit, $onFatal);
     }
 
 }

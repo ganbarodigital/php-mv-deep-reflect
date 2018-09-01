@@ -31,7 +31,6 @@ namespace GanbaroDigitalTest\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpContexts;
 use GanbaroDigital\DeepReflection\V1\PhpReflection;
 use GanbaroDigital\DeepReflection\V1\PhpReflection\HasClasses;
-use GanbaroDigital\MissingBits\Checks\Check;
 use GanbaroDigital\MissingBits\ErrorResponders\OnFatal;
 use GanbaroDigitalTest\DeepReflection\V1\PhpFixtures\AddClassesToContainer;
 use PhpUnit\Framework\TestCase;
@@ -66,28 +65,28 @@ class HasClassesTest extends TestCase
     /**
      * @covers ::check
      */
-    public function test_returns_true_if_named_classes_in_context()
+    public function test_returns_false_when_no_classes_in_context()
     {
         // ----------------------------------------------------------------
         // setup your test
 
         $context = new PhpContexts\PhpGlobalContext;
-        $this->addMinimalClasses($context);
 
         // ----------------------------------------------------------------
         // perform the change
 
+        $actualResult = HasClasses::check($context);
+
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(HasClasses::check($context, ['FooClass']));
-        $this->assertTrue(HasClasses::check($context, ['FooClass', 'BarClass']));
+        $this->assertFalse($actualResult);
     }
 
     /**
      * @covers ::check
      */
-    public function test_returns_false_otherwise()
+    public function test_returns_true_if_any_classes_in_context()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -98,14 +97,10 @@ class HasClassesTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
+
         // ----------------------------------------------------------------
         // test the results
 
-        // prove that FooClass is in there
-        $this->assertTrue(HasClasses::check($context, ['FooClass']));
-
-        $this->assertFalse(HasClasses::check($context, ['not_a_class']));
-        $this->assertFalse(HasClasses::check($context, ['FooClass', 'not_a_class']));
+        $this->assertTrue(HasClasses::check($context));
     }
-
 }

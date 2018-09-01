@@ -83,7 +83,7 @@ class GetNamespaceTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = GetNamespace::from($context, 'FooNamespace');
+        $actualResult = GetNamespace::from('FooNamespace', $context);
 
         // ----------------------------------------------------------------
         // test the results
@@ -109,7 +109,7 @@ class GetNamespaceTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        GetNamespace::from($context, 'not_a_namespace');
+        GetNamespace::from('not_a_namespace', $context);
 
         // ----------------------------------------------------------------
         // test the results
@@ -137,7 +137,7 @@ class GetNamespaceTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        GetNamespace::from($context, 'not_a_namespace', $onFatal);
+        GetNamespace::from('not_a_namespace', $context, $onFatal);
     }
 
 }

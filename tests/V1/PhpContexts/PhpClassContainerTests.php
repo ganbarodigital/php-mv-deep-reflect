@@ -78,7 +78,7 @@ trait PhpClassContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertFalse(PhpReflection\HasClasses::check($unit));
     }
 
     /**
@@ -90,7 +90,7 @@ trait PhpClassContainerTests
         // setup your test
 
         $unit = $this->getUnitToTest();
-        $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertFalse(PhpReflection\HasClasses::check($unit));
 
         $expectedClassNames = [ 'FooClass', 'BarClass' ];
 
@@ -102,7 +102,7 @@ trait PhpClassContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertTrue(PhpReflection\HasClasses::check($unit));
         $this->assertEquals($expectedClassNames, PhpReflection\GetClassNames::from($unit));
     }
 
@@ -115,7 +115,7 @@ trait PhpClassContainerTests
         // setup your test
 
         $unit = $this->getUnitToTest();
-        $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertFalse(PhpReflection\HasClasses::check($unit));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -125,7 +125,7 @@ trait PhpClassContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertTrue(PhpReflection\HasClasses::check($unit));
     }
 
     /**
@@ -137,7 +137,7 @@ trait PhpClassContainerTests
         // setup your test
 
         $unit = $this->getUnitToTest();
-        $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertFalse(PhpReflection\HasClasses::check($unit));
 
         $expectedClassNames = [ 'FooClass', 'BarClass' ];
 
@@ -149,7 +149,7 @@ trait PhpClassContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertTrue(PhpReflection\HasClasses::check($unit));
         $this->assertEquals($expectedClassNames, PhpReflection\GetClassNames::from($unit));
     }
 
@@ -162,20 +162,20 @@ trait PhpClassContainerTests
         // setup your test
 
         $unit = $this->getUnitToTest();
-        $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
-        $this->assertFalse(PhpReflection\HasClass::check($unit, 'FooClass'));
+        $this->assertFalse(PhpReflection\HasClasses::check($unit));
+        $this->assertFalse(PhpReflection\HasClass::check('FooClass', $unit));
 
         // ----------------------------------------------------------------
         // perform the change
 
         $this->addMinimalClasses($unit);
-        $this->assertTrue(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertTrue(PhpReflection\HasClasses::check($unit));
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(PhpReflection\HasClass::check($unit, 'FooClass'));
-        $this->assertFalse(PhpReflection\HasClass::check($unit, 'not_a_class'));
+        $this->assertTrue(PhpReflection\HasClass::check('FooClass', $unit));
+        $this->assertFalse(PhpReflection\HasClass::check('not_a_class', $unit));
     }
 
     /**
@@ -187,22 +187,22 @@ trait PhpClassContainerTests
         // setup your test
 
         $unit = $this->getUnitToTest();
-        $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
-        $this->assertFalse(PhpReflection\HasClass::check($unit, 'FooClass'));
+        $this->assertFalse(PhpReflection\HasClasses::check($unit));
+        $this->assertFalse(PhpReflection\HasClass::check('FooClass', $unit));
 
         // ----------------------------------------------------------------
         // perform the change
 
         $this->addMinimalClasses($unit);
-        $this->assertTrue(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertTrue(PhpReflection\HasClasses::check($unit));
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertFalse(PhpReflection\HasClasses::check($unit, ['not_a_class']));
-        $this->assertTrue(PhpReflection\HasClasses::check($unit, ['FooClass']));
-        $this->assertTrue(PhpReflection\HasClasses::check($unit, ['FooClass', 'BarClass']));
-        $this->assertFalse(PhpReflection\HasClasses::check($unit, ['FooClass', 'BarClass', 'not_a_class']));
+        $this->assertFalse(PhpReflection\HasClassesCalled::check(['not_a_class'], $unit));
+        $this->assertTrue(PhpReflection\HasClassesCalled::check(['FooClass'], $unit));
+        $this->assertTrue(PhpReflection\HasClassesCalled::check(['FooClass', 'BarClass'], $unit));
+        $this->assertFalse(PhpReflection\HasClassesCalled::check(['FooClass', 'BarClass', 'not_a_class'], $unit));
     }
 
     /**
@@ -214,14 +214,14 @@ trait PhpClassContainerTests
         // setup your test
 
         $unit = $this->getUnitToTest();
-        $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertFalse(PhpReflection\HasClasses::check($unit));
         $this->addMinimalClasses($unit);
-        $this->assertTrue(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertTrue(PhpReflection\HasClasses::check($unit));
 
         // ----------------------------------------------------------------
         // perform the change
 
-        $classCtx = PhpReflection\GetClass::from($unit, 'FooClass');
+        $classCtx = PhpReflection\GetClass::from('FooClass', $unit);
 
         // ----------------------------------------------------------------
         // test the results
@@ -239,9 +239,9 @@ trait PhpClassContainerTests
         // setup your test
 
         $unit = $this->getUnitToTest();
-        $this->assertFalse(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertFalse(PhpReflection\HasClasses::check($unit));
         $this->addMinimalClasses($unit);
-        $this->assertTrue(PhpReflection\HasAnyClasses::check($unit));
+        $this->assertTrue(PhpReflection\HasClasses::check($unit));
 
         // ----------------------------------------------------------------
         // perform the change

@@ -79,7 +79,7 @@ class GetTraitTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult = GetTrait::from($context, 'FooTrait');
+        $actualResult = GetTrait::from('FooTrait', $context);
 
         // ----------------------------------------------------------------
         // test the results
@@ -105,7 +105,7 @@ class GetTraitTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        GetTrait::from($context, 'not_a_trait');
+        GetTrait::from('not_a_trait', $context);
 
         // ----------------------------------------------------------------
         // test the results
@@ -133,6 +133,6 @@ class GetTraitTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        GetTrait::from($context, 'not_a_trait', $onFatal);
+        GetTrait::from('not_a_trait', $context, $onFatal);
     }
 }

@@ -30,7 +30,8 @@ namespace GanbaroDigitalTest\DeepReflection\V1\PhpReflection;
 
 use GanbaroDigital\DeepReflection\V1\PhpContexts;
 use GanbaroDigital\DeepReflection\V1\PhpReflection;
-use GanbaroDigital\DeepReflection\V1\PhpReflection\HasAnyClasses;
+use GanbaroDigital\DeepReflection\V1\PhpReflection\HasClassesCalled;
+use GanbaroDigital\MissingBits\Checks\Check;
 use GanbaroDigital\MissingBits\ErrorResponders\OnFatal;
 use GanbaroDigitalTest\DeepReflection\V1\PhpFixtures\AddClassesToContainer;
 use PhpUnit\Framework\TestCase;
@@ -38,9 +39,9 @@ use PhpUnit\Framework\TestCase;
 require_once(__DIR__ . '/../PhpFixtures/AddClassesToContainer.php');
 
 /**
- * @coversDefaultClass GanbaroDigital\DeepReflection\V1\PhpReflection\HasAnyClasses
+ * @coversDefaultClass GanbaroDigital\DeepReflection\V1\PhpReflection\HasClassesCalled
  */
-class HasAnyClassesTest extends TestCase
+class HasClassesCalledTest extends TestCase
 {
     use AddClassesToContainer;
 
@@ -56,7 +57,7 @@ class HasAnyClassesTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
-        $unit = new HasAnyClasses();
+        $unit = new HasClassesCalled();
 
         // ----------------------------------------------------------------
         // test the results
@@ -65,28 +66,7 @@ class HasAnyClassesTest extends TestCase
     /**
      * @covers ::check
      */
-    public function test_returns_false_when_no_classes_in_context()
-    {
-        // ----------------------------------------------------------------
-        // setup your test
-
-        $context = new PhpContexts\PhpGlobalContext;
-
-        // ----------------------------------------------------------------
-        // perform the change
-
-        $actualResult = HasAnyClasses::check($context);
-
-        // ----------------------------------------------------------------
-        // test the results
-
-        $this->assertFalse($actualResult);
-    }
-
-    /**
-     * @covers ::check
-     */
-    public function test_returns_true_if_any_classes_in_context()
+    public function test_returns_true_if_named_classes_in_context()
     {
         // ----------------------------------------------------------------
         // setup your test
@@ -97,10 +77,35 @@ class HasAnyClassesTest extends TestCase
         // ----------------------------------------------------------------
         // perform the change
 
+        // ----------------------------------------------------------------
+        // test the results
+
+        $this->assertTrue(HasClassesCalled::check(['FooClass'], $context));
+        $this->assertTrue(HasClassesCalled::check(['FooClass', 'BarClass'], $context));
+    }
+
+    /**
+     * @covers ::check
+     */
+    public function test_returns_false_otherwise()
+    {
+        // ----------------------------------------------------------------
+        // setup your test
+
+        $context = new PhpContexts\PhpGlobalContext;
+        $this->addMinimalClasses($context);
+
+        // ----------------------------------------------------------------
+        // perform the change
 
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(HasAnyClasses::check($context));
+        // prove that FooClass is in there
+        $this->assertTrue(HasClassesCalled::check(['FooClass'], $context));
+
+        $this->assertFalse(HasClassesCalled::check(['not_a_class'], $context));
+        $this->assertFalse(HasClassesCalled::check(['FooClass', 'not_a_class'], $context));
     }
+
 }

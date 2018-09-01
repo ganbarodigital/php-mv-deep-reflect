@@ -32,25 +32,27 @@ use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpClassContainer;
 use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
- * does the context contain any classes at all?
+ * does the context have all our named classes?
  */
-class HasAnyClasses
+class HasClassesCalled
 {
     // we don't want you making objects from this class, sorry!
     use StatelessClass;
 
     /**
-     * does the context contain any classes at all?
+     * does the context have all our named classes?
      *
+     * @param  array $names
+     *         the list of classes to check for
      * @param  PhpClassContainer $context
      *         the context to examine
-     * @return boolean
-     *         `true` if the context has at least one class defined
-     *         `false` otherwise
+     * @return bool
+     *         - `true` if all the classes are in `$context`
+     *         - `false` otherwise
      */
-    public static function check(PhpClassContainer $context) : bool
+    public static function check(array $names, PhpClassContainer $context) : bool
     {
         $classes = GetAllClasses::from($context);
-        return count($classes) > 0;
+        return count(array_intersect(array_keys($classes), $names)) == count($names);
     }
 }
