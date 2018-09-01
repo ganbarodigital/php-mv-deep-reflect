@@ -44,10 +44,10 @@ class GetInterface
     /**
      * get details about an interface, by name
      *
-     * @param  PhpInterfaceContainer $context
-     *         the context to extract from
      * @param  string $name
      *         the name of the interface to look for
+     * @param  PhpInterfaceContainer $context
+     *         the context to extract from
      * @param  callable|null $onFailure
      *         what to do if we don't have any such interface
      *         Params are:
@@ -57,7 +57,7 @@ class GetInterface
      *         - if we don't have an interface called `$name`, and
      *         - if `$onFailure` is `null`
      */
-    public static function from(PhpInterfaceContainer $context, string $name, callable $onFailure = null) : PhpInterface
+    public static function from(string $name, PhpInterfaceContainer $context, callable $onFailure = null) : PhpInterface
     {
         // make sure we have a way to fail
         $onFailure = $onFailure ?? function($name) {

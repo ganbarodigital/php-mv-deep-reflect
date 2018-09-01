@@ -44,10 +44,10 @@ class GetNamespace
     /**
      * get details about a namespace, by name
      *
-     * @param  PhpNamespaceContainer $context
-     *         the context to extract from
      * @param  string $name
      *         the name of the namespace to look for
+     * @param  PhpNamespaceContainer $context
+     *         the context to extract from
      * @param  callable|null $onFailure
      *         what to do if we don't have any such namespace
      *         Params are:
@@ -57,7 +57,7 @@ class GetNamespace
      *         - if we don't have a namespace called `$name`, and
      *         - if `$onFailure` is `null`
      */
-    public static function from(PhpNamespaceContainer $context, string $name, callable $onFailure = null) : PhpNamespace
+    public static function from(string $name, PhpNamespaceContainer $context, callable $onFailure = null) : PhpNamespace
     {
         // make sure we have a way to fail
         $onFailure = $onFailure ?? function($name) {

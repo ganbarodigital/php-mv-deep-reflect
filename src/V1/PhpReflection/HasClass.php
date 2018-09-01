@@ -42,15 +42,15 @@ class HasClass
     /**
      * does the context contain a named class?
      *
-     * @param  PhpClassContainer $context
-     *         the context to examine
      * @param  string $name
      *         which class are you looking for?
+     * @param  PhpClassContainer $context
+     *         the context to examine
      * @return boolean
      *         - `true` if the context contains the named class
      *         - `false` otherwise
      */
-    public static function check(PhpClassContainer $context, string $name) : bool
+    public static function check(string $name, PhpClassContainer $context) : bool
     {
         $classes = GetAllClasses::from($context);
         return isset($classes[$name]);

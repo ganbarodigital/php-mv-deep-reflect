@@ -45,10 +45,10 @@ class GetFunction
     /**
      * get details about a function, by name
      *
-     * @param  PhpFunctionContainer $context
-     *         the context to extract from
      * @param  string $name
      *         the name of the function to look for
+     * @param  PhpFunctionContainer $context
+     *         the context to extract from
      * @param  OnFatal|null $onFatal
      *         what to do if we don't have any such function
      *         Params are:
@@ -58,7 +58,7 @@ class GetFunction
      *         - if we don't have a function called `$name`, and
      *         - if `$onFailure` is `null`
      */
-    public static function from(PhpFunctionContainer $context, string $name, OnFatal $onFatal = null) : PhpFunction
+    public static function from(string $name, PhpFunctionContainer $context, OnFatal $onFatal = null) : PhpFunction
     {
         // make sure we have a way to fail
         $onFatal = $onFatal ?? function($name) {

@@ -4,96 +4,177 @@
  * Copyright (c) 2017-present Ganbaro Digital Ltd
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
  *
- *   * Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
- *     distribution.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *   * Neither the names of the copyright holders nor the names of his
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
+ * If you wish to use this program in proprietary software, you can purchase
+ * a closed-source license. Contact licensing@ganbarodigital.com for details.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * @category  Libraries
- * @package   DeepReflection/Contexts
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
- * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
- * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
+ * @copyright 2017-present Ganbaro Digital Ltd www.ganbarodigital.com
+ * @license   https://www.gnu.org/licenses/agpl.html  GNU Affero GPL v3
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
 namespace GanbaroDigital\DeepReflection\V1;
 
-use GanbaroDigital\DeepReflection\V1\PhpContexts;
+use GanbaroDigital\DeepReflection\V1\Context;
+use GanbaroDigital\DeepReflection\V1\Scope;
 
 /**
- * represents a scope in PHP
+ * base type for all data about discovered facts
+ *
+ * extend this to add helper methods for the specific context
+ * that you are capturing
  */
-interface Context
+abstract class Context
 {
     /**
-     * add something to our scope
+     * our children
+     * @var array
+     */
+    protected $children = [];
+
+    /**
+     * our constructor
      *
+     * @param Scope $scope
+     *        the scope at the time this context was created
+     */
+    public function __construct(Scope $scope)
+    {
+        $this->scope = $scope;
+    }
+
+    /**
+     * add something to our discovered facts
+     *
+     * @param  string|int|null $name
+     *         what do we call this context (what is its name as far as our
+     *         context is concerned)?
      * @param  Context $context
      *         the context that we want to add
      * @return void
      */
-    public function attachChildContext(Context $context);
+    public function attachChildContext($name, Context $context)
+    {
+        $this->attachChildContextType($name, get_class($context), $context);
+    }
 
     /**
-     * add a context that we belong to
+     * add something to our discovered facts
      *
+     * @param  string|int|null $name
+     *         what do we call this context (what is its name as far as our
+     *         context is concerned)?
+     * @param  string $contextType
+     *         what kind of context is this?
      * @param  Context $context
-     *         our parent's context
+     *         the context that we want to add
      * @return void
      */
-    public function attachParentContext(Context $context);
+    public function attachChildContextType($name, string $contextType, Context $context)
+    {
+        // force a type-conversion if we have a simulated type-alias
+        $name = is_object($name) ? (string)$name : $name;
+        if ($name == 'PhpClassName') {
+            debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+            exit(1);
+        }
 
-    // ==================================================================
-    //
-    // GET INFORMATION ABOUT THIS CONTEXT
-    //
-    // ------------------------------------------------------------------
-
-    /**
-     * return the PHP namespace for this context
-     *
-     * @return string|null
-     *         - string is empty if this is part of the global scope
-     *         - NULL if there is no namespace context available
-     */
-    public function getContainingNamespace();
+        $this->children[$contextType][$name] = $context;
+    }
 
     /**
-     * return the docblock for a context - if there is one!
+     * add one or more somethings to our discovered facts
      *
-     * @return DocblockContext|null
+     * @param  Context[] $contexts
+     *         the context that we want to add
+     * @return void
      */
-    public function getDocblock();
+    public function attachChildContexts(array $contexts)
+    {
+        foreach ($contexts as $name => $context) {
+            $this->children[get_class($context)][$name] = $context;
+        }
+    }
 
     /**
-     * return the source file where we were defined
+     * get all of our child contexts
      *
-     * @return SourceFileContext
+     * use this only when you can't get what you need from any helper
+     * methods that are available
+     *
+     * @return array
      */
-    public function getSourceFile() : PhpContexts\SourceFileContext;
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * get all child contexts of a given type
+     *
+     * @param  string $type
+     *         what kind of children do you want?
+     *         this is normally a class name
+     * @return array
+     */
+    public function getChildrenByType(string $type)
+    {
+        return $this->children[$type] ?? [];
+    }
+
+    /**
+     * get the current scope to analyse
+     *
+     * @return Scope
+     */
+    public function getScope()
+    {
+        return $this->scope;
+    }
+
+    /**
+     * what is the name of the context we represent?
+     *
+     * this might be any of:
+     *
+     * - namespace name
+     * - class name
+     * - file name
+     *
+     * and so on
+     *
+     * @return string|int
+     */
+    abstract public function getName();
+
+    /**
+     * what is the name of this context, in the context that it is being
+     * used?
+     *
+     * @return string
+     */
+    abstract public function getInContextName();
+
+    /**
+     * what kind of context are we?
+     *
+     * this should be human-readable, suitable for putting in error
+     * messages as so on
+     *
+     * @return string
+     */
+    abstract public function getContextType();
 }

@@ -44,10 +44,10 @@ class GetClass
     /**
      * get details about a class, by name
      *
-     * @param  PhpClassContainer $context
-     *         the context to extract from
      * @param  string $name
      *         the name of the class to look for
+     * @param  PhpClassContainer $context
+     *         the context to extract from
      * @param  callable|null $onFailure
      *         what to do if we don't have any such class
      *         Params are:
@@ -57,7 +57,7 @@ class GetClass
      *         - if we don't have a class called `$name`, and
      *         - if `$onFailure` is `null`
      */
-    public static function from(PhpClassContainer $context, string $name, callable $onFailure = null) : PhpClass
+    public static function from(string $name, PhpClassContainer $context, callable $onFailure = null) : PhpClass
     {
         // make sure we have a way to fail
         $onFailure = $onFailure ?? function($name) {

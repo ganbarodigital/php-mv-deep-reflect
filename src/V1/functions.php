@@ -26,8 +26,6 @@
  * @link      https://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
-namespace GanbaroDigital\DeepReflection\V1;
-
 use GanbaroDigital\DeepReflection\V1\PhpContexts;
 use GanbaroDigital\DeepReflection\V1\PhpReflection;
 
@@ -42,9 +40,9 @@ use GanbaroDigital\DeepReflection\V1\PhpReflection;
  *         - `true` if the context contains the named class
  *         - `false` otherwise
  */
-function has_class(PhpContexts\PhpClassContainer $context, string $className) : bool
+function dr_has_class(PhpContexts\PhpClassContainer $context, string $className) : bool
 {
-    return PhpReflection\ContextHasClass::check($context, $className);
+    return PhpReflection\HasClassCalled::check($context, $className);
 }
 
 /**
@@ -56,7 +54,7 @@ function has_class(PhpContexts\PhpClassContainer $context, string $className) : 
  *         `true` if the context has at least one class defined
  *         `false` otherwise
  */
-function has_classes(PhpContexts\PhpClassContainer $context) : bool
+function dr_has_classes(PhpContexts\PhpClassContainer $context) : bool
 {
     return PhpReflection\HasClasses::check($context);
 }
@@ -72,9 +70,9 @@ function has_classes(PhpContexts\PhpClassContainer $context) : bool
  *         - `true` if all the classes are in `$context`
  *         - `false` otherwise
  */
-function has_classes_called(PhpContexts\PhpClassContainer $context, array $classNames) : bool
+function dr_has_classes_called(PhpContexts\PhpClassContainer $context, array $classNames) : bool
 {
-    return PhpReflection\ContextHasClassesCalled::check($context, $classNames);
+    return PhpReflection\HasClassesCalled::check($context, $classNames);
 }
 
 /**
@@ -84,7 +82,7 @@ function has_classes_called(PhpContexts\PhpClassContainer $context, array $class
  *         the context to examine
  * @return PhpContexts\PhpClass[]
  */
-function get_all_classes(PhpContexts\PhpClassContainer $context) : array
+function dr_get_all_classes(PhpContexts\PhpClassContainer $context) : array
 {
     return PhpReflection\GetAllClasses::from($context);
 }
@@ -96,7 +94,7 @@ function get_all_classes(PhpContexts\PhpClassContainer $context) : array
  *         the context to examine
  * @return PhpContexts\PhpFunction[]
  */
-function get_all_functions(PhpContexts\PhpFunctionContainer $context) : array
+function dr_get_all_functions(PhpContexts\PhpFunctionContainer $context) : array
 {
     return PhpReflection\GetAllFunctions::from($context);
 }
@@ -110,7 +108,7 @@ function get_all_functions(PhpContexts\PhpFunctionContainer $context) : array
  *         which class do you want to get?
  * @return PhpContexts\PhpClass
  */
-function get_class(PhpContexts\PhpClassContainer $context, string $className) : PhpContexts\PhpClass
+function dr_get_class(PhpContexts\PhpClassContainer $context, string $className) : PhpContexts\PhpClass
 {
     return PhpReflection\GetClass::from($context);
 }
@@ -122,7 +120,7 @@ function get_class(PhpContexts\PhpClassContainer $context, string $className) : 
  *         the context to extract from
  * @return string[]
  */
-function get_class_names(PhpContexts\PhpClassContainer $context) : array
+function dr_get_class_names(PhpContexts\PhpClassContainer $context) : array
 {
     return PhpReflection\GetClassNames::from($context);
 }
@@ -136,7 +134,7 @@ function get_class_names(PhpContexts\PhpClassContainer $context) : array
  *         which function do you want?
  * @return PhpContexts\PhpFunction
  */
-function get_function(PhpContexts\PhpFunctionContainer $context, string $funcName) : PhpContexts\PhpFunction
+function dr_get_function(PhpContexts\PhpFunctionContainer $context, string $funcName) : PhpContexts\PhpFunction
 {
     return PhpReflection\GetFunction::from($context);
 }
@@ -148,7 +146,7 @@ function get_function(PhpContexts\PhpFunctionContainer $context, string $funcNam
  *         the context to extract from
  * @return string[]
  */
-function get_function_names(PhpContexts\PhpFunctionContainer $context) : array
+function dr_get_function_names(PhpContexts\PhpFunctionContainer $context) : array
 {
     return PhpReflection\GetFunctionNames::from($context);
 }
@@ -162,7 +160,7 @@ function get_function_names(PhpContexts\PhpFunctionContainer $context) : array
  *         which interface do you want?
  * @return PhpContexts\PhpInterface
  */
-function get_interface(PhpContexts\PhpInterfaceContainer $context, string $interfaceName) : PhpContexts\PhpInterface
+function dr_get_interface(PhpContexts\PhpInterfaceContainer $context, string $interfaceName) : PhpContexts\PhpInterface
 {
     return PhpReflection\GetInterface::from($context);
 }
@@ -174,7 +172,7 @@ function get_interface(PhpContexts\PhpInterfaceContainer $context, string $inter
  *         the context to extract from
  * @return string[]
  */
-function get_interface_names(PhpContexts\PhpInterfaceContainer $context) : array
+function dr_get_interface_names(PhpContexts\PhpInterfaceContainer $context) : array
 {
     return PhpReflection\GetInterfaceNames::from($context);
 }
@@ -186,9 +184,35 @@ function get_interface_names(PhpContexts\PhpInterfaceContainer $context) : array
  *         the context to examine
  * @param  string $namespaceName
  *         which namespace do you want?
- * @return PhpContexts#PhpNamespace
+ * @return PhpContexts\PhpNamespace
  */
-function get_namespace(PhpContexts\PhpNamespaceContainer $context, string $namespaceName) : PhpContexts\PhpNamespace
+function dr_get_namespace(PhpContexts\PhpNamespaceContainer $context, string $namespaceName) : PhpContexts\PhpNamespace
 {
-    return PhpReflection\GetNamespace::from($context);
+    return PhpReflection\GetNamespace::from($context, $namespaceName);
+}
+
+/**
+ * get a list of all the namespaces in the given context
+ *
+ * @param  PhpContexts\PhpNamespaceContainer $context
+ *         the context to extract from
+ * @return string[]
+ */
+function dr_get_namespace_names(PhpContexts\PhpNamespaceContainer $context) : array
+{
+    return PhpReflection\GetNamespaceNames::from($context);
+}
+
+/**
+ * return a named trait from a particular context
+ *
+ * @param  PhpContexts\PhpTraitContainer $context
+ *         the context to examine
+ * @param  string $traitName
+ *         which trait do you want?
+ * @return PhpContexts\PhpTrait
+ */
+function dr_get_trait(PhpContexts\PhpTraitContainer $context, string $traitName) : PhpContexts\PhpTrait
+{
+    return PhpReflection\GetTrait::from($context, $traitName);
 }

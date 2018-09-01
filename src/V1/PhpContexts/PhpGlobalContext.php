@@ -97,7 +97,7 @@ class PhpGlobalContext extends PhpNamespace
         };
 
         // get it, and create it if it doesn't exist
-        return GetNamespace::from($this, $namespace, $onFailure);
+        return GetNamespace::from($namespace, $this, $onFailure);
     }
 
     /**

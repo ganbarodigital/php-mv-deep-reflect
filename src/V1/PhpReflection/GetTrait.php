@@ -44,10 +44,10 @@ class GetTrait
     /**
      * get details about a trait, by name
      *
-     * @param  PhpTraitContainer $context
-     *         the context to extract from
      * @param  string $name
      *         the name of the trait to look for
+     * @param  PhpTraitContainer $context
+     *         the context to extract from
      * @param  callable|null $onFailure
      *         what to do if we don't have any such trait
      *         Params are:
@@ -57,7 +57,7 @@ class GetTrait
      *         - if we don't have a trait called `$name`, and
      *         - if `$onFailure` is `null`
      */
-    public static function from(PhpTraitContainer $context, string $name, callable $onFailure = null) : PhpTrait
+    public static function from(string $name, PhpTraitContainer $context, callable $onFailure = null) : PhpTrait
     {
         // make sure we have a way to fail
         $onFailure = $onFailure ?? function($name) {

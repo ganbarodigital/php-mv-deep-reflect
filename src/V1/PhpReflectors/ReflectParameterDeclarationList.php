@@ -4,40 +4,25 @@
  * Copyright (c) 2017-present Ganbaro Digital Ltd
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
  *
- *   * Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
- *     distribution.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *   * Neither the names of the copyright holders nor the names of his
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
+ * If you wish to use this program in proprietary software, you can purchase
+ * a closed-source license. Contact licensing@ganbarodigital.com for details.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * @category  Libraries
- * @package   DeepReflection/PhpReflectors
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
- * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
- * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
+ * @copyright 2017-present Ganbaro Digital Ltd www.ganbarodigital.com
+ * @license   https://www.gnu.org/licenses/agpl.html  GNU Affero GPL v3
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
@@ -63,10 +48,10 @@ class ReflectParameterDeclarationList
      *         the AST that declares the function param
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
-     * @return PhpContexts\FunctionLikeParameterContext
+     * @return PhpContexts\PhpFunctionLikeParameter
      *         our understanding about the parameter
      */
-    public static function from(Nodes\DelimitedList\ParameterDeclarationList $node, Scope $activeScope) : PhpContexts\FunctionLikeParameterContext
+    public static function from(Nodes\DelimitedList\ParameterDeclarationList $node, Scope $activeScope) : PhpContexts\PhpFunctionLikeParameter
     {
         // what's hiding inside?
         foreach ($node->getChildNodes() as $childNode)
@@ -89,10 +74,10 @@ class ReflectParameterDeclarationList
      *         the parameter to examine
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
-     * @return PhpContexts\FunctionLikeParameterContext
+     * @return PhpContexts\PhpFunctionLikeParameter
      *         our understanding about the parameter
      */
-    public static function inspectParameterNode(Nodes\Parameter $node, Scope $activeScope) : PhpContexts\FunctionLikeParameterContext
+    public static function inspectParameterNode(Nodes\Parameter $node, Scope $activeScope) : PhpContexts\PhpFunctionLikeParameter
     {
         // what is the parameter called?
         $name = Helpers\GetTokenText::from($node, $node->variableName);
@@ -115,7 +100,7 @@ class ReflectParameterDeclarationList
         $isVariadic = $node->dotDotDotToken ? true : false;
 
         // putting it all together
-        $retval = new PhpContexts\FunctionLikeParameterContext(
+        $retval = new PhpContexts\PhpFunctionLikeParameter(
             $typeHint,
             $passByReference,
             $isVariadic,

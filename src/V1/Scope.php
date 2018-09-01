@@ -4,319 +4,80 @@
  * Copyright (c) 2017-present Ganbaro Digital Ltd
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
  *
- *   * Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
- *     distribution.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- *   * Neither the names of the copyright holders nor the names of his
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
+ * If you wish to use this program in proprietary software, you can purchase
+ * a closed-source license. Contact licensing@ganbarodigital.com for details.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * @category  Libraries
- * @package   DeepReflection
  * @author    Stuart Herbert <stuherbert@ganbarodigital.com>
- * @copyright 2016-present Ganbaro Digital Ltd www.ganbarodigital.com
- * @license   http://www.opensource.org/licenses/bsd-license.php  BSD License
+ * @copyright 2017-present Ganbaro Digital Ltd www.ganbarodigital.com
+ * @license   https://www.gnu.org/licenses/agpl.html  GNU Affero GPL v3
  * @link      http://ganbarodigital.github.io/php-mv-deep-reflection
  */
 
 namespace GanbaroDigital\DeepReflection\V1;
 
-use GanbaroDigital\DeepReflection\V1\ComposerContexts;
-use GanbaroDigital\DeepReflection\V1\PhpContexts;
-
 /**
- * keep track of the current active scope(s)
+ * base type for all code / project scopes
  */
 class Scope
 {
     /**
-     * a full list of all the contexts that are currently active
-     *
-     * @var array
+     * all the contexts that together make up the current scope
+     * @var Context[]
      */
     protected $contexts = [];
 
     /**
-     * a subset of $contexts, suitable for attaching to at this
-     * moment in time
+     * add a new context to the current scope
      *
-     * @var array
-     */
-    protected $parentContexts = [];
-
-    /**
-     * create a new active scope
+     * NOTE: this returns a new scope
      *
-     * @param PhpContexts\GlobalContext $globalCtx
-     *        the global scope for the code we are parsing
-     * @param ComposerContexts\AutoloaderContext $autoloaderCtx
-     *        keep track of the autoloader instructions we come across
-     */
-    public function __construct(PhpContexts\GlobalContext $globalCtx, ComposerContexts\AutoloaderContext $autoloaderCtx)
-    {
-        $this->contexts['globalCtx'] = $globalCtx;
-        $this->contexts['autoloaderCtx'] = $autoloaderCtx;
-
-        $this->parentContexts = $this->contexts;
-    }
-
-    /**
-     * which parents should we be attaching to, at this moment in time?
-     *
-     * @return array
-     */
-    public function getParentContexts()
-    {
-        return $this->parentContexts;
-    }
-
-    /**
-     * get the global context
-     *
-     * @return Contexts\GlobalContext
-     */
-    public function getGlobalContext()
-    {
-        return $this->contexts['globalCtx'];
-    }
-
-    /**
-     * get the class that we're in
-     *
-     * @return Contexts\ClassContext|null
-     */
-    public function getClass()
-    {
-        return $this->contexts['classCtx'] ?? null;
-    }
-
-    /**
-     * tell us which class we're currently in
-     *
-     * @param Contexts\ClassContext $classCtx|null
-     *        the class that we're looking at
-     */
-    public function withClass(PhpContexts\ClassContext $classCtx) : Scope
-    {
-        $retval = clone $this;
-        $retval->contexts['classCtx'] = $classCtx;
-
-        // set up the parent contexts
-        $retval->parentContexts = $retval->contexts;
-        unset($retval->parentContexts['autoloaderCtx']);
-        unset($retval->parentContexts['globalCtx']);
-        unset($retval->parentContexts['namespaceCtx']);
-
-        return $retval;
-    }
-
-    public function withComposerPackage(ComposerContexts\ComposerPackageContext $composerCtx) : Scope
-    {
-        $retval = clone $this;
-        $retval->contexts['composerCtx'] = $composerCtx;
-
-        // setup the parent contexts
-        $retval->parentContexts = $retval->contexts;
-
-        // all done
-        return $retval;
-    }
-
-    /**
-     * get the function that we're in
-     *
-     * @return Contexts\FunctionContext|null
-     */
-    public function getFunction()
-    {
-        return $this->contexts['functionCtx'] ?? null;
-    }
-
-    /**
-     * tell us which function we're currently in
-     *
-     * @param Contexts\FunctionContext $functionCtx|null
-     *        the function that we're looking at
-     */
-    public function withFunction(PhpContexts\FunctionContext $functionCtx) : Scope
-    {
-        $retval = clone $this;
-        $retval->contexts['functionCtx'] = $functionCtx;
-
-        // set up the parent contexts
-        $retval->parentContexts = $retval->contexts;
-        unset($retval->parentContexts['autoloaderCtx']);
-        unset($retval->parentContexts['globalCtx']);
-
-        return $retval;
-    }
-
-    /**
-     * get the interface that we're in
-     *
-     * @return Contexts\InterfaceContext|null
-     */
-    public function getInterface()
-    {
-        return $this->contexts['interfaceCtx'] ?? null;
-    }
-
-    /**
-     * tell us which interface we're currently in
-     *
-     * @param Contexts\InterfaceContext $interfaceCtx|null
-     *        the interface that we're looking at
-     */
-    public function withInterface(PhpContexts\InterfaceContext $interfaceCtx) : Scope
-    {
-        $retval = clone $this;
-        $retval->contexts['interfaceCtx'] = $interfaceCtx;
-
-        // set up the parent contexts
-        $retval->parentContexts = $retval->contexts;
-        unset($retval->parentContexts['autoloaderCtx']);
-        unset($retval->parentContexts['globalCtx']);
-        unset($retval->parentContexts['namespaceCtx']);
-
-        return $retval;
-    }
-
-    /**
-     * which namespace are we currently defining things in?
-     *
-     * @return Contexts\NamespaceContext
-     */
-    public function getNamespace()
-    {
-        return $this->contexts['namespaceCtx'] ?? null;
-    }
-
-    /**
-     * tell us which namespace we're currently in
-     *
-     * @param Contexts\NamespaceContext $namespaceCtx
-     *        the namespace that we're defining things in
-     */
-    public function withNamespace(PhpContexts\NamespaceContext $namespaceCtx) : Scope
-    {
-        $retval = clone $this;
-        $retval->contexts['namespaceCtx'] = $namespaceCtx;
-
-        // set up the parent contexts
-        $retval->parentContexts = $retval->contexts;
-        unset($retval->parentContexts['autoloaderCtx']);
-        unset($retval->parentContexts['globalCtx']);
-
-        // all done
-        return $retval;
-    }
-
-    /**
-     * get the method that we're in
-     *
-     * @return Contexts\MethodContext|null
-     */
-    public function getMethod()
-    {
-        return $this->contexts['methodCtx'];
-    }
-
-    /**
-     * tell us which method we're currently in
-     *
-     * @param Contexts\MethodContext $methodCtx|null
-     *        the method that we're looking at
-     */
-    public function withMethod(PhpContexts\MethodContext $methodCtx) : Scope
-    {
-        $retval = clone $this;
-        $retval->contexts['methodCtx'] = $methodCtx;
-
-        // set up the parent contexts
-        $retval->parentContexts = $retval->contexts;
-        unset($retval->parentContexts['autoloaderCtx']);
-        unset($retval->parentContexts['globalCtx']);
-        unset($retval->parentContexts['classCtx']);
-
-        return $retval;
-    }
-
-    /**
-     * which source file are we working through?
-     *
-     * @return Contexts\SourceFileContext|null
-     */
-    public function getSourceFile()
-    {
-        return $this->contexts['sourceFileCtx'] ?? null;
-    }
-
-    /**
-     * tell us which source file we are currently working through
-     *
-     * @param Contexts\SourceFileContext $sourceFileCtx
+     * @param  Context $context
+     *         the context to add
      * @return Scope
      */
-    public function withSourceFile(PhpContexts\SourceFileContext $sourceFileCtx) : Scope
+    public function with(Context $context)
     {
         $retval = clone $this;
-        $retval->contexts['sourceFileCtx'] = $sourceFileCtx;
-
-        // set up the parent contexts
-        $retval->parentContexts = $retval->contexts;
+        $retval->contexts = $this->contexts;
+        $retval->contexts[get_class($context)] = $context;
 
         return $retval;
     }
 
     /**
-     * get the trait that we're in
+     * get a context (if we have it)
      *
-     * @return Contexts\TraitContext|null
+     * @param  string $contextClassname
+     *         class name of the context to look for
+     * @return Context|null
      */
-    public function getTrait()
+    protected function getContext($contextClassname)
     {
-        return $this->contexts['traitCtx'] ?? null;
+        return $this->contexts[$contextClassname] ?? null;
     }
 
     /**
-     * tell us which trait we're currently in
+     * return the name of a context, if we have it
      *
-     * @param Contexts\TraitContext $traitCtx
-     *        the trait that we're looking at
+     * @param  string $contextClassname
+     *         class name of the context to look for
+     * @return string|null
      */
-    public function withTrait(PhpContexts\TraitContext $traitCtx) : Scope
+    protected function getContextName($contextClassname)
     {
-        $retval = clone $this;
-        $retval->contexts['traitCtx'] = $traitCtx;
-
-        // set up the parent contexts
-        $retval->parentContexts = $retval->contexts;
-        unset($retval->parentContexts['autoloaderCtx']);
-        unset($retval->parentContexts['globalCtx']);
-        unset($retval->parentContexts['namespaceCtx']);
-
-        return $retval;
+        return $this->contexts[$contextClassname] ? $this->contexts[$contextClassname]->getName() : null;
     }
 }
