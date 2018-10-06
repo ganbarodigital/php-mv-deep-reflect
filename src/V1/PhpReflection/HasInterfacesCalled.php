@@ -32,7 +32,7 @@ use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpInterfaceContainer;
 use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
- * how many named interfaces does the context have?
+ * does the context contain all the interfaces in our list?
  */
 class HasInterfacesCalled
 {
@@ -40,18 +40,19 @@ class HasInterfacesCalled
     use StatelessClass;
 
     /**
-     * how many named interfaces does the context have?
+     * does the context contain all the interfaces in our list?
      *
      * @param  array $names
      *         the list of interfaces to check for
      * @param  PhpInterfaceContainer $context
      *         the context to examine
-     * @return int
-     *         the number of interfaces in $names that the context has
+     * @return boolean
+     *         - TRUE if everything in $names is in the container
+     *         - FALSE otherwise
      */
-    public static function check(array $names, PhpInterfaceContainer $context) : int
+    public static function check(array $names, PhpInterfaceContainer $context) : bool
     {
         $interfaces = GetAllInterfaces::from($context);
-        return count(array_intersect(array_keys($interfaces), $names));
+        return count(array_intersect(array_keys($interfaces), $names)) == count($names);
     }
 }

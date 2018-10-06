@@ -240,10 +240,10 @@ trait PhpInterfaceContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals(0, PhpReflection\HasInterfacesCalled::check(['not_an_interface'], $unit));
-        $this->assertEquals(1, PhpReflection\HasInterfacesCalled::check(['FooInterface'], $unit));
-        $this->assertEquals(2, PhpReflection\HasInterfacesCalled::check(['FooInterface', 'BarInterface'], $unit));
-        $this->assertEquals(2, PhpReflection\HasInterfacesCalled::check(['FooInterface', 'BarInterface', 'not_an_interface'], $unit));
+        $this->assertFalse(PhpReflection\HasInterfacesCalled::check(['not_an_interface'], $unit));
+        $this->assertTrue(PhpReflection\HasInterfacesCalled::check(['FooInterface'], $unit));
+        $this->assertTrue(PhpReflection\HasInterfacesCalled::check(['FooInterface', 'BarInterface'], $unit));
+        $this->assertFalse(PhpReflection\HasInterfacesCalled::check(['FooInterface', 'BarInterface', 'not_an_interface'], $unit));
     }
 
     /**
