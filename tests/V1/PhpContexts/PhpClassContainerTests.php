@@ -163,7 +163,7 @@ trait PhpClassContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasClasses::check($unit));
-        $this->assertFalse(PhpReflection\HasClass::check('FooClass', $unit));
+        $this->assertFalse(PhpReflection\HasClassCalled::check('FooClass', $unit));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -174,8 +174,8 @@ trait PhpClassContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(PhpReflection\HasClass::check('FooClass', $unit));
-        $this->assertFalse(PhpReflection\HasClass::check('not_a_class', $unit));
+        $this->assertTrue(PhpReflection\HasClassCalled::check('FooClass', $unit));
+        $this->assertFalse(PhpReflection\HasClassCalled::check('not_a_class', $unit));
     }
 
     /**
@@ -188,7 +188,7 @@ trait PhpClassContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasClasses::check($unit));
-        $this->assertFalse(PhpReflection\HasClass::check('FooClass', $unit));
+        $this->assertFalse(PhpReflection\HasClassCalled::check('FooClass', $unit));
 
         // ----------------------------------------------------------------
         // perform the change
