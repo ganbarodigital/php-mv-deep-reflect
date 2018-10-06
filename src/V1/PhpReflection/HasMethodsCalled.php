@@ -32,7 +32,7 @@ use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpMethodContainer;
 use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
- * how many named methods does the context have?
+ * does the context contain all of the methods in our list?
  */
 class HasMethodsCalled
 {
@@ -40,18 +40,19 @@ class HasMethodsCalled
     use StatelessClass;
 
     /**
-     * how many named methods does the context have?
+     * does the context contain all of the methods in our list?
      *
      * @param  array $names
      *         the list of methods to check for
      * @param  PhpMethodContainer $context
      *         the context to examine
-     * @return int
-     *         the number of methods in $names that the context has
+     * @return bool
+     *         - TRUE if all of the methods in $names are in $context
+     *         - FALSE otherwise
      */
-    public static function check(array $names, PhpMethodContainer $context) : int
+    public static function check(array $names, PhpMethodContainer $context) : bool
     {
         $methods = GetAllMethods::from($context);
-        return count(array_intersect(array_keys($methods), $names));
+        return count(array_intersect(array_keys($methods), $names)) == count($names);
     }
 }
