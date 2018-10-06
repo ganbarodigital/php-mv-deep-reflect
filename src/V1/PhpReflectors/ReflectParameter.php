@@ -37,33 +37,51 @@ use Microsoft\PhpParser\Node\Statement as Statements;
 use Microsoft\PhpParser\Node as Nodes;
 
 /**
- * understand a method declaration
+ * understand a single parameter
  */
-class ReflectParameterDeclarationList
+class ReflectParameter
 {
     /**
-     * understand a method declaration
+     * understand a single parameter to a function-like thing
      *
-     * @param  Nodes\DelimitedList\ParameterDeclarationList $node
-     *         the AST that declares the function param
+     * @param  Nodes\Parameter $node
+     *         the parameter to examine
      * @param  Scope $activeScope
      *         keeping track of where we are as we inspect things
-     * @return array
-     *         a (possibly empty) list of parameters discovered
+     * @return PhpContexts\PhpFunctionLikeParameter
+     *         our understanding about the parameter
      */
-    public static function from(Nodes\DelimitedList\ParameterDeclarationList $node, Scope $activeScope) : array
+    public static function from(Nodes\Parameter $node, Scope $activeScope) : PhpContexts\PhpFunctionLikeParameter
     {
-        $retval = [];
+        // what is the parameter called?
+        $name = Helpers\GetTokenText::from($node, $node->variableName);
 
-        // what's hiding inside?
-        foreach ($node->getChildNodes() as $childNode)
-        {
-            // echo '--- ' . get_class($childNode) . PHP_EOL;
-            switch (true) {
-                case $childNode instanceof Nodes\Parameter:
-                    $retval[] = ReflectParameter::from($childNode, $activeScope);
-            }
+        // does it have a type-hint at all?
+        $typeHint = Helpers\GetTokenText::from($node, $node->typeDeclaration);
+
+        // is it passed by reference?
+        $passByReference = Helpers\GetTokenText::from($node, $node->byRefToken, false) ? true : false;
+
+        // does it have a default value?
+        $hasDefaultValue = false;
+        $defaultValue = null;
+        if ($node->equalsToken) {
+            $defaultValue = Helpers\GetTokenText::from($node, $node->default);
+            $hasDefaultValue = true;
         }
+
+        // is the parameter variadic?
+        $isVariadic = $node->dotDotDotToken ? true : false;
+
+        // putting it all together
+        $retval = new PhpContexts\PhpFunctionLikeParameter(
+            $typeHint,
+            $passByReference,
+            $isVariadic,
+            $name,
+            $hasDefaultValue,
+            $defaultValue
+        );
 
         // all done
         return $retval;

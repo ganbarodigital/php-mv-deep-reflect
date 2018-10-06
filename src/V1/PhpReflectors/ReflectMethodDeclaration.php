@@ -87,14 +87,16 @@ class ReflectMethodDeclaration
             // echo '-- ' . get_class($childNode) . PHP_EOL;
             switch (true) {
                 case $childNode instanceof Nodes\DelimitedList\ParameterDeclarationList:
-                    $params[] = ReflectParameterDeclarationList::from($childNode, $activeScope);
+                    $params = ReflectParameterDeclarationList::from($childNode, $activeScope);
                     break;
             }
         }
 
         // attach the parameters
         foreach($params as $param) {
+            // var_dump($param->getName());
             $retval->attachChildContext($param->getName(), $param);
+            // var_dump($retval->getChildrenByType(PhpContexts\PhpFunctionLikeParameter::class));
         }
 
         // all done
