@@ -204,7 +204,7 @@ trait PhpFunctionContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasFunctions::check($unit));
-        $this->assertFalse(PhpReflection\HasFunction::check('foo', $unit));
+        $this->assertFalse(PhpReflection\HasFunctionCalled::check('foo', $unit));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -215,8 +215,8 @@ trait PhpFunctionContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(PhpReflection\HasFunction::check('foo', $unit));
-        $this->assertFalse(PhpReflection\HasFunction::check('not_a_function', $unit));
+        $this->assertTrue(PhpReflection\HasFunctionCalled::check('foo', $unit));
+        $this->assertFalse(PhpReflection\HasFunctionCalled::check('not_a_function', $unit));
     }
 
     /**
@@ -229,7 +229,7 @@ trait PhpFunctionContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasFunctions::check($unit));
-        $this->assertFalse(PhpReflection\HasFunction::check('foo', $unit));
+        $this->assertFalse(PhpReflection\HasFunctionCalled::check('foo', $unit));
 
         // ----------------------------------------------------------------
         // perform the change

@@ -34,7 +34,7 @@ use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 /**
  * does the context contain a named function?
  */
-class HasFunction
+class HasFunctionCalled
 {
     // we don't want you making objects from this class, sorry!
     use StatelessClass;
