@@ -204,7 +204,7 @@ trait PhpInterfaceContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasInterfaces::check($unit));
-        $this->assertFalse(PhpReflection\HasInterface::check('FooInterface', $unit));
+        $this->assertFalse(PhpReflection\HasInterfaceCalled::check('FooInterface', $unit));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -215,8 +215,8 @@ trait PhpInterfaceContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(PhpReflection\HasInterface::check('FooInterface', $unit));
-        $this->assertFalse(PhpReflection\HasInterface::check('not_an_interface', $unit));
+        $this->assertTrue(PhpReflection\HasInterfaceCalled::check('FooInterface', $unit));
+        $this->assertFalse(PhpReflection\HasInterfaceCalled::check('not_an_interface', $unit));
     }
 
     /**
@@ -229,7 +229,7 @@ trait PhpInterfaceContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasInterfaces::check($unit));
-        $this->assertFalse(PhpReflection\HasInterface::check('FooInterface', $unit));
+        $this->assertFalse(PhpReflection\HasInterfaceCalled::check('FooInterface', $unit));
 
         // ----------------------------------------------------------------
         // perform the change
