@@ -37,6 +37,7 @@ use GanbaroDigital\MissingBits\TypeInspectors\StripNamespace;
  * a function or method
  */
 class PhpFunctionLike extends PhpSourceCode
+  implements PhpParameterContainer
 {
     /**
      * what is the full name of this function-like thing?
