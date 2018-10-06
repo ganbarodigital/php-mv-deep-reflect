@@ -28,6 +28,7 @@
 
 namespace GanbaroDigital\DeepReflection\V1\PhpReflection;
 
+use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpMethod;
 use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpMethodContainer;
 use GanbaroDigital\DeepReflection\V1\PhpExceptions;
 use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
@@ -59,13 +60,16 @@ class GetMethod
     public static function from(string $name, PhpMethodContainer $context, callable $onFailure = null) : PhpMethod
     {
         // make sure we have a way to fail
-        $onFailure = $onFailure ?? function($name) {
-            throw new PhpExceptions\NoSuchMethod($name);
+        $onFailure = $onFailure ?? function($context, $name) {
+            throw new PhpExceptions\NoSuchMethod(
+                $context->getName(),
+                $name
+            );
         };
 
         // do we have it?
         $methods = GetAllMethods::from($context);
-        $retval = $methods[$name] ?? $onFailure($name);
+        $retval = $methods[$name] ?? $onFailure($context, $name);
 
         // all done
         return $retval;
