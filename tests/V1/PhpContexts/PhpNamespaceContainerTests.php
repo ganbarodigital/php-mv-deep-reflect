@@ -186,8 +186,8 @@ trait PhpNamespaceContainerTests
         // ----------------------------------------------------------------
         // perform the change
 
-        $actualResult1 = PhpReflection\HasNamespace::check('FooBar', $unit);
-        $actualResult2 = PhpReflection\HasNamespace::check('FooBaz', $unit);
+        $actualResult1 = PhpReflection\HasNamespaceCalled::check('FooBar', $unit);
+        $actualResult2 = PhpReflection\HasNamespaceCalled::check('FooBaz', $unit);
 
         // ----------------------------------------------------------------
         // test the results

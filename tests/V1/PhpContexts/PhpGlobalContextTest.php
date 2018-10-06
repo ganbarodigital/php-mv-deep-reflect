@@ -208,7 +208,7 @@ class PhpGlobalContextTest extends TestCase
 
         // make sure the namespace was created
         $this->assertTrue(PhpReflection\HasNamespaces::check($unit));
-        $this->assertTrue(PhpReflection\HasNamespace::check('GanbaroDigitalTest\\Fixtures', $unit));
+        $this->assertTrue(PhpReflection\HasNamespaceCalled::check('GanbaroDigitalTest\\Fixtures', $unit));
         $namespaceCtx = PhpReflection\GetNamespace::from('GanbaroDigitalTest\\Fixtures', $unit);
         $this->assertEquals(['foo', 'bar'], PhpReflection\GetFunctionNames::from($namespaceCtx));
 
@@ -342,7 +342,7 @@ class PhpGlobalContextTest extends TestCase
 
         // make sure the namespace was created
         $this->assertTrue(PhpReflection\HasNamespaces::check($unit));
-        $this->assertTrue(PhpReflection\HasNamespace::check('GanbaroDigitalTest\\Fixtures', $unit));
+        $this->assertTrue(PhpReflection\HasNamespaceCalled::check('GanbaroDigitalTest\\Fixtures', $unit));
         $namespaceCtx = PhpReflection\GetNamespace::from('GanbaroDigitalTest\\Fixtures', $unit);
         $this->assertEquals(['FooClass', 'BarClass'], PhpReflection\GetClassNames::from($namespaceCtx));
 
@@ -381,7 +381,7 @@ class PhpGlobalContextTest extends TestCase
 
         // make sure the namespace was created
         $this->assertTrue(PhpReflection\HasNamespaces::check($unit));
-        $this->assertTrue(PhpReflection\HasNamespace::check('GanbaroDigitalTest\\Fixtures', $unit));
+        $this->assertTrue(PhpReflection\HasNamespaceCalled::check('GanbaroDigitalTest\\Fixtures', $unit));
         $namespaceCtx = PhpReflection\GetNamespace::from('GanbaroDigitalTest\\Fixtures', $unit);
         $this->assertEquals(['FooInterface', 'BarInterface'], PhpReflection\GetInterfaceNames::from($namespaceCtx));
 
@@ -420,7 +420,7 @@ class PhpGlobalContextTest extends TestCase
 
         // make sure the namespace was created
         $this->assertTrue(PhpReflection\HasNamespaces::check($unit));
-        $this->assertTrue(PhpReflection\HasNamespace::check('GanbaroDigitalTest\\Fixtures', $unit));
+        $this->assertTrue(PhpReflection\HasNamespaceCalled::check('GanbaroDigitalTest\\Fixtures', $unit));
         $namespaceCtx = PhpReflection\GetNamespace::from('GanbaroDigitalTest\\Fixtures', $unit);
         $this->assertEquals(['FooTrait', 'BarTrait'], PhpReflection\GetTraitNames::from($namespaceCtx));
 
