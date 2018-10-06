@@ -213,10 +213,9 @@ trait PhpNamespaceContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals(0, PhpReflection\HasNamespacesCalled::check(['FooBaz'], $unit));
-        $this->assertEquals(1, PhpReflection\HasNamespacesCalled::check(['FooBaz', 'FooBar'], $unit));
-        $this->assertEquals(2, PhpReflection\HasNamespacesCalled::check(['FooBaz', 'FooBar', 'BarBaz'], $unit));
-        $this->assertEquals(2, PhpReflection\HasNamespacesCalled::check(['FooBar', 'BarBaz'], $unit));
+        $this->assertFalse(PhpReflection\HasNamespacesCalled::check(['FooBaz'], $unit));
+        $this->assertTrue(PhpReflection\HasNamespacesCalled::check(['FooBar'], $unit));
+        $this->assertTrue(PhpReflection\HasNamespacesCalled::check(['FooBar', 'BarBaz'], $unit));
     }
 
     /**

@@ -32,7 +32,7 @@ use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpNamespaceContainer;
 use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
- * how many named namespaces does the context have?
+ * does the context have all the namespaces in our list?
  */
 class HasNamespacesCalled
 {
@@ -40,18 +40,19 @@ class HasNamespacesCalled
     use StatelessClass;
 
     /**
-     * how many named namespaces does the context have?
+     * does the context have all the namespaces in our list?
      *
      * @param  array $names
      *         the list of namespaces to check for
      * @param  PhpNamespaceContainer $context
      *         the context to examine
-     * @return int
-     *         the number of namespaces in $names that the context has
+     * @return boolean
+     *         - TRUE if all the namespaces in $names are in $context
+     *         - FALSE otherwise
      */
-    public static function check(array $names, PhpNamespaceContainer $context) : int
+    public static function check(array $names, PhpNamespaceContainer $context) : bool
     {
         $namespaces = GetAllNamespaces::from($context);
-        return count(array_intersect(array_keys($namespaces), $names));
+        return count(array_intersect(array_keys($namespaces), $names)) == count($names);
     }
 }
