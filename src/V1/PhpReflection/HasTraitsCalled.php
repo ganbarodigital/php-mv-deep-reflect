@@ -32,7 +32,7 @@ use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpTraitContainer;
 use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
- * how many named traits does the context have?
+ * does our context contain all the traits in our list?
  */
 class HasTraitsCalled
 {
@@ -40,18 +40,19 @@ class HasTraitsCalled
     use StatelessClass;
 
     /**
-     * how many named traits does the context have?
+     * does our context contain all the traits in our list?
      *
      * @param  array $names
      *         the list of traits to check for
      * @param  PhpTraitContainer $context
      *         the context to examine
-     * @return int
-     *         the number of traits in $names that the context has
+     * @return boolean
+     *         - TRUE if all the traits in $names are in $context
+     *         - FALSE otherwise
      */
-    public static function check(array $names, PhpTraitContainer $context) : int
+    public static function check(array $names, PhpTraitContainer $context) : bool
     {
         $traits = GetAllTraits::from($context);
-        return count(array_intersect(array_keys($traits), $names));
+        return count(array_intersect(array_keys($traits), $names)) == count($names);
     }
 }

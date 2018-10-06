@@ -239,10 +239,10 @@ trait PhpTraitContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals(0, PhpReflection\HasTraitsCalled::check(['not_a_trait'], $unit));
-        $this->assertEquals(1, PhpReflection\HasTraitsCalled::check(['FooTrait'], $unit));
-        $this->assertEquals(2, PhpReflection\HasTraitsCalled::check(['FooTrait', 'BarTrait'], $unit));
-        $this->assertEquals(2, PhpReflection\HasTraitsCalled::check(['FooTrait', 'BarTrait', 'not_a_trait'], $unit));
+        $this->assertFalse(PhpReflection\HasTraitsCalled::check(['not_a_trait'], $unit));
+        $this->assertTrue(PhpReflection\HasTraitsCalled::check(['FooTrait'], $unit));
+        $this->assertTrue(PhpReflection\HasTraitsCalled::check(['FooTrait', 'BarTrait'], $unit));
+        $this->assertFalse(PhpReflection\HasTraitsCalled::check(['FooTrait', 'BarTrait', 'not_a_trait'], $unit));
     }
 
     /**
