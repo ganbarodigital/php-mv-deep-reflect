@@ -137,7 +137,7 @@ class PhpClassLike extends PhpSourceCode
      */
     public function getConstants()
     {
-        return array_keys($this->children[ClassLikeConstantContext::class]);
+        return array_keys($this->children[PhpClassLikeConstant::class]);
     }
 
     /**
@@ -147,7 +147,7 @@ class PhpClassLike extends PhpSourceCode
      */
     public function getConstructor()
     {
-        return $this->children[MethodContext::class]['__construct'] ?? null;
+        return $this->children[PhpMethod::class]['__construct'] ?? null;
     }
 
         /**
