@@ -203,7 +203,7 @@ trait PhpTraitContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasTraits::check($unit));
-        $this->assertFalse(PhpReflection\HasTrait::check('FooTrait', $unit));
+        $this->assertFalse(PhpReflection\HasTraitCalled::check('FooTrait', $unit));
 
         // ----------------------------------------------------------------
         // perform the change
@@ -214,8 +214,8 @@ trait PhpTraitContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertTrue(PhpReflection\HasTrait::check('FooTrait', $unit));
-        $this->assertFalse(PhpReflection\HasTrait::check('not_a_trait', $unit));
+        $this->assertTrue(PhpReflection\HasTraitCalled::check('FooTrait', $unit));
+        $this->assertFalse(PhpReflection\HasTraitCalled::check('not_a_trait', $unit));
     }
 
     /**
@@ -228,7 +228,7 @@ trait PhpTraitContainerTests
 
         $unit = $this->getUnitToTest();
         $this->assertFalse(PhpReflection\HasTraits::check($unit));
-        $this->assertFalse(PhpReflection\HasTrait::check('FooTrait', $unit));
+        $this->assertFalse(PhpReflection\HasTraitCalled::check('FooTrait', $unit));
 
         // ----------------------------------------------------------------
         // perform the change

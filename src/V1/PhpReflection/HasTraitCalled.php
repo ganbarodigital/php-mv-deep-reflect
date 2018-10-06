@@ -34,7 +34,7 @@ use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 /**
  * does the context contain a named trait?
  */
-class HasTrait
+class HasTraitCalled
 {
     // we don't want you making objects from this class, sorry!
     use StatelessClass;
