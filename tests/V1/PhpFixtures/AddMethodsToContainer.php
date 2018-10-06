@@ -36,6 +36,10 @@ trait AddMethodsToContainer
     protected function addMinimalMethods(PhpContexts\PhpContext $unit)
     {
         PhpReflectors\ReflectSourceFile::from(
+            __DIR__ . '/BasicGlobalExamples/MinimalClassBar.php',
+            $unit->getScope()
+        );
+        PhpReflectors\ReflectSourceFile::from(
             __DIR__ . '/BasicGlobalExamples/MinimalClassBarWithMethods.php',
             $unit->getScope()
         );
