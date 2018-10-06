@@ -240,10 +240,9 @@ trait PhpFunctionContainerTests
         // ----------------------------------------------------------------
         // test the results
 
-        $this->assertEquals(0, PhpReflection\HasFunctionsCalled::check(['not_a_function'], $unit));
-        $this->assertEquals(1, PhpReflection\HasFunctionsCalled::check(['foo'], $unit));
-        $this->assertEquals(2, PhpReflection\HasFunctionsCalled::check(['foo', 'bar'], $unit));
-        $this->assertEquals(2, PhpReflection\HasFunctionsCalled::check(['foo', 'bar', 'not_a_function'], $unit));
+        $this->assertFalse(PhpReflection\HasFunctionsCalled::check(['not_a_function'], $unit));
+        $this->assertTrue(PhpReflection\HasFunctionsCalled::check(['foo'], $unit));
+        $this->assertTrue(PhpReflection\HasFunctionsCalled::check(['foo', 'bar'], $unit));
     }
 
     /**

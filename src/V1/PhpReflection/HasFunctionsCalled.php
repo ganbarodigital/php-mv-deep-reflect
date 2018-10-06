@@ -32,7 +32,7 @@ use GanbaroDigital\DeepReflection\V1\PhpContexts\PhpFunctionContainer;
 use GanbaroDigital\MissingBits\ClassesAndObjects\StatelessClass;
 
 /**
- * how many named functions does the context have?
+ * does the context have all of our named functions?
  */
 class HasFunctionsCalled
 {
@@ -40,18 +40,19 @@ class HasFunctionsCalled
     use StatelessClass;
 
     /**
-     * how many named functions does the context have?
+     * does the context have all of our named functions?
      *
      * @param  array $names
      *         the list of functions to check for
      * @param  PhpFunctionContainer $context
      *         the context to examine
-     * @return int
-     *         the number of functions in $names that the context has
+     * @return bool
+     *         - TRUE if all of the functions in $names are in $context
+     *         - FALSE otherwise
      */
-    public static function check(array $names, PhpFunctionContainer $context) : int
+    public static function check(array $names, PhpFunctionContainer $context) : bool
     {
         $functions = GetAllFunctions::from($context);
-        return count(array_intersect(array_keys($functions), $names));
+        return count(array_intersect(array_keys($functions), $names)) == count($names);
     }
 }
