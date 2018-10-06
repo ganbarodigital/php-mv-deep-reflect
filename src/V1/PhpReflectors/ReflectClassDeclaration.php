@@ -100,7 +100,7 @@ class ReflectClassDeclaration
     {
         foreach ($node->getChildNodes() as $childNode)
         {
-            echo "- " . get_class($childNode) . PHP_EOL;
+            // echo "- " . get_class($childNode) . PHP_EOL;
             switch (true) {
                 case $childNode instanceof Nodes\ClassConstDeclaration:
                     $constCtx = ReflectClassConstantDeclaration::from($childNode, $activeScope);
