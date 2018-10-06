@@ -58,12 +58,6 @@ class PhpFunctionLike extends PhpSourceCode
     protected $functionName;
 
     /**
-     * what parameters do we accept (if any)?
-     * @var array
-     */
-    protected $params = [];
-
-    /**
      * what is our return type?
      *
      * this holds whatever value you specify if you're using PHP-7.x
@@ -161,5 +155,4 @@ class PhpFunctionLike extends PhpSourceCode
     {
         return 'function-like';
     }
-
 }
